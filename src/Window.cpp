@@ -9,7 +9,7 @@
 namespace Acidrain {
 
     Window::Window(int w, int h, WindowType t)
-            : width(w), height(h), type(t) {
+            : width_(w), height_(h), type(t) {
         SDL_Init(SDL_INIT_VIDEO);
 
         // Setup OpenGL version. on OSX this has the effect of not drawing anything with them shaders. Need to investigate further
@@ -40,8 +40,8 @@ namespace Acidrain {
         displayWindow = SDL_CreateWindow("Stardust",
                 SDL_WINDOWPOS_UNDEFINED,
                 SDL_WINDOWPOS_UNDEFINED,
-                width,
-                height,
+                width_,
+                height_,
                 windowFlags);
         glContext = SDL_GL_CreateContext(displayWindow);
 
@@ -79,4 +79,12 @@ namespace Acidrain {
         return false;
     }
 
+
+    int Window::width() {
+        return width_;
+    }
+
+    int Window::height() {
+        return height_;
+    }
 } // namespace Acidrain

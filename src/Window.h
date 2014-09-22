@@ -19,10 +19,14 @@ namespace Acidrain {
 
         bool shouldQuit();
 
+        int width();
+
+        int height();
+
     private:
 
-        int width;
-        int height;
+        int width_;
+        int height_;
         WindowType type;
 
         SDL_Window *displayWindow;
