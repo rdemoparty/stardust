@@ -1,7 +1,11 @@
 #include <GfxSystem.h>
 #include <GLheaders.h>
-#include <SDL_surface.h>
-#include <SDL2/SDL_image.h>
+#include <iostream>
+
+#define STB_IMAGE_IMPLEMENTATION
+
+#include <stb_image.h>
+#include "FileSystem.h"
 
 namespace Acidrain {
 
@@ -42,12 +46,30 @@ namespace Acidrain {
         glTranslatef(0.375, 0.375, 0);
     };
 
+    std::shared_ptr<Texture> GfxSystem::loadTexture(const std::string &filename) {
+        return loadTexture(filename.c_str());
+    }
 
     std::shared_ptr<Texture> GfxSystem::loadTexture(const char *filename) {
-        SDL_Surface *image = IMG_Load(filename);
-        std::shared_ptr<Texture> result = std::shared_ptr<Texture>(new Texture(image->w, image->h, reinterpret_cast<unsigned char *>(image->pixels)));
-        SDL_FreeSurface(image);
+        std::string content = FILESYS.getFileContent(filename);
+        int w, h, comp;
+        unsigned char *image = stbi_load_from_memory((stbi_uc const *) content.c_str(), content.size(), &w, &h, &comp, STBI_rgb_alpha);
+
+        std::cout << "Loading texture " << filename << " with size: " << w << "x" << h << std::endl;
+        std::shared_ptr<Texture> result = std::shared_ptr<Texture>(new Texture(w, h, image));
+        stbi_image_free(image);
+
         return result;
+    }
+
+
+    void GfxSystem::setClearColor(const glm::vec3 &color) {
+        clearScreenColor = color;
+        glClearColor(clearScreenColor.r, clearScreenColor.g, clearScreenColor.b, 0.0f);
+    }
+
+    void GfxSystem::clearScreen() {
+        glClear(GL_COLOR_BUFFER_BIT);
     }
 } // namespace Acidrain
 

@@ -23,6 +23,10 @@ namespace Acidrain {
     }
 
 
+    Shader::Shader(const std::string& vertexShaderContent, const std::string& pixelShaderContent) {
+        Shader(vertexShaderContent.c_str(), pixelShaderContent.c_str());
+    }
+
     Shader::Shader(const char *vertexShaderContent, const char *pixelShaderContent) {
         shaderIds[0] = glCreateShader(GL_VERTEX_SHADER);
         glShaderSource(shaderIds[0], 1, &vertexShaderContent, nullptr);

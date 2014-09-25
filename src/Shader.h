@@ -2,6 +2,7 @@
 
 #include <GLheaders.h>
 #include <map>
+#include <string>
 
 namespace Acidrain {
 
@@ -9,6 +10,8 @@ namespace Acidrain {
     public:
 
         Shader(const char *vertexShaderContent, const char *pixelShaderContent);
+
+        Shader(const std::string& vertexShaderContent, const std::string& pixelShaderContent);
 
         virtual ~Shader();
 
