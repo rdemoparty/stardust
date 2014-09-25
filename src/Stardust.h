@@ -5,6 +5,7 @@
 #include <memory>
 #include <Sprite.h>
 #include <Animation.h>
+#include <Font.h>
 
 #pragma once
 
@@ -26,6 +27,9 @@ namespace Acidrain {
 
         AnimationData animationData;
         std::shared_ptr<Animation> animation;
+
+        std::shared_ptr<Font> font;
+        std::shared_ptr<Font> fontSmall;
 
         vec2 position = vec2(-250, 0);
 

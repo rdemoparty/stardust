@@ -41,6 +41,9 @@ namespace Acidrain {
         animation = std::shared_ptr<Animation>(new Animation(&animationData));
         animation->start();
 
+        font = std::shared_ptr<Font>(new Font("fonts/Impact.ttf", 70.0f));
+        fontSmall = std::shared_ptr<Font>(new Font("fonts/a.ttf", 20.0f));
+
         GFXSYS.setClearColor(vec3(0.1f, 0.0f, 0.1f));
     }
 
@@ -53,6 +56,19 @@ namespace Acidrain {
 
         GFXSYS.clearScreen();
         drawSprite(animation->getSprite(), position);
+
+
+        glColor4f(1, 1, 1, 1);
+
+        glEnable(GL_BLEND);
+        glBlendEquationSeparate(GL_FUNC_ADD, GL_FUNC_ADD);
+//        glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
+        glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE, GL_ONE, GL_ZERO);
+
+        font->print(100, 700, "HELLO WORLD!");
+        fontSmall->print(100, 300, "THIS IS THE TIME OF REBELION THROUGHOUT THE GALAXY. YOU ARE ON A MISSION!");
+
+        glColor4f(1, 1, 1, 1);
     }
 
     bool Stardust::shouldQuit() {
