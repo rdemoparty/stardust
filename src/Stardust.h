@@ -1,4 +1,6 @@
 #include "GameState.h"
+#include "EventSystem.h"
+#include "InputManager.h"
 #include <GLheaders.h>
 #include <Shader.h>
 #include <Texture.h>
@@ -10,13 +12,13 @@
 #pragma once
 
 namespace Acidrain {
-    class Stardust {
+    class Stardust : public EventListener {
     public:
         Stardust();
 
         ~Stardust();
 
-        void process(double elapsedSeconds);
+        void process(float elapsedSeconds);
 
         bool shouldQuit();
 
@@ -31,9 +33,15 @@ namespace Acidrain {
         std::shared_ptr<Font> font;
         std::shared_ptr<Font> fontSmall;
 
-        vec2 position = vec2(-250, 0);
+        std::shared_ptr<InputManager> input;
+
+        vec2 position = vec2(100, 100);
+
+        bool quitGame = false;
 
         void drawSprite(const Sprite& sprite, const vec2& position);
+
+        virtual void onEvent(SDL_Event const &param);
     };
 
 }

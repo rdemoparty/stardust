@@ -2,6 +2,7 @@
 #include <FileSystem.h>
 #include <GfxSystem.h>
 #include <iostream>
+#include <glm/glm.hpp>
 
 namespace Acidrain {
 
@@ -16,6 +17,11 @@ namespace Acidrain {
     };
 
     Stardust::Stardust() {
+
+        EVENTSYS.addListener(this, SDL_QUIT);
+
+        input = std::shared_ptr<InputManager>(new InputManager());
+
         shader = shared_ptr<Shader>(new Shader(
                 FILESYS.getFileContent("shaders/normal.vs"),
                 FILESYS.getFileContent("shaders/normal.ps")
@@ -50,13 +56,42 @@ namespace Acidrain {
     Stardust::~Stardust() {
     }
 
-    void Stardust::process(double elapsedSeconds) {
+
+    void Stardust::onEvent(SDL_Event const &event) {
+        switch (event.type) {
+            case SDL_QUIT:
+                quitGame = true;
+                break;
+            default:
+                break;
+        }
+    }
+
+    void Stardust::process(float elapsedSeconds) {
+
+        if (input->isKeyJustPressed(SDL_SCANCODE_ESCAPE))
+            quitGame = true;
+
+        vec2 velocity = vec2(0);
+
+        if (input->isKeyDown(SDL_SCANCODE_LEFT) || input->isJoystickPressedLeft()) {
+            velocity.x = -1;
+        } else if (input->isKeyDown(SDL_SCANCODE_RIGHT) || input->isJoystickPressedRight()) {
+            velocity.x = 1;
+        }
+
+        if (input->isKeyDown(SDL_SCANCODE_UP) || input->isJoystickPressedUp()) {
+            velocity.y = 1;
+        } else if (input->isKeyDown(SDL_SCANCODE_DOWN) || input->isJoystickPressedDown()) {
+            velocity.y = -1;
+        }
+        const float PLAYER_SPEED = 200.0f;
+
         animation->update(elapsedSeconds);
-        position.x += elapsedSeconds * 100.0f;
+        position += velocity * PLAYER_SPEED * elapsedSeconds;
 
         GFXSYS.clearScreen();
         drawSprite(animation->getSprite(), position);
-
 
         glColor4f(1, 1, 1, 1);
 
@@ -69,10 +104,12 @@ namespace Acidrain {
         fontSmall->print(100, 300, "THIS IS THE TIME OF REBELION THROUGHOUT THE GALAXY. YOU ARE ON A MISSION!");
 
         glColor4f(1, 1, 1, 1);
+
+        input->copyNewStateToOldState();
     }
 
     bool Stardust::shouldQuit() {
-        return false;
+        return quitGame;
     }
 
     void Stardust::drawSprite(const Sprite &sprite, const vec2 &position) {

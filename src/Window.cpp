@@ -10,7 +10,6 @@ namespace Acidrain {
 
     Window::Window(int w, int h, WindowType t)
             : width_(w), height_(h), type(t) {
-        SDL_Init(SDL_INIT_VIDEO);
 
         // Setup OpenGL version. on OSX this has the effect of not drawing anything with them shaders. Need to investigate further
 #ifndef __APPLE__
@@ -66,19 +65,6 @@ namespace Acidrain {
     void Window::present() {
         SDL_GL_SwapWindow(displayWindow);
     }
-
-    bool Window::shouldQuit() {
-        SDL_Event e;
-        while (SDL_PollEvent(&e)) {
-            if (e.type == SDL_QUIT)
-                return true;
-//        else if (e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_ESCAPE)
-//            return true;
-        }
-
-        return false;
-    }
-
 
     int Window::width() {
         return width_;

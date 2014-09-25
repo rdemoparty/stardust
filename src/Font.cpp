@@ -26,7 +26,7 @@ namespace Acidrain {
         glDeleteTextures(1, &atlasId);
     }
 
-    void Font::print(float x, float y, char *text) {
+    void Font::print(float x, float y, const char *text) {
         // assume orthographic projection with units = screen pixels, origin at top left
         glBindTexture(GL_TEXTURE_2D, atlasId);
         glBegin(GL_QUADS);

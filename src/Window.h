@@ -17,8 +17,6 @@ namespace Acidrain {
 
         void present();
 
-        bool shouldQuit();
-
         int width();
 
         int height();

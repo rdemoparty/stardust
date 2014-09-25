@@ -13,7 +13,7 @@ namespace Acidrain {
 
         ~Font();
 
-        void print(float x, float y, char *text);
+        void print(float x, float y, const char *text);
 
     private:
 
