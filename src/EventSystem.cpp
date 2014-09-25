@@ -19,6 +19,7 @@ namespace Acidrain {
     }
 
     void EventSystem::init() {
+        SDL_Init(SDL_INIT_EVERYTHING);
     }
 
     void EventSystem::addListener(EventListener *listener, Uint32 eventTypeToListenTo) {

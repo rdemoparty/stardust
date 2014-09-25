@@ -14,7 +14,18 @@ namespace Acidrain {
         return instance;
     };
 
-    void GfxSystem::init(const int windowWidth, const int windowHeight, const int desiredWidth, const int desiredHeight) {
+    void GfxSystem::init(const int desiredWidth, const int desiredHeight) {
+
+        SDL_DisplayMode desktopDisplayMode;
+        if (SDL_GetDesktopDisplayMode(0, &desktopDisplayMode) != 0) {
+            SDL_Log("SDL_GetDesktopDisplayMode failed: %s", SDL_GetError());
+            exit(1);
+        }
+
+        window = std::shared_ptr<Window>(new Window(desktopDisplayMode.w, desktopDisplayMode.h, WindowType::Fullscreen));
+
+        const int windowWidth = window->width();
+        const int windowHeight = window->height(); 
 
         const float windowAspectRatio = windowWidth / static_cast<float>(windowHeight);
         const float wantedAspectRatio = desiredWidth / static_cast<float>(desiredHeight);
@@ -29,6 +40,11 @@ namespace Acidrain {
 
         offsetX = (windowWidth - width) / 2;
         offsetY = (windowHeight - height) / 2;
+
+        // clear screen before setting scissors so we remove the possible garbage
+        glClearColor(0, 0, 0, 1);
+        setClearColor(glm::vec3(0));
+        clearScreen();
 
         glViewport(offsetX, offsetY, width, height);
         glScissor(offsetX, offsetY, width, height);
@@ -71,5 +87,11 @@ namespace Acidrain {
     void GfxSystem::clearScreen() {
         glClear(GL_COLOR_BUFFER_BIT);
     }
+
+    void GfxSystem::show() {
+        if (window)
+            window->present();
+    }
+
 } // namespace Acidrain
 

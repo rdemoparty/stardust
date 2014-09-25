@@ -1,6 +1,7 @@
 #pragma once
 #include <memory>
 #include <Texture.h>
+#include <Window.h>
 #include <glm/vec3.hpp>
 
 #define GFXSYS Acidrain::GfxSystem::getInstance()
@@ -12,7 +13,7 @@ namespace Acidrain {
 
         static GfxSystem &getInstance();
 
-        void init(const int windowWidth, const int windowHeight, const int desiredWidth, const int desiredHeight);
+        void init(const int desiredWidth, const int desiredHeight);
 
         std::shared_ptr<Texture> loadTexture(const char* filename);
 
@@ -22,8 +23,11 @@ namespace Acidrain {
 
         void clearScreen();
 
+        void show();
+
     private:
 
+        std::shared_ptr<Window> window;
         int width, height;
         int offsetX, offsetY;
         glm::vec3 clearScreenColor = glm::vec3(0);

@@ -1,4 +1,3 @@
-#include "Window.h"
 #include "Timer.h"
 #include "Stardust.h"
 #include "FileSystem.h"
@@ -8,12 +7,13 @@
 
 using namespace Acidrain;
 
+const int GAME_LOGICAL_RESOLUTION_X = 1024;
+const int GAME_LOGICAL_RESOLUTION_Y = 768;
+
 int main() {
-    SDL_Init(SDL_INIT_EVERYTHING);
-
-    Window window(1920, 1080, WindowType::Fullscreen);
-
-    GFXSYS.init(window.width(), window.height(), 1024, 768);
+    
+    EVENTSYS.init();
+    GFXSYS.init(GAME_LOGICAL_RESOLUTION_X, GAME_LOGICAL_RESOLUTION_Y);
     FILESYS.init("./data");
 
     Timer timer;
@@ -22,7 +22,7 @@ int main() {
     while (!game.shouldQuit()) {
         EVENTSYS.update();
         game.process(timer.lap());
-        window.present();
+        GFXSYS.show();
     }
 
     return 0;
