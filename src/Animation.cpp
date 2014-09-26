@@ -86,7 +86,7 @@ namespace Acidrain {
     }
 
     bool Animation::isFrameIndexOutOfRange() const {
-        return (currentFrameIndex < 0 || currentFrameIndex >= animationData->frames.size());
+        return (currentFrameIndex < 0 || currentFrameIndex >= static_cast<int>(animationData->frames.size()));
     }
 
     AnimationDirection Animation::nextFrameDirection() const {

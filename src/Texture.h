@@ -22,8 +22,8 @@ private:
 
     int 	width;
     int 	height;
-    bool 	destroyable;
     GLuint 	textureId = 0;
+    bool 	destroyable;
 };
 
 } // namespace Acidrain

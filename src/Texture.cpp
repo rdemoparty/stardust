@@ -30,7 +30,7 @@ Texture::Texture(int w, int h, unsigned char* buffer)
 
 
 Texture::Texture(GLuint textId, int w, int h)
-    : textureId(textId), width(w), height(h), destroyable(false) {
+    : width(w), height(h), textureId(textId), destroyable(false) {
 }
 
 

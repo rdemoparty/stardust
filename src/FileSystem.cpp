@@ -30,7 +30,7 @@ namespace Acidrain {
     FileSystem &FileSystem::getInstance() {
         static FileSystem instance;
         return instance;
-    };
+    }
 
     void FileSystem::init(std::string root) {
         rootDir = root;
@@ -136,7 +136,7 @@ namespace Acidrain {
         std::cout << "Loaded file [" << filename << "] with size " << contents.size() << std::endl;
 
         return contents;
-    };
+    }
 
 
 } // namespace Acidrain

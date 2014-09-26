@@ -1,4 +1,5 @@
 #include <InputManager.h>
+#include <iostream>
 
 namespace Acidrain {
 
@@ -87,18 +88,19 @@ namespace Acidrain {
             case SDL_JOYAXISMOTION:
                 if (event.jaxis.which == 0) {
                     if (event.jaxis.axis == 0) {
-                        if (event.jaxis.value > 10000)
+                        std::cout << "event.jaxis.value: " << event.jaxis.value << std::endl;
+                        if (event.jaxis.value > 20000)
                             joystickState.x_axis = 1;
-                        else if (event.jaxis.value < -10000)
+                        else if (event.jaxis.value < (-20000))
                             joystickState.x_axis = -1;
                         else
                             joystickState.x_axis = 0;
                     }
 
                     if (event.jaxis.axis == 1) {
-                        if (event.jaxis.value > 10000)
+                        if (event.jaxis.value > 20000)
                             joystickState.y_axis = 1;
-                        else if (event.jaxis.value < -10000)
+                        else if (event.jaxis.value < -20000)
                             joystickState.y_axis = -1;
                         else
                             joystickState.y_axis = 0;

@@ -12,7 +12,7 @@ namespace Acidrain {
     GfxSystem &GfxSystem::getInstance() {
         static GfxSystem instance;
         return instance;
-    };
+    }
 
     void GfxSystem::init(const int desiredWidth, const int desiredHeight) {
 
@@ -60,7 +60,7 @@ namespace Acidrain {
 
         // trick for exact pixelization
         glTranslatef(0.375, 0.375, 0);
-    };
+    }
 
     std::shared_ptr<Texture> GfxSystem::loadTexture(const std::string &filename) {
         return loadTexture(filename.c_str());
