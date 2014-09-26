@@ -5,6 +5,7 @@
 #include <Window.h>
 #include <GLheaders.h>
 //#include <SDL2/SDL_opengl.h>
+#include <iostream>
 
 namespace Acidrain {
 
@@ -47,7 +48,7 @@ namespace Acidrain {
 #ifndef __APPLE__
         GLenum err = glewInit();
         if (GLEW_OK != err) {
-            fprintf(stderr, "Error %s\n", glewGetErrorString(err));
+			std::cerr << "Error " << glewGetErrorString(err) << std::endl;
             exit(1);
         }
 #endif

@@ -3,6 +3,7 @@
 #include <Texture.h>
 #include <Window.h>
 #include <glm/vec3.hpp>
+#include <string>
 
 #define GFXSYS Acidrain::GfxSystem::getInstance()
 

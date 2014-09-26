@@ -20,9 +20,10 @@
 
 #include <sys/types.h>
 #include <unistd.h>
-#include <iostream>
 
 #endif
+
+#include <iostream>
 
 namespace Acidrain {
 
@@ -76,7 +77,7 @@ namespace Acidrain {
         return strFileName;
 	}
 
-	std::string Utils::getExeDir(std::string fullPath) {
+	std::string FileSystem::getExeDir(std::string fullPath) {
         int n = fullPath.rfind('\\');
         if (n == fullPath.npos) return "";
 

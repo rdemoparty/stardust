@@ -10,7 +10,7 @@ using namespace Acidrain;
 const int GAME_LOGICAL_RESOLUTION_X = 1024;
 const int GAME_LOGICAL_RESOLUTION_Y = 768;
 
-int main() {
+int main(int argc, char** argv) {
     
     EVENTSYS.init();
     GFXSYS.init(GAME_LOGICAL_RESOLUTION_X, GAME_LOGICAL_RESOLUTION_Y);

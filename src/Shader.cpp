@@ -12,12 +12,13 @@ namespace Acidrain {
             glGetShaderiv(shaderId, GL_INFO_LOG_LENGTH, &maxLength);
 
             //The maxLength includes the NULL character
-            char errorLog[maxLength];
+            char* errorLog = new char[maxLength];
             glGetShaderInfoLog(shaderId, maxLength, &maxLength, &errorLog[0]);
 
             std::cerr << "Shader error: " << errorLog << std::endl;
 
             glDeleteShader(shaderId); //Don't leak the shader.
+			delete errorLog;
             return;
         }
     }
