@@ -8,6 +8,7 @@
 #include <Sprite.h>
 #include <Animation.h>
 #include <Font.h>
+#include <Starfield.h>
 
 #pragma once
 
@@ -21,6 +22,8 @@ namespace Acidrain {
         void process(float elapsedSeconds);
 
         bool shouldQuit();
+        
+    private:
 
         GameState state = GameState::MAIN_MENU;
 
@@ -35,7 +38,9 @@ namespace Acidrain {
 
         std::shared_ptr<InputManager> input;
 
-        vec2 position = vec2(100, 100);
+        std::shared_ptr<Starfield> starfield;
+
+        vec2 position = vec2(0, 0);
 
         bool quitGame = false;
 

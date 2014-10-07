@@ -50,6 +50,8 @@ namespace Acidrain {
         font = std::shared_ptr<Font>(new Font("fonts/Impact.ttf", 70.0f));
         fontSmall = std::shared_ptr<Font>(new Font("fonts/a.ttf", 20.0f));
 
+        starfield = std::shared_ptr<Starfield>(new Starfield(40, vec2(1024, 768)));
+
         GFXSYS.setClearColor(vec3(0.1f, 0.0f, 0.1f));
     }
 
@@ -68,7 +70,6 @@ namespace Acidrain {
     }
 
     void Stardust::process(float elapsedSeconds) {
-
         if (input->isKeyJustPressed(SDL_SCANCODE_ESCAPE))
             quitGame = true;
 
@@ -91,10 +92,16 @@ namespace Acidrain {
         position += velocity * PLAYER_SPEED * elapsedSeconds;
 
         GFXSYS.clearScreen();
-        drawSprite(animation->getSprite(), position);
+
+        shader->unuse();
+        starfield->update(elapsedSeconds);
+        starfield->render();
 
         glColor4f(1, 1, 1, 1);
+        drawSprite(animation->getSprite(), position);
 
+
+        glColor4f(1, 1, 1, 1);
         glEnable(GL_BLEND);
         glBlendEquationSeparate(GL_FUNC_ADD, GL_FUNC_ADD);
 //        glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
