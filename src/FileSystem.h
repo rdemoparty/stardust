@@ -9,11 +9,11 @@ namespace Acidrain {
     class FileSystem {
     public:
 
-        static FileSystem &getInstance();
+        static FileSystem& getInstance();
 
         void init(std::string rootDir);
 
-        std::string absolutePath(const char *relativePath);
+        std::string absolutePath(const char* relativePath);
 
         std::string absolutePath(std::string relativePath);
 
@@ -21,9 +21,9 @@ namespace Acidrain {
 
         static std::string getExeDir(std::string fullPath);
 
-        std::string getFileContent(const char *pathRelativeToRoot);
+        std::string getFileContent(const char* pathRelativeToRoot);
 
-        std::string getFileContent(const std::string &pathRelativeToRoot);
+        std::string getFileContent(const std::string& pathRelativeToRoot);
 
     private:
         std::string rootDir = "./";

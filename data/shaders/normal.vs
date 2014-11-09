@@ -1,8 +1,16 @@
-uniform mat4 modelToWorldMatrix;
-uniform mat4 worldToViewMatrix;
-varying vec2 texCoord;
+#version 330 core
+
+uniform mat4 orthoMatrix;
+
+in vec2 position;
+in vec2 textCoords;
+in vec4 color;
+
+out vec4 interpolatedColor;
+out vec2 interpolatedTextCoords;
 
 void main() {
-    texCoord = gl_MultiTexCoord0;
-    gl_Position = worldToViewMatrix * modelToWorldMatrix * gl_Vertex;
+    gl_Position = orthoMatrix * vec4(position.x, position.y, 0.0f, 1.0f);
+    interpolatedColor = color;
+    interpolatedTextCoords = textCoords;
 }

@@ -4,26 +4,29 @@
 
 namespace Acidrain {
 
-class Texture {
-public:
+    class Texture {
+    public:
 
-    Texture(int width, int height, unsigned char* buffer);
-    Texture(GLuint textureId, int width, int height);
+        Texture(int width, int height, unsigned char* buffer);
 
-    virtual ~Texture();
+        Texture(GLuint textureId, int width, int height);
 
-    int 	getWidth() const;
-    int 	getHeight() const;
+        virtual ~Texture();
 
-    void 	use();
-    void 	unuse();
+        int getWidth() const;
 
-private:
+        int getHeight() const;
 
-    int 	width;
-    int 	height;
-    GLuint 	textureId = 0;
-    bool 	destroyable;
-};
+        void use() const;
+
+        void unuse() const;
+
+    private:
+
+        int width;
+        int height;
+        GLuint textureId = 0;
+        bool destroyable;
+    };
 
 } // namespace Acidrain

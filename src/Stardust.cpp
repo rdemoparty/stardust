@@ -2,19 +2,30 @@
 #include <FileSystem.h>
 #include <GfxSystem.h>
 #include <iostream>
-#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
 namespace Acidrain {
 
     using namespace std;
     using namespace glm;
 
-    struct Entity {
-        vec2 position = vec2(0);
-        vec2 scale = vec2(1);
-        float rotation = 0;
-        Animation visual;
-    };
+    Randomizer rng;
+
+    vec2 newRandomVelocity() {
+        return vec2(
+                rng.randomUnitDouble() - 0.5f,
+                rng.randomUnitDouble() - 0.5f
+        ) * 4.0f;
+    }
+
+    shared_ptr<DrawableEntity> newNpc() {
+        shared_ptr<DrawableEntity> result = shared_ptr<DrawableEntity>(new DrawableEntity);
+        result->position = vec2(1024.0f / 2.0f, 768.0f / 2.0f);
+        result->scale = vec2(1);
+        result->rotation = 0;
+        result->size = vec2(64, 64);
+        return result;
+    }
 
     Stardust::Stardust() {
 
@@ -22,10 +33,12 @@ namespace Acidrain {
 
         input = std::shared_ptr<InputManager>(new InputManager());
 
-        shader = shared_ptr<Shader>(new Shader(
+        shader = make_shared<Shader>(
                 FILESYS.getFileContent("shaders/normal.vs"),
                 FILESYS.getFileContent("shaders/normal.ps")
-        ));
+        );
+
+        std::cout << "After assigning shader" << std::endl;
 
         spriteSheet = std::shared_ptr<SpriteSheet>(new SpriteSheet);
         spriteSheet->texture = GFXSYS.loadTexture("sprites/enemyship2b.png");
@@ -52,14 +65,20 @@ namespace Acidrain {
 
         starfield = std::shared_ptr<Starfield>(new Starfield(40, vec2(1024, 768)));
 
+        for (int i = 0; i < 1000; i++) {
+            npcs.push_back(newNpc());
+            velocities.push_back(newRandomVelocity());
+        }
+
         GFXSYS.setClearColor(vec3(0.1f, 0.0f, 0.1f));
     }
+
 
     Stardust::~Stardust() {
     }
 
 
-    void Stardust::onEvent(SDL_Event const &event) {
+    void Stardust::onEvent(SDL_Event const& event) {
         switch (event.type) {
             case SDL_QUIT:
                 quitGame = true;
@@ -91,26 +110,55 @@ namespace Acidrain {
         animation->update(elapsedSeconds);
         position += velocity * PLAYER_SPEED * elapsedSeconds;
 
+        for (int i = 0; i < npcs.size(); i++) {
+            shared_ptr<DrawableEntity> e = npcs.at(i);
+            e->currentSprite = animation->getSprite();
+            e->position = e->position + velocities[i] * 10.0f * elapsedSeconds;
+            e->update(elapsedSeconds);
+        }
+
+        entity.position = position;
+//        entity.rotation = 0;
+        entity.currentSprite = animation->getSprite();
+        entity.size = entity.currentSprite.getSize();
+        entity.rotation += 1 * elapsedSeconds;
+        entity.scale = vec2(sin(entity.rotation) + 2);
+
         GFXSYS.clearScreen();
 
-        shader->unuse();
         starfield->update(elapsedSeconds);
         starfield->render();
 
-        glColor4f(1, 1, 1, 1);
-        drawSprite(animation->getSprite(), position);
+        entity.update(elapsedSeconds);
 
 
-        glColor4f(1, 1, 1, 1);
-        glEnable(GL_BLEND);
-        glBlendEquationSeparate(GL_FUNC_ADD, GL_FUNC_ADD);
-//        glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
-        glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE, GL_ONE, GL_ZERO);
+        spritePool.begin();
+        entity.addTo(&spritePool);
+        for (auto& e : npcs) {
+            e->currentSprite = animation->getSprite();
+            e->addTo(&spritePool);
+        }
+        shader->use();
 
-        font->print(100, 700, "HELLO WORLD!");
-        fontSmall->print(100, 300, "THIS IS THE TIME OF REBELION THROUGHOUT THE GALAXY. YOU ARE ON A MISSION!");
+        mat4 orthoMatrix = glm::ortho(0.0f, 1024.0f, 0.0f, 768.0f, 0.0f, 1.0f);
+        shader->setMatrix4Uniform(&orthoMatrix[0][0], "orthoMatrix");
 
-        glColor4f(1, 1, 1, 1);
+        glActiveTexture(GL_TEXTURE0 + 0);
+        shader->setIntUniform(0, "texture");
+
+        spritePool.end();
+        shader->unuse();
+
+//        glColor4f(1, 1, 1, 1);
+//        glEnable(GL_BLEND);
+//        glBlendEquationSeparate(GL_FUNC_ADD, GL_FUNC_ADD);
+////        glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
+//        glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE, GL_ONE, GL_ZERO);
+//
+//        font->print(100, 700, "HELLO WORLD!");
+//        fontSmall->print(100, 300, "THIS IS THE TIME OF REBELION THROUGHOUT THE GALAXY. YOU ARE ON A MISSION!");
+//
+//        glColor4f(1, 1, 1, 1);
 
         input->copyNewStateToOldState();
     }
@@ -119,7 +167,7 @@ namespace Acidrain {
         return quitGame;
     }
 
-    void Stardust::drawSprite(const Sprite &sprite, const vec2 &position) {
+    void Stardust::drawSprite(const Sprite& sprite, const vec2& position) {
         shader->unuse();
 
         glEnable(GL_BLEND);
@@ -130,7 +178,7 @@ namespace Acidrain {
         glEnable(GL_TEXTURE_2D);
         sprite.spriteSheet->texture->use();
 
-        const SpriteInfo &spriteInfo = sprite.spriteSheet->sprites[sprite.spriteIndex];
+        const SpriteInfo& spriteInfo = sprite.spriteSheet->sprites[sprite.spriteIndex];
 
         glBegin(GL_QUADS);
         {

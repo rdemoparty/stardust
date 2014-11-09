@@ -1,29 +1,33 @@
 #pragma once
+
 #include <Texture.h>
 #include <memory>
 
 namespace Acidrain {
 
-class TextureGenerator {
-public:
-    TextureGenerator(int width, int height);
-    virtual ~TextureGenerator();
+    class TextureGenerator {
+    public:
+        TextureGenerator(int width, int height);
 
-    TextureGenerator& envMap(unsigned char layer, unsigned char size);
-    TextureGenerator& lens(unsigned char layer, unsigned char size);
+        virtual ~TextureGenerator();
 
-    TextureGenerator& roll(unsigned char layer, unsigned char x, unsigned char y);
-    // TextureGenerator& polarGrid(unsigned char layer);
+        TextureGenerator& envMap(unsigned char layer, unsigned char size);
 
-    unsigned char* get(unsigned char layer);
-    std::shared_ptr<Texture> getTexture(unsigned char layer);
+        TextureGenerator& lens(unsigned char layer, unsigned char size);
 
-    int width;
-    int height;
+        TextureGenerator& roll(unsigned char layer, unsigned char x, unsigned char y);
+        // TextureGenerator& polarGrid(unsigned char layer);
 
-private:
-    static const int NUM_LAYERS = 4;
-    unsigned char* layers[NUM_LAYERS];
-};
+        unsigned char* get(unsigned char layer);
+
+        std::shared_ptr<Texture> getTexture(unsigned char layer);
+
+        int width;
+        int height;
+
+    private:
+        static const int NUM_LAYERS = 4;
+        unsigned char* layers[NUM_LAYERS];
+    };
 
 } // namespace Acidrain

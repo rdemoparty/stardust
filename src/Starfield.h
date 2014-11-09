@@ -9,25 +9,29 @@
 namespace Acidrain {
 
     struct StarParticle {
-        glm::vec2   position;
-        glm::vec2   direction;
-        float       speed;
-        bool        firstSpawn = true;
+        glm::vec2 position;
+        glm::vec2 direction;
+        float speed;
+        bool firstSpawn = true;
     };
 
     class Starfield {
     public:
 
         Starfield(int howMany, glm::vec2 terrainSize);
+
         virtual ~Starfield();
 
         void update(float dt);
+
         void render();
 
     private:
 
         void spawn(const std::shared_ptr<StarParticle>& particle);
+
         bool isOutOfTerrain(const std::shared_ptr<StarParticle>& particle);
+
         void draw(const std::shared_ptr<StarParticle>& particle);
 
         int spriteWidth;

@@ -5,7 +5,7 @@
 
 namespace Acidrain {
 
-    EventSystem &EventSystem::getInstance() {
+    EventSystem& EventSystem::getInstance() {
         static EventSystem instance;
         return instance;
     }
@@ -22,7 +22,7 @@ namespace Acidrain {
         SDL_Init(SDL_INIT_EVERYTHING);
     }
 
-    void EventSystem::addListener(EventListener *listener, Uint32 eventTypeToListenTo) {
+    void EventSystem::addListener(EventListener* listener, Uint32 eventTypeToListenTo) {
         assert(NULL != listener);
 
         EventListenerMap::iterator it = listeners.find(eventTypeToListenTo);
@@ -32,11 +32,11 @@ namespace Acidrain {
         listeners[eventTypeToListenTo]->push_back(listener);
     }
 
-    void EventSystem::removeListener(EventListener *listener) {
+    void EventSystem::removeListener(EventListener* listener) {
         assert(NULL != listener);
 
         for (auto it : listeners) {
-            EventListenerList &listOfListeners = *it.second;
+            EventListenerList& listOfListeners = *it.second;
             auto lit = find(begin(listOfListeners), end(listOfListeners), listener);
             if (lit != listOfListeners.end())
                 listOfListeners.erase(lit);

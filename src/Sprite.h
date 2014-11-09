@@ -8,6 +8,7 @@
 namespace Acidrain {
 
     using namespace std;
+    using namespace glm;
 
     struct SpriteInfo {
         Box texCoords;
@@ -17,15 +18,22 @@ namespace Acidrain {
     };
 
     struct SpriteSheet {
-        shared_ptr <Texture> texture;
-        vector <SpriteInfo> sprites;
+        shared_ptr<Texture> texture;
+        vector<SpriteInfo> sprites;
 
         void addSprite(int top, int left, int width, int height);
-        void autoAdd(int width, int height, int strideX=0, int strideY=0);
+
+        void autoAdd(int width, int height, int strideX = 0, int strideY = 0);
     };
 
     struct Sprite {
-        shared_ptr <SpriteSheet> spriteSheet;
+        shared_ptr<SpriteSheet> spriteSheet;
         int spriteIndex;
+
+        Texture* getTexture() const;
+
+        vector<vec2> getTexCoords() const;
+
+        vec2 getSize() const;
     };
 } // namespace Acidrain

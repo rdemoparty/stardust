@@ -1,9 +1,11 @@
 #pragma once
+
 #include <memory>
 #include <Texture.h>
 #include <Window.h>
 #include <glm/vec3.hpp>
 #include <string>
+#include <Entity.h>
 
 #define GFXSYS Acidrain::GfxSystem::getInstance()
 
@@ -12,7 +14,7 @@ namespace Acidrain {
     class GfxSystem {
     public:
 
-        static GfxSystem &getInstance();
+        static GfxSystem& getInstance();
 
         void init(const int desiredWidth, const int desiredHeight);
 

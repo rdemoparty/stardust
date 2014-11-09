@@ -8,7 +8,7 @@ namespace Acidrain {
         Box b = Box(width, height);
 
         info.pixelCoords = b;
-        info.pixelCoords.translate(glm::vec2(left, top) + glm::vec2(width, height) / 2.0f);
+        info.pixelCoords.translate(vec2(left, top) + vec2(width, height) / 2.0f);
 
         info.texCoords = info.pixelCoords;
         info.texCoords.normalizeForSize(texture->getWidth(), texture->getHeight());
@@ -31,5 +31,26 @@ namespace Acidrain {
         }
     }
 
+    Texture* Sprite::getTexture() const {
+        return spriteSheet->texture.get();
+    }
+
+    vector<vec2> Sprite::getTexCoords() const {
+        const Box& texCoords = spriteSheet->sprites[spriteIndex].texCoords;
+        return vector<vec2> {
+                vec2(texCoords.left(), texCoords.bottom()),
+                vec2(texCoords.right(), texCoords.bottom()),
+                vec2(texCoords.right(), texCoords.top()),
+                vec2(texCoords.left(), texCoords.top())
+        };
+    }
+
+    vec2 Sprite::getSize() const {
+        const SpriteInfo& info = spriteSheet->sprites[spriteIndex];
+        return vec2(
+                info.width,
+                info.height
+        );
+    }
 } // namespace Acidrain
 

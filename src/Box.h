@@ -2,10 +2,12 @@
 
 #include <glm/glm.hpp>
 #include <glm/vec2.hpp>
+#include <vector>
 
 namespace Acidrain {
 
     using namespace glm;
+    using namespace std;
 
     struct Box {
         vec2 tl = vec2(-0.5, 0.5);
@@ -14,7 +16,7 @@ namespace Acidrain {
         Box() {
         }
 
-        Box(const vec2 &size) {
+        Box(const vec2& size) {
             tl = vec2(0, 0);
             br = vec2(size.x, size.y);
             centerAround(vec2(0, 0));
@@ -31,7 +33,7 @@ namespace Acidrain {
             br = other.br;
         }
 
-        Box& operator= (const Box& other) {
+        Box& operator=(const Box& other) {
             tl = other.tl;
             br = other.br;
             return *this;
@@ -65,12 +67,12 @@ namespace Acidrain {
             return (tl + br) / 2.0f;
         }
 
-        void translate(const vec2 &amount) {
+        void translate(const vec2& amount) {
             tl += amount;
             br += amount;
         }
 
-        void centerAround(const vec2 &position) {
+        void centerAround(const vec2& position) {
             translate(position - getCenter());
         }
 
@@ -80,6 +82,15 @@ namespace Acidrain {
 
             br.x /= static_cast<float>(width);
             br.y /= static_cast<float>(height);
+        }
+
+        vector<vec2> computeVertices() {
+            return vector<vec2> {
+                    tl,
+                    vec2(br.x, tl.y),
+                    br,
+                    vec2(tl.x, br.y)
+            };
         }
     };
 

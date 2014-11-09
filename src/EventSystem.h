@@ -10,25 +10,25 @@ namespace Acidrain {
 
     class EventListener {
     public:
-        virtual void onEvent(const SDL_Event &) = 0;
+        virtual void onEvent(const SDL_Event&) = 0;
     };
 
-    typedef std::vector<EventListener *> EventListenerList;
-    typedef std::pair<Uint32, EventListenerList *> EventListenerPair;
-    typedef std::map<Uint32, EventListenerList *> EventListenerMap;
+    typedef std::vector<EventListener*> EventListenerList;
+    typedef std::pair<Uint32, EventListenerList*> EventListenerPair;
+    typedef std::map<Uint32, EventListenerList*> EventListenerMap;
 
     class EventSystem {
     public:
 
-        static EventSystem &getInstance();
+        static EventSystem& getInstance();
 
         void init();
 
         void update();
 
-        void addListener(EventListener *listener, Uint32 eventTypeToListenTo);
+        void addListener(EventListener* listener, Uint32 eventTypeToListenTo);
 
-        void removeListener(EventListener *listener);
+        void removeListener(EventListener* listener);
 
     private:
         EventSystem();

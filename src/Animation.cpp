@@ -2,7 +2,7 @@
 
 namespace Acidrain {
 
-    Animation::Animation(const AnimationData *animData)
+    Animation::Animation(const AnimationData* animData)
             : animationData(animData) {
     }
 
@@ -15,8 +15,8 @@ namespace Acidrain {
     }
 
     void Animation::reset() {
-        int lastFrame = animationData->frames.size() - 1;
-        int firstFrame = 0;
+        unsigned long lastFrame = animationData->frames.size() - 1;
+        unsigned long firstFrame = 0;
         currentFrameIndex = animationData->loopType == AnimationLoopType::REVERSE ? lastFrame : firstFrame;
         frameTimeAccumulator = 0;
         pingPongDirection = AnimationDirection::RIGHT;
@@ -31,7 +31,7 @@ namespace Acidrain {
         return paused;
     }
 
-    const Sprite &Animation::getSprite() const {
+    Sprite Animation::getSprite() const {
         return animationData->frames.at(currentFrameIndex);
     }
 

@@ -27,7 +27,7 @@ namespace Acidrain {
         int height_;
         WindowType type;
 
-        SDL_Window *displayWindow;
+        SDL_Window* displayWindow;
         SDL_GLContext glContext;
     };
 

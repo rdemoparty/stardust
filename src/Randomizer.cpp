@@ -1,7 +1,7 @@
 #include <Randomizer.h>
 
 Randomizer::Randomizer()
-    : rng(std::random_device()()) {
+        : rng(std::random_device()()) {
 }
 
 double Randomizer::randomUnitDouble() {

@@ -6,6 +6,7 @@ class Randomizer {
 public:
 
     Randomizer();
+
     virtual ~Randomizer();
 
     double randomUnitDouble();

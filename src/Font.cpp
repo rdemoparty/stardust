@@ -10,9 +10,9 @@
 namespace Acidrain {
     Font::Font(std::string fontFile, float fontSize) {
         std::string fontContent = FILESYS.getFileContent(fontFile);
-        unsigned char *bitmap = new unsigned char[512 * 512];
+        unsigned char* bitmap = new unsigned char[512 * 512];
 
-        stbtt_BakeFontBitmap((unsigned char const *) fontContent.c_str(), 0, fontSize, bitmap, 512, 512, 32, 96, cdata);
+        stbtt_BakeFontBitmap((unsigned char const*) fontContent.c_str(), 0, fontSize, bitmap, 512, 512, 32, 96, cdata);
 
         glGenTextures(1, &atlasId);
         glBindTexture(GL_TEXTURE_2D, atlasId);
@@ -26,7 +26,7 @@ namespace Acidrain {
         glDeleteTextures(1, &atlasId);
     }
 
-    void Font::print(float x, float y, const char *text) {
+    void Font::print(float x, float y, const char* text) {
         // assume orthographic projection with units = screen pixels, origin at top left
         glBindTexture(GL_TEXTURE_2D, atlasId);
         glBegin(GL_QUADS);

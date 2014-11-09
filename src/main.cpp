@@ -11,7 +11,7 @@ const int GAME_LOGICAL_RESOLUTION_X = 1024;
 const int GAME_LOGICAL_RESOLUTION_Y = 768;
 
 int main(int argc, char** argv) {
-    
+
     EVENTSYS.init();
     GFXSYS.init(GAME_LOGICAL_RESOLUTION_X, GAME_LOGICAL_RESOLUTION_Y);
     FILESYS.init("./data");
@@ -19,9 +19,20 @@ int main(int argc, char** argv) {
     Timer timer;
     Stardust game;
 
+    float accumulator = 0;
+    int fps = 0;
+
     while (!game.shouldQuit()) {
         EVENTSYS.update();
-        game.process(timer.lap());
+        float elapsedSeconds = timer.lap();
+        game.process(elapsedSeconds);
+        fps++;
+        accumulator += elapsedSeconds;
+        if (accumulator >= 1.0f) {
+            std::cout << "fps: " << fps << std::endl;
+            accumulator = 0;
+            fps = 0;
+        }
         GFXSYS.show();
     }
 

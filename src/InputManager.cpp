@@ -9,7 +9,7 @@ namespace Acidrain {
 
         if (SDL_NumJoysticks() > 0) {
             for (int i = 0; i < SDL_NumJoysticks(); i++) {
-                SDL_Joystick *joystick = SDL_JoystickOpen(i);
+                SDL_Joystick* joystick = SDL_JoystickOpen(i);
                 joysticks.push_back(joystick);
             }
         }
@@ -75,7 +75,7 @@ namespace Acidrain {
         return false;
     }
 
-    void InputManager::onEvent(SDL_Event const &event) {
+    void InputManager::onEvent(SDL_Event const& event) {
         switch (event.type) {
             case SDL_KEYDOWN:
                 if (event.key.keysym.scancode < 256)

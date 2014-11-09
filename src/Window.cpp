@@ -14,9 +14,9 @@ namespace Acidrain {
 
         // Setup OpenGL version. on OSX this has the effect of not drawing anything with them shaders. Need to investigate further
 #ifndef __APPLE__
-        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
-        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
-        SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+        // SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
+        // SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
+        // SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
 #endif
 
         // setup stencil buffer
@@ -48,7 +48,7 @@ namespace Acidrain {
 #ifndef __APPLE__
         GLenum err = glewInit();
         if (GLEW_OK != err) {
-			std::cerr << "Error " << glewGetErrorString(err) << std::endl;
+            std::cerr << "Error " << glewGetErrorString(err) << std::endl;
             exit(1);
         }
 #endif

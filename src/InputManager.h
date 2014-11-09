@@ -55,7 +55,7 @@ namespace Acidrain {
 
         void copyNewStateToOldState();
 
-        virtual void onEvent(SDL_Event const &param) override;
+        virtual void onEvent(SDL_Event const& param) override;
 
     private:
         KeyboardState keyboardState, oldKeyboardState;

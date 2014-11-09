@@ -1,6 +1,11 @@
+#version 330 core
+
 uniform sampler2D texture;
-varying vec2 texCoord;
+
+in vec4 interpolatedColor;
+in vec2 interpolatedTextCoords;
+out vec4 fragmentColor;
 
 void main() {
-    gl_FragColor = texture2D(texture, texCoord);
+	fragmentColor = texture2D(texture, interpolatedTextCoords) * interpolatedColor;
 }

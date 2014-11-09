@@ -9,7 +9,7 @@
 
 namespace Acidrain {
 
-    GfxSystem &GfxSystem::getInstance() {
+    GfxSystem& GfxSystem::getInstance() {
         static GfxSystem instance;
         return instance;
     }
@@ -25,7 +25,7 @@ namespace Acidrain {
         window = std::shared_ptr<Window>(new Window(desktopDisplayMode.w, desktopDisplayMode.h, WindowType::Fullscreen));
 
         const int windowWidth = window->width();
-        const int windowHeight = window->height(); 
+        const int windowHeight = window->height();
 
         const float windowAspectRatio = windowWidth / static_cast<float>(windowHeight);
         const float wantedAspectRatio = desiredWidth / static_cast<float>(desiredHeight);
@@ -62,14 +62,14 @@ namespace Acidrain {
         glTranslatef(0.375, 0.375, 0);
     }
 
-    std::shared_ptr<Texture> GfxSystem::loadTexture(const std::string &filename) {
+    std::shared_ptr<Texture> GfxSystem::loadTexture(const std::string& filename) {
         return loadTexture(filename.c_str());
     }
 
-    std::shared_ptr<Texture> GfxSystem::loadTexture(const char *filename) {
+    std::shared_ptr<Texture> GfxSystem::loadTexture(const char* filename) {
         std::string content = FILESYS.getFileContent(filename);
         int w, h, comp;
-        unsigned char *image = stbi_load_from_memory((stbi_uc const *) content.c_str(), content.size(), &w, &h, &comp, STBI_rgb_alpha);
+        unsigned char* image = stbi_load_from_memory((stbi_uc const*) content.c_str(), content.size(), &w, &h, &comp, STBI_rgb_alpha);
 
         std::cout << "Loading texture " << filename << " with size: " << w << "x" << h << std::endl;
         std::shared_ptr<Texture> result = std::shared_ptr<Texture>(new Texture(w, h, image));
@@ -79,7 +79,7 @@ namespace Acidrain {
     }
 
 
-    void GfxSystem::setClearColor(const glm::vec3 &color) {
+    void GfxSystem::setClearColor(const glm::vec3& color) {
         clearScreenColor = color;
         glClearColor(clearScreenColor.r, clearScreenColor.g, clearScreenColor.b, 0.0f);
     }

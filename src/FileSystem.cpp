@@ -27,7 +27,7 @@
 
 namespace Acidrain {
 
-    FileSystem &FileSystem::getInstance() {
+    FileSystem& FileSystem::getInstance() {
         static FileSystem instance;
         return instance;
     }
@@ -36,7 +36,7 @@ namespace Acidrain {
         rootDir = root;
     }
 
-    std::string FileSystem::absolutePath(const char *relativePath) {
+    std::string FileSystem::absolutePath(const char* relativePath) {
         std::string absolutePath = rootDir + "/" + relativePath;
         std::cout << "Relative path [" << relativePath << "] expanded to [" << absolutePath << "]" << std::endl;
         return absolutePath;
@@ -85,6 +85,7 @@ namespace Acidrain {
         return fullPath;
 	}
 #elif defined __linux__
+
     std::string FileSystem::getExePath() {
         static char linkName[100];
         static char fullPath[256];
@@ -103,23 +104,24 @@ namespace Acidrain {
     }
 
     std::string FileSystem::getExeDir(std::string fullPath) {
-        char *path = strdup(fullPath.c_str());
-        char *dname = dirname(path);
+        char* path = strdup(fullPath.c_str());
+        char* dname = dirname(path);
 
         std::string returnValue(dname, strlen(dname));
 
         free(path);
         return returnValue;
     }
+
 #else
 #error "Unknown platform"
 #endif
 
-    std::string FileSystem::getFileContent(const std::string &pathRelativeToRoot) {
+    std::string FileSystem::getFileContent(const std::string& pathRelativeToRoot) {
         return getFileContent(pathRelativeToRoot.c_str());
     }
 
-    std::string FileSystem::getFileContent(const char *pathRelativeToRoot) {
+    std::string FileSystem::getFileContent(const char* pathRelativeToRoot) {
         std::string filename = absolutePath(pathRelativeToRoot);
 
         std::string contents;

@@ -37,7 +37,7 @@ namespace Acidrain {
 
         bool isPaused() const;
 
-        const Sprite &getSprite() const;
+        Sprite getSprite() const;
 
         void update(float dt);
 
@@ -53,7 +53,7 @@ namespace Acidrain {
         AnimationDirection pingPongDirection = AnimationDirection::RIGHT;
         bool paused = true;
         bool animationFinished = false;
-        int currentFrameIndex = 0;
+        unsigned long currentFrameIndex = 0;
 
     };
 

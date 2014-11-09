@@ -18,17 +18,17 @@ namespace Acidrain {
             std::cerr << "Shader error: " << errorLog << std::endl;
 
             glDeleteShader(shaderId); //Don't leak the shader.
-			delete errorLog;
+            delete errorLog;
             return;
         }
     }
 
 
-    Shader::Shader(const std::string& vertexShaderContent, const std::string& pixelShaderContent) {
-        Shader(vertexShaderContent.c_str(), pixelShaderContent.c_str());
+    Shader::Shader(const std::string& vertexShaderContent, const std::string& pixelShaderContent) :
+            Shader(vertexShaderContent.c_str(), pixelShaderContent.c_str()) {
     }
 
-    Shader::Shader(const char *vertexShaderContent, const char *pixelShaderContent) {
+    Shader::Shader(const char* vertexShaderContent, const char* pixelShaderContent) {
         shaderIds[0] = glCreateShader(GL_VERTEX_SHADER);
         glShaderSource(shaderIds[0], 1, &vertexShaderContent, nullptr);
         glCompileShader(shaderIds[0]);
@@ -66,44 +66,44 @@ namespace Acidrain {
     }
 
 
-    int Shader::getUniform(const char *uniformName) {
+    int Shader::getUniform(const char* uniformName) {
         if (uniformCache.count(uniformName) == 0) {
             uniformCache[uniformName] = glGetUniformLocation(programId, uniformName);
         }
         return uniformCache[uniformName];
     }
 
-    void Shader::setMatrix3Uniform(float *matrix, const char *uniformName) {
+    void Shader::setMatrix3Uniform(float* matrix, const char* uniformName) {
         GLint location = getUniform(uniformName);
         if (location != -1)
             glUniformMatrix3fv(location, 1, false, matrix);
     }
 
-    void Shader::setMatrix4Uniform(float *matrix, const char *uniformName) {
+    void Shader::setMatrix4Uniform(float* matrix, const char* uniformName) {
         GLint location = getUniform(uniformName);
         if (location != -1)
             glUniformMatrix4fv(location, 1, false, matrix);
     }
 
-    void Shader::setVec3Uniform(float *value, const char *uniformName) {
+    void Shader::setVec3Uniform(float* value, const char* uniformName) {
         GLint location = getUniform(uniformName);
         if (location != -1)
             glUniform3fv(location, 1, value);
     }
 
-    void Shader::setVec4Uniform(float *value, const char *uniformName) {
+    void Shader::setVec4Uniform(float* value, const char* uniformName) {
         GLint location = getUniform(uniformName);
         if (location != -1)
             glUniform4fv(location, 1, value);
     }
 
-    void Shader::setIntUniform(int value, const char *uniformName) {
+    void Shader::setIntUniform(int value, const char* uniformName) {
         GLint location = getUniform(uniformName);
         if (location != -1)
             glUniform1i(location, value);
     }
 
-    void Shader::setFloatUniform(float value, const char *uniformName) {
+    void Shader::setFloatUniform(float value, const char* uniformName) {
         GLint location = getUniform(uniformName);
         if (location != -1)
             glUniform1f(location, value);

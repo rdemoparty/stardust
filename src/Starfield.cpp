@@ -10,7 +10,7 @@ namespace Acidrain {
         spriteWidth = 48;
         spriteHeight = 48;
 
-        flareTexture = TextureGenerator(spriteWidth, spriteHeight).lens(0, spriteWidth/2).getTexture(0);
+        flareTexture = TextureGenerator(spriteWidth, spriteHeight).lens(0, spriteWidth / 2).getTexture(0);
 
         for (int i = 0; i < howMany; i++) {
             auto particle = std::shared_ptr<StarParticle>(new StarParticle);
@@ -22,7 +22,7 @@ namespace Acidrain {
     Starfield::~Starfield() {
     }
 
-    void Starfield::spawn(const std::shared_ptr<StarParticle> &particle) {
+    void Starfield::spawn(const std::shared_ptr<StarParticle>& particle) {
         particle->speed = rnd.randomUnitDouble() * 3.0 + 1.0;
         particle->direction = glm::vec2(0.0f, -1.0f) * particle->speed;
 
@@ -41,7 +41,7 @@ namespace Acidrain {
     }
 
     void Starfield::update(float dt) {
-        for (auto &particle : particles) {
+        for (auto& particle : particles) {
             particle->position += particle->direction * dt * 50.0f;
 
             if (isOutOfTerrain(particle))
@@ -50,10 +50,10 @@ namespace Acidrain {
     }
 
     bool Starfield::isOutOfTerrain(const std::shared_ptr<StarParticle>& particle) {
-        return particle->position.x < -(spriteWidth/2) ||
-                particle->position.x > (terrainSize.x + spriteWidth/2) ||
-                particle->position.y < -(spriteWidth/2) ||
-                particle->position.y > (terrainSize.y + spriteWidth/2);
+        return particle->position.x<-(spriteWidth / 2) ||
+                particle->position.x>(terrainSize.x + spriteWidth / 2) ||
+                particle->position.y<-(spriteWidth / 2) ||
+                        particle->position.y>(terrainSize.y + spriteWidth / 2);
     }
 
     void Starfield::render() {
@@ -65,7 +65,7 @@ namespace Acidrain {
         glEnable(GL_TEXTURE_2D);
         flareTexture->use();
 
-        for (auto &particle : particles)
+        for (auto& particle : particles)
             draw(particle);
     }
 
@@ -87,6 +87,6 @@ namespace Acidrain {
             glVertex2f(particle->position.x + flareTexture->getWidth(), particle->position.y);
         }
         glEnd();
-    }    
-    
+    }
+
 } // namespace Acidrain

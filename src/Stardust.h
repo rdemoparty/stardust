@@ -1,6 +1,7 @@
 #include "GameState.h"
 #include "EventSystem.h"
 #include "InputManager.h"
+#include "SpritePool.h"
 #include <GLheaders.h>
 #include <Shader.h>
 #include <Texture.h>
@@ -9,6 +10,8 @@
 #include <Animation.h>
 #include <Font.h>
 #include <Starfield.h>
+#include <Entity.h>
+#include <Randomizer.h>
 
 #pragma once
 
@@ -22,8 +25,10 @@ namespace Acidrain {
         void process(float elapsedSeconds);
 
         bool shouldQuit();
-        
+
     private:
+
+        Randomizer rng;
 
         GameState state = GameState::MAIN_MENU;
 
@@ -40,13 +45,20 @@ namespace Acidrain {
 
         std::shared_ptr<Starfield> starfield;
 
+        DrawableEntity entity;
+
+        vector<shared_ptr<DrawableEntity>> npcs;
+        vector<vec2> velocities;
+
         vec2 position = vec2(0, 0);
+
+        SpritePool spritePool;
 
         bool quitGame = false;
 
         void drawSprite(const Sprite& sprite, const vec2& position);
 
-        virtual void onEvent(SDL_Event const &param);
+        virtual void onEvent(SDL_Event const& param);
     };
 
 }
