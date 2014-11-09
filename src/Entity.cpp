@@ -33,8 +33,8 @@ namespace Acidrain {
         Entity::update(dt);
     }
 
-    void DrawableEntity::addTo(SpritePool* spritePool) const {
-        spritePool->addTexturedQuad(
+    void DrawableEntity::addTo(SpritePool& spritePool) const {
+        spritePool.addTexturedQuad(
                 currentSprite.getTexture(),
                 computeVertices(),
                 currentSprite.getTexCoords(),

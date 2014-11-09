@@ -1,8 +1,14 @@
 #include <SpritePool.h>
 
+#define GLM_FORCE_RADIANS
+#include <glm/mat4x4.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+
 namespace Acidrain {
 
-    void SpritePool::begin() {
+    using namespace glm;
+
+    void SpritePool::clear() {
         for (auto& kv : vbos)
             kv.second.empty();
     }
@@ -11,7 +17,15 @@ namespace Acidrain {
         vbos[texture].addQuad(vertices, texCoords, color);
     }
 
-    void SpritePool::end() {
+    void SpritePool::draw(std::shared_ptr<Shader> shader) {
+        shader->use();
+
+        mat4 orthoMatrix = glm::ortho(0.0f, 1024.0f, 0.0f, 768.0f, 0.0f, 1.0f);
+        shader->setMatrix4Uniform(&orthoMatrix[0][0], "orthoMatrix");
+
+        glActiveTexture(GL_TEXTURE0 + 0);
+        shader->setIntUniform(0, "texture");
+
         for (auto& kv : vbos) {
             glEnable(GL_BLEND);
             glBlendEquationSeparate(GL_FUNC_ADD, GL_FUNC_ADD);
@@ -22,6 +36,7 @@ namespace Acidrain {
 
             kv.second.draw();
         }
+        shader->unuse();
     }
 
 } // namespace acidrain

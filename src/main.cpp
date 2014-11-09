@@ -18,9 +18,8 @@ int main(int argc, char** argv) {
     Stardust game;
 
     while (!game.shouldQuit()) {
-        EVENTSYS.update();
-        game.process(timer.lap());
-        GFXSYS.show();
+        game.update(timer.lap());
+        game.render();
     }
 
     return 0;

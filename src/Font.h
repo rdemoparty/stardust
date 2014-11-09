@@ -18,6 +18,7 @@ namespace Acidrain {
     private:
 
         GLuint atlasId;
+        float fontSize;
         stbtt_bakedchar cdata[96];
     };
 

@@ -32,7 +32,7 @@ namespace Acidrain {
 
         EVENTSYS.addListener(this, SDL_QUIT);
 
-        input = std::shared_ptr<InputManager>(new InputManager());
+        input = std::shared_ptr<InputProvider>(new InputProvider());
 
         shader = make_shared<Shader>(
                 FILESYS.getFileContent("shaders/normal.vs"),
@@ -89,9 +89,9 @@ namespace Acidrain {
         }
     }
 
-    void Stardust::process(float elapsedSeconds) {
+    void Stardust::update(float elapsedSeconds) {
+        EVENTSYS.update();
 
-        fpsCounter.frameRendered();
         fpsCounter.update(elapsedSeconds);
 
         if (input->isKeyJustPressed(SDL_SCANCODE_ESCAPE))
@@ -123,54 +123,37 @@ namespace Acidrain {
         }
 
         entity.position = position;
-//        entity.rotation = 0;
         entity.currentSprite = animation->getSprite();
         entity.size = entity.currentSprite.getSize();
         entity.rotation += 1 * elapsedSeconds;
         entity.scale = vec2(sin(entity.rotation) + 2);
 
-        GFXSYS.clearScreen();
-
         starfield->update(elapsedSeconds);
-        starfield->render();
-
         entity.update(elapsedSeconds);
-
-
-        spritePool.begin();
-        entity.addTo(&spritePool);
-        for (auto& e : npcs) {
-            e->currentSprite = animation->getSprite();
-            e->addTo(&spritePool);
-        }
-        shader->use();
-
-        mat4 orthoMatrix = glm::ortho(0.0f, 1024.0f, 0.0f, 768.0f, 0.0f, 1.0f);
-        shader->setMatrix4Uniform(&orthoMatrix[0][0], "orthoMatrix");
-
-        glActiveTexture(GL_TEXTURE0 + 0);
-        shader->setIntUniform(0, "texture");
-
-        spritePool.end();
-        shader->unuse();
-
-        drawFps();
-
-//        glColor4f(1, 1, 1, 1);
-//        glEnable(GL_BLEND);
-//        glBlendEquationSeparate(GL_FUNC_ADD, GL_FUNC_ADD);
-////        glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
-//        glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE, GL_ONE, GL_ZERO);
-//
-//        font->print(100, 700, "HELLO WORLD!");
-//        fontSmall->print(100, 300, "THIS IS THE TIME OF REBELION THROUGHOUT THE GALAXY. YOU ARE ON A MISSION!");
-//
-//        glColor4f(1, 1, 1, 1);
 
         input->copyNewStateToOldState();
     }
 
-    void Stardust::drawFps() {
+    void Stardust::render() {
+        GFXSYS.clearScreen();
+
+        starfield->render();
+
+        spritePool.clear();
+        entity.addTo(spritePool);
+        for (auto& e : npcs) {
+            e->currentSprite = animation->getSprite();
+            e->addTo(spritePool);
+        }
+        spritePool.draw(shader);
+
+        drawStats();
+
+        fpsCounter.frameRendered();
+        GFXSYS.show();
+    }
+
+    void Stardust::drawStats() {
         glEnable(GL_BLEND);
         glUseProgram(0);
 
@@ -180,11 +163,11 @@ namespace Acidrain {
         glDisable(GL_TEXTURE_2D);
 
         glBegin(GL_QUADS);
-        glColor4f(0, 0, 0, 0.7f);
-        glVertex2d(0, 768);
-        glVertex2d(1024, 768);
-        glVertex2d(1024, 700);
-        glVertex2d(0, 700);
+        glColor4f(0.0f, 0.0f, 0.01f, 0.7f);
+        glVertex2d(-1, -1);
+        glVertex2d(1024, -1);
+        glVertex2d(1024, 50);
+        glVertex2d(-1, 50);
         glEnd();
 
         glColor4f(1, 1, 1, 1);
@@ -197,7 +180,7 @@ namespace Acidrain {
         std::stringstream s;
         s << "FPS: " << fpsCounter.getFps();
 
-        fontSmall->print(10, 740, s.str().c_str());
+        fontSmall->print(10, 10, s.str().c_str());
     }
 
     bool Stardust::shouldQuit() {

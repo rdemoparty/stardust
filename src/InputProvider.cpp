@@ -1,9 +1,9 @@
-#include <InputManager.h>
+#include "InputProvider.h"
 #include <iostream>
 
 namespace Acidrain {
 
-    InputManager::InputManager() {
+    InputProvider::InputProvider() {
         if (SDL_WasInit(SDL_INIT_JOYSTICK) == 0)
             SDL_InitSubSystem(SDL_INIT_JOYSTICK);
 
@@ -22,60 +22,60 @@ namespace Acidrain {
         EVENTSYS.addListener(this, SDL_KEYUP);
     }
 
-    InputManager::~InputManager() {
+    InputProvider::~InputProvider() {
         for (auto joystick : joysticks)
             SDL_JoystickClose(joystick);
     }
 
-    bool InputManager::isKeyDown(int keyCode) const {
+    bool InputProvider::isKeyDown(int keyCode) const {
         return keyboardState.keys[keyCode];
     }
 
-    bool InputManager::isKeyUp(int keyCode) const {
+    bool InputProvider::isKeyUp(int keyCode) const {
         return !keyboardState.keys[keyCode];
     }
 
-    bool InputManager::isKeyJustPressed(int keyCode) const {
+    bool InputProvider::isKeyJustPressed(int keyCode) const {
         return keyboardState.keys[keyCode] && !oldKeyboardState.keys[keyCode];
     }
 
-    bool InputManager::isKeyJustReleased(int keyCode) const {
+    bool InputProvider::isKeyJustReleased(int keyCode) const {
         return !keyboardState.keys[keyCode] && oldKeyboardState.keys[keyCode];
     }
 
-    bool InputManager::isJoystickPressedLeft() const {
+    bool InputProvider::isJoystickPressedLeft() const {
         return joystickState.x_axis == -1;
     }
 
-    bool InputManager::isJoystickJustPressedLeft() const {
+    bool InputProvider::isJoystickJustPressedLeft() const {
         return false;
     }
 
-    bool InputManager::isJoystickPressedRight() const {
+    bool InputProvider::isJoystickPressedRight() const {
         return joystickState.x_axis == 1;
     }
 
-    bool InputManager::isJoystickJustPressedRight() const {
+    bool InputProvider::isJoystickJustPressedRight() const {
         return false;
     }
 
-    bool InputManager::isJoystickPressedUp() const {
+    bool InputProvider::isJoystickPressedUp() const {
         return joystickState.y_axis == -1;
     }
 
-    bool InputManager::isJoystickJustPressedUp() const {
+    bool InputProvider::isJoystickJustPressedUp() const {
         return false;
     }
 
-    bool InputManager::isJoystickPressedDown() const {
+    bool InputProvider::isJoystickPressedDown() const {
         return joystickState.y_axis == 1;
     }
 
-    bool InputManager::isJoystickJustPressedDown() const {
+    bool InputProvider::isJoystickJustPressedDown() const {
         return false;
     }
 
-    void InputManager::onEvent(SDL_Event const& event) {
+    void InputProvider::onEvent(SDL_Event const& event) {
         switch (event.type) {
             case SDL_KEYDOWN:
                 if (event.key.keysym.scancode < 256)
@@ -110,7 +110,7 @@ namespace Acidrain {
         }
     }
 
-    void InputManager::copyNewStateToOldState() {
+    void InputProvider::copyNewStateToOldState() {
         oldKeyboardState = keyboardState;
         oldJoystickState = joystickState;
     }

@@ -23,11 +23,11 @@ namespace Acidrain {
         bool keys[256];
     };
 
-    class InputManager : public EventListener {
+    class InputProvider : public EventListener {
     public:
-        InputManager();
+        InputProvider();
 
-        ~InputManager();
+        ~InputProvider();
 
         bool isKeyDown(int keyCode) const;
 

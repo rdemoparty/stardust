@@ -9,7 +9,7 @@ set(HEADERS
    ${CMAKE_CURRENT_SOURCE_DIR}/FpsCounter.h
    ${CMAKE_CURRENT_SOURCE_DIR}/GfxSystem.h
    ${CMAKE_CURRENT_SOURCE_DIR}/GLheaders.h
-   ${CMAKE_CURRENT_SOURCE_DIR}/InputManager.h
+   ${CMAKE_CURRENT_SOURCE_DIR}/InputProvider.h
    ${CMAKE_CURRENT_SOURCE_DIR}/Randomizer.h
    ${CMAKE_CURRENT_SOURCE_DIR}/Shader.h
    ${CMAKE_CURRENT_SOURCE_DIR}/Sprite.h
@@ -36,7 +36,7 @@ set(SOURCE
    ${CMAKE_CURRENT_SOURCE_DIR}/FpsCounter.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/GameState.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/GfxSystem.cpp
-   ${CMAKE_CURRENT_SOURCE_DIR}/InputManager.cpp
+   ${CMAKE_CURRENT_SOURCE_DIR}/InputProvider.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/Randomizer.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/Shader.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/Sprite.cpp

@@ -2,7 +2,7 @@
 
 #include "GameState.h"
 #include "EventSystem.h"
-#include "InputManager.h"
+#include "InputProvider.h"
 #include "SpritePool.h"
 #include <GLheaders.h>
 #include <Shader.h>
@@ -27,7 +27,9 @@ namespace Acidrain {
 
         ~Stardust();
 
-        void process(float elapsedSeconds);
+        void update(float elapsedSeconds);
+
+        void render();
 
         bool shouldQuit();
 
@@ -48,7 +50,7 @@ namespace Acidrain {
         std::shared_ptr<Font> font;
         std::shared_ptr<Font> fontSmall;
 
-        std::shared_ptr<InputManager> input;
+        std::shared_ptr<InputProvider> input;
 
         std::shared_ptr<Starfield> starfield;
 
@@ -65,7 +67,7 @@ namespace Acidrain {
 
         void drawSprite(const Sprite& sprite, const vec2& position);
 
-        void drawFps();
+        void drawStats();
 
         virtual void onEvent(SDL_Event const& param);
     };

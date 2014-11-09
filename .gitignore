@@ -28,3 +28,7 @@
 *.app
 .idea
 build
+run
+*.trace
+*.mp4
+

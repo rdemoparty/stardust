@@ -53,7 +53,8 @@ namespace Acidrain {
         glDisable(GL_DEPTH_TEST);
 
         glMatrixMode(GL_PROJECTION);
-        glOrtho(0, desiredWidth, 0, desiredHeight, 0, 1);
+//        glOrtho(0, desiredWidth, 0, desiredHeight, 0, 1);
+        glOrtho(0, desiredWidth, desiredHeight, 0, 0, 1);
 
         glMatrixMode(GL_MODELVIEW);
         glLoadIdentity();

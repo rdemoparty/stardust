@@ -4,6 +4,8 @@
 #include <glm/vec2.hpp>
 #include <glm/vec4.hpp>
 #include <Vbo.h>
+#include <Shader.h>
+#include <memory>
 #include <map>
 
 namespace Acidrain {
@@ -12,11 +14,11 @@ namespace Acidrain {
 
     class SpritePool {
     public:
-        void begin();
+        void clear();
 
         void addTexturedQuad(const Texture* texture, const vector<vec2>& vertices, const vector<vec2>& texCoords, const vec4& color);
 
-        void end();
+        void draw(std::shared_ptr<Shader> shader);
 
     private:
         map<const Texture*, Vbo> vbos;

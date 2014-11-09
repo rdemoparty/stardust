@@ -34,7 +34,7 @@ namespace Acidrain {
 
     class DrawableEntity : public Entity {
     public:
-        void addTo(SpritePool* spritePool) const;
+        void addTo(SpritePool& spritePool) const;
 
         virtual void update(float dt) override;
 
