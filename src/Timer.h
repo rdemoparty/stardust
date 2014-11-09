@@ -11,7 +11,7 @@ namespace Acidrain {
 
         double secondsSinceStart();
 
-        double lap();
+        float lap();
 
     private:
         std::chrono::time_point<std::chrono::system_clock> startTime;

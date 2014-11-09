@@ -3,6 +3,7 @@
 #include <GfxSystem.h>
 #include <iostream>
 #include <glm/gtc/matrix_transform.hpp>
+#include <sstream>
 
 namespace Acidrain {
 
@@ -89,6 +90,10 @@ namespace Acidrain {
     }
 
     void Stardust::process(float elapsedSeconds) {
+
+        fpsCounter.frameRendered();
+        fpsCounter.update(elapsedSeconds);
+
         if (input->isKeyJustPressed(SDL_SCANCODE_ESCAPE))
             quitGame = true;
 
@@ -149,6 +154,8 @@ namespace Acidrain {
         spritePool.end();
         shader->unuse();
 
+        drawFps();
+
 //        glColor4f(1, 1, 1, 1);
 //        glEnable(GL_BLEND);
 //        glBlendEquationSeparate(GL_FUNC_ADD, GL_FUNC_ADD);
@@ -161,6 +168,36 @@ namespace Acidrain {
 //        glColor4f(1, 1, 1, 1);
 
         input->copyNewStateToOldState();
+    }
+
+    void Stardust::drawFps() {
+        glEnable(GL_BLEND);
+        glUseProgram(0);
+
+        glBlendEquationSeparate(GL_FUNC_ADD, GL_FUNC_ADD);
+        glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
+
+        glDisable(GL_TEXTURE_2D);
+
+        glBegin(GL_QUADS);
+        glColor4f(0, 0, 0, 0.7f);
+        glVertex2d(0, 768);
+        glVertex2d(1024, 768);
+        glVertex2d(1024, 700);
+        glVertex2d(0, 700);
+        glEnd();
+
+        glColor4f(1, 1, 1, 1);
+
+        glEnable(GL_TEXTURE_2D);
+        glBlendEquationSeparate(GL_FUNC_ADD, GL_FUNC_ADD);
+        glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
+//        glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE, GL_ONE, GL_ZERO);
+
+        std::stringstream s;
+        s << "FPS: " << fpsCounter.getFps();
+
+        fontSmall->print(10, 740, s.str().c_str());
     }
 
     bool Stardust::shouldQuit() {

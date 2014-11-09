@@ -1,3 +1,5 @@
+#pragma once
+
 #include "GameState.h"
 #include "EventSystem.h"
 #include "InputManager.h"
@@ -13,9 +15,12 @@
 #include <Entity.h>
 #include <Randomizer.h>
 
-#pragma once
+#include <FpsCounter.h>
 
 namespace Acidrain {
+
+    using namespace glm;
+
     class Stardust : public EventListener {
     public:
         Stardust();
@@ -27,6 +32,8 @@ namespace Acidrain {
         bool shouldQuit();
 
     private:
+
+        FpsCounter fpsCounter;
 
         Randomizer rng;
 
@@ -57,6 +64,8 @@ namespace Acidrain {
         bool quitGame = false;
 
         void drawSprite(const Sprite& sprite, const vec2& position);
+
+        void drawFps();
 
         virtual void onEvent(SDL_Event const& param);
     };

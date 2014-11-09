@@ -15,9 +15,9 @@ namespace Acidrain {
         return elapsedSeconds.count();
     }
 
-    double Timer::lap() {
+    float Timer::lap() {
         chrono::time_point<chrono::system_clock> currentTime = chrono::system_clock::now();
-        chrono::duration<double> elapsedSeconds = currentTime - lastLapTime;
+        chrono::duration<float> elapsedSeconds = currentTime - lastLapTime;
         lastLapTime = currentTime;
         return elapsedSeconds.count();
     }

@@ -6,6 +6,7 @@ set(HEADERS
    ${CMAKE_CURRENT_SOURCE_DIR}/EventSystem.h
    ${CMAKE_CURRENT_SOURCE_DIR}/FileSystem.h
    ${CMAKE_CURRENT_SOURCE_DIR}/Font.h
+   ${CMAKE_CURRENT_SOURCE_DIR}/FpsCounter.h
    ${CMAKE_CURRENT_SOURCE_DIR}/GfxSystem.h
    ${CMAKE_CURRENT_SOURCE_DIR}/GLheaders.h
    ${CMAKE_CURRENT_SOURCE_DIR}/InputManager.h
@@ -32,6 +33,7 @@ set(SOURCE
    ${CMAKE_CURRENT_SOURCE_DIR}/EventSystem.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/FileSystem.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/Font.cpp
+   ${CMAKE_CURRENT_SOURCE_DIR}/FpsCounter.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/GameState.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/GfxSystem.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/InputManager.cpp
