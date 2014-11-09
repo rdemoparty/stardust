@@ -28,9 +28,14 @@ namespace Acidrain {
         glDeleteTextures(1, &atlasId);
     }
 
-    void Font::print(float x, float y, const char* text) {
+    void Font::print(float x, float y, const char* text, const glm::vec4& color) {
+
+        const float HEIGHT_MAGIC_OFFSET = fontSize * 3.0f / 4.0f;
+
         // assume orthographic projection with units = screen pixels, origin at top left
+        glEnable(GL_TEXTURE_2D);
         glBindTexture(GL_TEXTURE_2D, atlasId);
+        glColor4f(color.r, color.g, color.b, color.a);
         glBegin(GL_QUADS);
         while (*text) {
             if (*text >= 32 && *text < 128) {
@@ -38,16 +43,16 @@ namespace Acidrain {
                 stbtt_GetBakedQuad(cdata, 512, 512, *text - 32, &x, &y, &q, 1);//1=opengl,0=old d3d
 
                 glTexCoord2f(q.s0, q.t0);
-                glVertex2f(q.x0, q.y0 + fontSize*3/4);
+                glVertex2f(q.x0, q.y0 + HEIGHT_MAGIC_OFFSET);
 
                 glTexCoord2f(q.s1, q.t0);
-                glVertex2f(q.x1, q.y0 + fontSize*3/4);
+                glVertex2f(q.x1, q.y0 + HEIGHT_MAGIC_OFFSET);
 
                 glTexCoord2f(q.s1, q.t1);
-                glVertex2f(q.x1, q.y1 + fontSize*3/4);
+                glVertex2f(q.x1, q.y1 + HEIGHT_MAGIC_OFFSET);
 
                 glTexCoord2f(q.s0, q.t1);
-                glVertex2f(q.x0, q.y1 + fontSize*3/4);
+                glVertex2f(q.x0, q.y1 + HEIGHT_MAGIC_OFFSET);
             }
             ++text;
         }

@@ -3,6 +3,7 @@
 #include <GLheaders.h>
 #include <stb_truetype.h>
 #include <string>
+#include <glm/vec4.hpp>
 
 namespace Acidrain {
 
@@ -13,13 +14,11 @@ namespace Acidrain {
 
         ~Font();
 
-        void print(float x, float y, const char* text);
+        void print(float x, float y, const char* text, const glm::vec4& color);
 
     private:
-
         GLuint atlasId;
         float fontSize;
         stbtt_bakedchar cdata[96];
     };
-
 } // namespace Acidrain

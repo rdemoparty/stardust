@@ -145,6 +145,7 @@ namespace Acidrain {
             e->currentSprite = animation->getSprite();
             e->addTo(spritePool);
         }
+
         spritePool.draw(shader);
 
         drawStats();
@@ -154,66 +155,20 @@ namespace Acidrain {
     }
 
     void Stardust::drawStats() {
-        glEnable(GL_BLEND);
-        glUseProgram(0);
+        GFXSYS.setTransparencyMode(TransparencyMode::Transparent);
 
-        glBlendEquationSeparate(GL_FUNC_ADD, GL_FUNC_ADD);
-        glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
-
-        glDisable(GL_TEXTURE_2D);
-
-        glBegin(GL_QUADS);
-        glColor4f(0.0f, 0.0f, 0.01f, 0.7f);
-        glVertex2d(-1, -1);
-        glVertex2d(1024, -1);
-        glVertex2d(1024, 50);
-        glVertex2d(-1, 50);
-        glEnd();
-
-        glColor4f(1, 1, 1, 1);
-
-        glEnable(GL_TEXTURE_2D);
-        glBlendEquationSeparate(GL_FUNC_ADD, GL_FUNC_ADD);
-        glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
-//        glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE, GL_ONE, GL_ZERO);
+        GFXSYS.drawCircle(vec2(100), 20, vec4(1, 0, 0, 0.8));
+        GFXSYS.drawFilledRectangle(vec2(-1), vec2(1024, 50), vec4(0, 0, 0, 0.7f));
 
         std::stringstream s;
         s << "FPS: " << fpsCounter.getFps();
 
-        fontSmall->print(10, 10, s.str().c_str());
+        GFXSYS.setTransparencyMode(TransparencyMode::Additive);
+        fontSmall->print(10, 10, s.str().c_str(), vec4(1, 1, 1, 0.9f));
     }
 
     bool Stardust::shouldQuit() {
         return quitGame;
     }
 
-    void Stardust::drawSprite(const Sprite& sprite, const vec2& position) {
-        shader->unuse();
-
-        glEnable(GL_BLEND);
-        glBlendEquationSeparate(GL_FUNC_ADD, GL_FUNC_ADD);
-        glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
-//        glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE, GL_ONE, GL_ZERO);
-
-        glEnable(GL_TEXTURE_2D);
-        sprite.spriteSheet->texture->use();
-
-        const SpriteInfo& spriteInfo = sprite.spriteSheet->sprites[sprite.spriteIndex];
-
-        glBegin(GL_QUADS);
-        {
-            glTexCoord2f(spriteInfo.texCoords.left(), spriteInfo.texCoords.bottom());
-            glVertex2f(position.x, position.y);
-
-            glTexCoord2f(spriteInfo.texCoords.left(), spriteInfo.texCoords.top());
-            glVertex2f(position.x, spriteInfo.height + position.y);
-
-            glTexCoord2f(spriteInfo.texCoords.right(), spriteInfo.texCoords.top());
-            glVertex2f(position.x + spriteInfo.width, spriteInfo.height + position.y);
-
-            glTexCoord2f(spriteInfo.texCoords.right(), spriteInfo.texCoords.bottom());
-            glVertex2f(position.x + spriteInfo.width, position.y);
-        }
-        glEnd();
-    }
 } // namespace Acidrain

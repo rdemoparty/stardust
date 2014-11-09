@@ -94,5 +94,71 @@ namespace Acidrain {
             window->present();
     }
 
+    void GfxSystem::drawCircle(const glm::vec2& center, float radius, const glm::vec4& color) {
+        const int SEGMENTS = 20;
+        glLineWidth(3);
+        glEnable(GL_LINE_SMOOTH);
+        glBegin(GL_LINE_STRIP);
+        glColor4f(color.r, color.g, color.b, color.a);
+        for (int i = 0; i <= SEGMENTS; i++) {
+            glVertex2d(sin(i * 2 * M_PI / SEGMENTS) * radius + center.x, cos(i * 2 * M_PI / SEGMENTS) * radius + center.y);
+        }
+        glEnd();
+    }
+
+    void GfxSystem::drawFilledRectangle(const glm::vec2& topLeft, const glm::vec2& bottomRight, const glm::vec4& color) {
+        glBegin(GL_QUADS);
+        {
+            glColor4f(color.r, color.g, color.b, color.a);
+            glVertex2d(topLeft.x, topLeft.y);
+            glVertex2d(bottomRight.x, topLeft.y);
+            glVertex2d(bottomRight.x, bottomRight.y);
+            glVertex2d(topLeft.x, bottomRight.y);
+        }
+        glEnd();
+    }
+
+    void GfxSystem::drawSprite(const Sprite& sprite, const vec2& position) {
+        glEnable(GL_TEXTURE_2D);
+        sprite.spriteSheet->texture->use();
+
+        const SpriteInfo& spriteInfo = sprite.spriteSheet->sprites[sprite.spriteIndex];
+
+        glBegin(GL_QUADS);
+        {
+            glTexCoord2f(spriteInfo.texCoords.left(), spriteInfo.texCoords.bottom());
+            glVertex2f(position.x, position.y);
+
+            glTexCoord2f(spriteInfo.texCoords.left(), spriteInfo.texCoords.top());
+            glVertex2f(position.x, spriteInfo.height + position.y);
+
+            glTexCoord2f(spriteInfo.texCoords.right(), spriteInfo.texCoords.top());
+            glVertex2f(position.x + spriteInfo.width, spriteInfo.height + position.y);
+
+            glTexCoord2f(spriteInfo.texCoords.right(), spriteInfo.texCoords.bottom());
+            glVertex2f(position.x + spriteInfo.width, position.y);
+        }
+        glEnd();
+    }
+
+    void GfxSystem::setTransparencyMode(TransparencyMode mode) {
+        switch (mode) {
+            case TransparencyMode::Opaque:
+                break;
+            case TransparencyMode::Transparent:
+                glEnable(GL_BLEND);
+                glBlendEquationSeparate(GL_FUNC_ADD, GL_FUNC_ADD);
+                glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
+                break;
+            case TransparencyMode::Additive:
+                glEnable(GL_BLEND);
+                glBlendEquationSeparate(GL_FUNC_ADD, GL_FUNC_ADD);
+                glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE, GL_ONE, GL_ZERO);
+                break;
+        }
+    }
+
+
+
 } // namespace Acidrain
 

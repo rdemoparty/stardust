@@ -3,6 +3,7 @@
 #define GLM_FORCE_RADIANS
 #include <glm/mat4x4.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include <GfxSystem.h>
 
 namespace Acidrain {
 
@@ -23,20 +24,18 @@ namespace Acidrain {
         mat4 orthoMatrix = glm::ortho(0.0f, 1024.0f, 0.0f, 768.0f, 0.0f, 1.0f);
         shader->setMatrix4Uniform(&orthoMatrix[0][0], "orthoMatrix");
 
+        glEnable(GL_TEXTURE_2D);
         glActiveTexture(GL_TEXTURE0 + 0);
         shader->setIntUniform(0, "texture");
 
+        GFXSYS.setTransparencyMode(TransparencyMode::Transparent);
+
         for (auto& kv : vbos) {
-            glEnable(GL_BLEND);
-            glBlendEquationSeparate(GL_FUNC_ADD, GL_FUNC_ADD);
-            glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
-
-            glEnable(GL_TEXTURE_2D);
             kv.first->use();
-
             kv.second.draw();
         }
         shader->unuse();
+        glDisable(GL_TEXTURE_2D);
     }
 
 } // namespace acidrain
