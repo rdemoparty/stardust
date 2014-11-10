@@ -5,12 +5,19 @@
 #include <glm/vec2.hpp>
 #include <vector>
 #include <Randomizer.h>
+#include <Vbo.h>
+#include <Box.h>
 
 namespace Acidrain {
+
+    const int FLARE_SIZE = 48;
 
     struct StarParticle {
         glm::vec2 position;
         glm::vec2 direction;
+
+        Box box = Box(vec2(FLARE_SIZE));
+
         float speed;
         bool firstSpawn = true;
     };
@@ -37,6 +44,8 @@ namespace Acidrain {
         int spriteWidth;
         int spriteHeight;
 
+        Box textCoords;
+        Vbo vbo;
         Randomizer rnd;
         glm::vec2 terrainSize;
         std::shared_ptr<Texture> flareTexture;

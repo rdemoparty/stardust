@@ -97,23 +97,11 @@ namespace Acidrain {
         if (input->isKeyJustPressed(SDL_SCANCODE_ESCAPE))
             quitGame = true;
 
-        vec2 velocity = vec2(0);
-
-        if (input->isKeyDown(SDL_SCANCODE_LEFT) || input->isJoystickPressedLeft()) {
-            velocity.x = -1;
-        } else if (input->isKeyDown(SDL_SCANCODE_RIGHT) || input->isJoystickPressedRight()) {
-            velocity.x = 1;
-        }
-
-        if (input->isKeyDown(SDL_SCANCODE_UP) || input->isJoystickPressedUp()) {
-            velocity.y = 1;
-        } else if (input->isKeyDown(SDL_SCANCODE_DOWN) || input->isJoystickPressedDown()) {
-            velocity.y = -1;
-        }
         const float PLAYER_SPEED = 200.0f;
+        vec2 velocity = velocityFromInput() * PLAYER_SPEED * elapsedSeconds;
+        position += velocity;
 
         animation->update(elapsedSeconds);
-        position += velocity * PLAYER_SPEED * elapsedSeconds;
 
         for (int i = 0; i < npcs.size(); i++) {
             shared_ptr<DrawableEntity> e = npcs.at(i);
@@ -134,10 +122,39 @@ namespace Acidrain {
         input->copyNewStateToOldState();
     }
 
+    vec2 Stardust::velocityFromInput() {
+        vec2 velocity = vec2(0);
+
+        if (input->isKeyDown(SDL_SCANCODE_LEFT) || input->isJoystickPressedLeft()) {
+            velocity.x = -1;
+        } else if (input->isKeyDown(SDL_SCANCODE_RIGHT) || input->isJoystickPressedRight()) {
+            velocity.x = 1;
+        }
+
+        if (input->isKeyDown(SDL_SCANCODE_UP) || input->isJoystickPressedUp()) {
+            velocity.y = 1;
+        } else if (input->isKeyDown(SDL_SCANCODE_DOWN) || input->isJoystickPressedDown()) {
+            velocity.y = -1;
+        }
+        return velocity;
+    }
+
     void Stardust::render() {
         GFXSYS.clearScreen();
 
+        shader->use();
+
+        mat4 orthoMatrix = glm::ortho(0.0f, 1024.0f, 768.0f, 0.0f, 0.0f, 1.0f);
+        shader->setMatrix4Uniform(&orthoMatrix[0][0], "orthoMatrix");
+
+        glEnable(GL_TEXTURE_2D);
+        glActiveTexture(GL_TEXTURE0 + 0);
+
+        shader->setIntUniform(0, "texture");
+
         starfield->render();
+
+        shader->unuse();
 
         spritePool.clear();
         entity.addTo(spritePool);

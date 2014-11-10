@@ -70,6 +70,8 @@ namespace Acidrain {
         void drawStats();
 
         virtual void onEvent(SDL_Event const& param);
+
+        vec2 velocityFromInput();
     };
 
 }
