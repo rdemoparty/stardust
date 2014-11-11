@@ -55,7 +55,8 @@ namespace Acidrain {
 		if (_NSGetExecutablePath(path, &size) == 0)
 			return std::string(path, size);
 		else
-			throw Exception("_NSGetExecutablePath buffer too small.");
+			// throw std::exception("_NSGetExecutablePath buffer too small.");
+            return std::string("invalid-exe-path");
 	}
 
     std::string FileSystem::getExeDir(std::string fullPath) {
