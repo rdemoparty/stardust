@@ -21,7 +21,7 @@ namespace Acidrain {
     void SpritePool::draw(std::shared_ptr<Shader> shader) {
         shader->use();
 
-        mat4 orthoMatrix = glm::ortho(0.0f, 1024.0f, 0.0f, 768.0f, 0.0f, 1.0f);
+        mat4 orthoMatrix = glm::ortho(0.0f, 1024.0f, 768.0f, 0.0f, 0.0f, 1.0f);
         shader->setMatrix4Uniform(&orthoMatrix[0][0], "orthoMatrix");
 
         glEnable(GL_TEXTURE_2D);

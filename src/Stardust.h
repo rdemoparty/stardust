@@ -14,7 +14,7 @@
 #include <Starfield.h>
 #include <Entity.h>
 #include <Randomizer.h>
-
+#include <Collisions.h>
 #include <FpsCounter.h>
 
 namespace Acidrain {
@@ -36,10 +36,7 @@ namespace Acidrain {
     private:
 
         FpsCounter fpsCounter;
-
-        Randomizer rng;
-
-        GameState state = GameState::MAIN_MENU;
+        CollisionHull collisionHull;
 
         std::shared_ptr<Shader> shader;
         std::shared_ptr<SpriteSheet> spriteSheet;
@@ -56,10 +53,7 @@ namespace Acidrain {
 
         DrawableEntity entity;
 
-        vector<shared_ptr<DrawableEntity>> npcs;
-        vector<vec2> velocities;
-
-        vec2 position = vec2(0, 0);
+        vec2 position = vec2(1024.0f/2.0f, 768.0f/2.0f);
 
         SpritePool spritePool;
 

@@ -13,7 +13,14 @@ namespace Acidrain {
         localTransform = mat4(1);
         localTransform = glm::translate(localTransform, vec3(position.x, position.y, 0));
         localTransform = glm::rotate(localTransform, rotation, vec3(0, 0, 1));
-        localTransform = glm::scale(localTransform, vec3(scale.x, scale.y, 1));
+
+        // Notice the weird scaling: vec3(x, y, x)
+        // We use the third dimension component to pass the pristine scale value
+        // to the collision area (see Collisions.h). This helps us to extract the
+        // scale value from the transform matrix and use it to scale the collision
+        // hull circles properly
+        localTransform = glm::scale(localTransform, vec3(scale.x, scale.y, scale.x));
+
         // std::cout << "position is " << to_string(localTransform) << std::endl;
     }
 

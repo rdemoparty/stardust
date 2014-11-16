@@ -10,26 +10,7 @@ namespace Acidrain {
     using namespace std;
     using namespace glm;
 
-    Randomizer rng;
-
-    vec2 newRandomVelocity() {
-        return vec2(
-                rng.randomUnitDouble() - 0.5f,
-                rng.randomUnitDouble() - 0.5f
-        ) * 4.0f;
-    }
-
-    shared_ptr<DrawableEntity> newNpc() {
-        shared_ptr<DrawableEntity> result = shared_ptr<DrawableEntity>(new DrawableEntity);
-        result->position = vec2(1024.0f / 2.0f, 768.0f / 2.0f);
-        result->scale = vec2(1);
-        result->rotation = 0;
-        result->size = vec2(64, 64);
-        return result;
-    }
-
     Stardust::Stardust() {
-
         EVENTSYS.addListener(this, SDL_QUIT);
 
         input = std::shared_ptr<InputProvider>(new InputProvider());
@@ -38,8 +19,6 @@ namespace Acidrain {
                 FILESYS.getFileContent("shaders/normal.vs"),
                 FILESYS.getFileContent("shaders/normal.ps")
         );
-
-        std::cout << "After assigning shader" << std::endl;
 
         spriteSheet = std::shared_ptr<SpriteSheet>(new SpriteSheet);
         spriteSheet->texture = GFXSYS.loadTexture("sprites/enemyship2b.png");
@@ -66,10 +45,8 @@ namespace Acidrain {
 
         starfield = std::shared_ptr<Starfield>(new Starfield(40, vec2(1024, 768)));
 
-        for (int i = 0; i < 1000; i++) {
-            npcs.push_back(newNpc());
-            velocities.push_back(newRandomVelocity());
-        }
+        collisionHull.add(Circle(10, vec2(-10, 0)));
+        collisionHull.add(Circle(10, vec2(10, 0)));
 
         GFXSYS.setClearColor(vec3(0.1f, 0.0f, 0.1f));
     }
@@ -103,21 +80,16 @@ namespace Acidrain {
 
         animation->update(elapsedSeconds);
 
-        for (int i = 0; i < npcs.size(); i++) {
-            shared_ptr<DrawableEntity> e = npcs.at(i);
-            e->currentSprite = animation->getSprite();
-            e->position = e->position + velocities[i] * 10.0f * elapsedSeconds;
-            e->update(elapsedSeconds);
-        }
-
         entity.position = position;
         entity.currentSprite = animation->getSprite();
         entity.size = entity.currentSprite.getSize();
         entity.rotation += 1 * elapsedSeconds;
         entity.scale = vec2(sin(entity.rotation) + 2);
+        entity.update(elapsedSeconds);
 
         starfield->update(elapsedSeconds);
-        entity.update(elapsedSeconds);
+
+        collisionHull.transform(entity.localTransform);
 
         input->copyNewStateToOldState();
     }
@@ -132,9 +104,9 @@ namespace Acidrain {
         }
 
         if (input->isKeyDown(SDL_SCANCODE_UP) || input->isJoystickPressedUp()) {
-            velocity.y = 1;
-        } else if (input->isKeyDown(SDL_SCANCODE_DOWN) || input->isJoystickPressedDown()) {
             velocity.y = -1;
+        } else if (input->isKeyDown(SDL_SCANCODE_DOWN) || input->isJoystickPressedDown()) {
+            velocity.y = 1;
         }
         return velocity;
     }
@@ -142,28 +114,23 @@ namespace Acidrain {
     void Stardust::render() {
         GFXSYS.clearScreen();
 
+        // draw starfield
         shader->use();
-
         mat4 orthoMatrix = glm::ortho(0.0f, 1024.0f, 768.0f, 0.0f, 0.0f, 1.0f);
         shader->setMatrix4Uniform(&orthoMatrix[0][0], "orthoMatrix");
-
         glEnable(GL_TEXTURE_2D);
         glActiveTexture(GL_TEXTURE0 + 0);
-
         shader->setIntUniform(0, "texture");
-
         starfield->render();
-
         shader->unuse();
 
+        // draw entities
         spritePool.clear();
         entity.addTo(spritePool);
-        for (auto& e : npcs) {
-            e->currentSprite = animation->getSprite();
-            e->addTo(spritePool);
-        }
-
         spritePool.draw(shader);
+
+        // draw collisionHull
+        collisionHull.draw();
 
         drawStats();
 
@@ -174,7 +141,6 @@ namespace Acidrain {
     void Stardust::drawStats() {
         GFXSYS.setTransparencyMode(TransparencyMode::Transparent);
 
-        GFXSYS.drawCircle(vec2(100), 20, vec4(1, 0, 0, 0.8));
         GFXSYS.drawFilledRectangle(vec2(-1), vec2(1024, 50), vec4(0, 0, 0, 0.7f));
 
         std::stringstream s;
