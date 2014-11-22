@@ -48,4 +48,8 @@ namespace Acidrain {
                 color
         );
     }
+
+    void DrawableEntity::draw() {
+
+    }
 } // namespace Acidrain

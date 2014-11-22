@@ -30,8 +30,10 @@ find_package(GLEW REQUIRED)
 include_directories(${GLEW_INCLUDE_DIRS})
 link_directories(${GLEW_LIBRARY_DIRS})
 
-include_directories("src/")
 include_directories("src/glm")
+include_directories("src/framework")
+include_directories("src/game")
+
 add_subdirectory(src)
 
 add_executable(stardust src/main.cpp ${SOURCE})
