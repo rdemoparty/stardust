@@ -4,6 +4,7 @@
 #include <iostream>
 #include <glm/gtc/matrix_transform.hpp>
 #include <sstream>
+#include <SpriteAnimationRepository.h>
 
 namespace Acidrain {
 
@@ -11,6 +12,8 @@ namespace Acidrain {
     using namespace glm;
 
     Stardust::Stardust() {
+        ANIMREPO.initialize("animations.json");
+
         EVENTSYS.addListener(this, SDL_QUIT);
 
         input = std::shared_ptr<InputProvider>(new InputProvider());
@@ -24,20 +27,7 @@ namespace Acidrain {
         spriteSheet->texture = GFXSYS.loadTexture("sprites/enemyship2b.png");
         spriteSheet->autoAdd(64, 64);
 
-        animationData.frames = {
-                {spriteSheet, 0},
-                {spriteSheet, 1},
-                {spriteSheet, 2},
-                {spriteSheet, 3},
-                {spriteSheet, 4},
-                {spriteSheet, 5},
-                {spriteSheet, 6},
-                {spriteSheet, 7},
-        };
-        animationData.frameTimeInMilliseconds = 200;
-        animationData.loopType = AnimationLoopType::PING_PONG;
-
-        animation = std::shared_ptr<Animation>(new Animation(&animationData));
+        animation = ANIMREPO.newAnimation("enemy2");
         animation->start();
 
         font = std::shared_ptr<Font>(new Font("fonts/Impact.ttf", 70.0f));
@@ -49,6 +39,8 @@ namespace Acidrain {
         collisionHull.add(Circle(10, vec2(10, 0)));
 
         GFXSYS.setClearColor(vec3(0.1f, 0.0f, 0.1f));
+
+        enemies.push_back(new Enemy());
     }
 
 
@@ -87,6 +79,10 @@ namespace Acidrain {
         entity.scale = vec2(sin(entity.rotation) + 2);
         entity.update(elapsedSeconds);
 
+        for (auto &enemy : enemies) {
+            enemy->update(elapsedSeconds);
+        }
+
         starfield->update(elapsedSeconds);
 
         collisionHull.transform(entity.localTransform);
@@ -108,7 +104,8 @@ namespace Acidrain {
         } else if (input->isKeyDown(SDL_SCANCODE_DOWN) || input->isJoystickPressedDown()) {
             velocity.y = 1;
         }
-        return velocity;
+        vec2 normalizedVelocity = length(velocity) > 0 ? normalize(velocity) : velocity;
+        return normalizedVelocity;
     }
 
     void Stardust::render() {
@@ -127,6 +124,11 @@ namespace Acidrain {
         // draw entities
         spritePool.clear();
         entity.addTo(spritePool);
+
+        for (auto &enemy : enemies) {
+            enemy->render(spritePool);
+        }
+
         spritePool.draw(shader);
 
         // draw collisionHull

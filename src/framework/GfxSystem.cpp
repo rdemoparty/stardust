@@ -120,9 +120,9 @@ namespace Acidrain {
 
     void GfxSystem::drawSprite(const Sprite& sprite, const vec2& position) {
         glEnable(GL_TEXTURE_2D);
-        sprite.spriteSheet->texture->use();
+        sprite.getTexture()->use();
 
-        const SpriteInfo& spriteInfo = sprite.spriteSheet->sprites[sprite.spriteIndex];
+        const SpriteInfo& spriteInfo = sprite.getSpriteInfo();
 
         glBegin(GL_QUADS);
         {

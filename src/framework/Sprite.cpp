@@ -45,6 +45,10 @@ namespace Acidrain {
         };
     }
 
+    SpriteInfo& Sprite::getSpriteInfo() const {
+        return spriteSheet->sprites[spriteIndex];
+    }
+
     vec2 Sprite::getSize() const {
         const SpriteInfo& info = spriteSheet->sprites[spriteIndex];
         return vec2(

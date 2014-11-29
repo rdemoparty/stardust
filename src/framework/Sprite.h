@@ -26,14 +26,27 @@ namespace Acidrain {
         void autoAdd(int width, int height, int strideX = 0, int strideY = 0);
     };
 
-    struct Sprite {
-        shared_ptr<SpriteSheet> spriteSheet;
-        int spriteIndex;
+    class Sprite {
+    public:
 
-        Texture* getTexture() const;
+        Sprite()
+                : spriteSheet(nullptr), spriteIndex(0) {
+        }
+
+        Sprite(SpriteSheet *sprSheet, int index)
+                : spriteSheet(sprSheet), spriteIndex(index) {
+        }
+
+        Texture *getTexture() const;
 
         vector<vec2> getTexCoords() const;
 
+        SpriteInfo &getSpriteInfo() const;
+
         vec2 getSize() const;
+
+    private:
+        SpriteSheet *spriteSheet;
+        int spriteIndex;
     };
 } // namespace Acidrain

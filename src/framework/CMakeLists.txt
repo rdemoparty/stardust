@@ -11,14 +11,13 @@ set(HEADERS
    ${CMAKE_CURRENT_SOURCE_DIR}/GfxSystem.h
    ${CMAKE_CURRENT_SOURCE_DIR}/GLheaders.h
    ${CMAKE_CURRENT_SOURCE_DIR}/InputProvider.h
+   ${CMAKE_CURRENT_SOURCE_DIR}/json11.hpp
    ${CMAKE_CURRENT_SOURCE_DIR}/Randomizer.h
    ${CMAKE_CURRENT_SOURCE_DIR}/Shader.h
    ${CMAKE_CURRENT_SOURCE_DIR}/Sprite.h
    ${CMAKE_CURRENT_SOURCE_DIR}/SpritePool.h
    ${CMAKE_CURRENT_SOURCE_DIR}/stb_image.h
    ${CMAKE_CURRENT_SOURCE_DIR}/stb_truetype.h
-   ${CMAKE_CURRENT_SOURCE_DIR}/Stardust.h
-   ${CMAKE_CURRENT_SOURCE_DIR}/Starfield.h
    ${CMAKE_CURRENT_SOURCE_DIR}/Texture.h
    ${CMAKE_CURRENT_SOURCE_DIR}/TextureGenerator.h
    ${CMAKE_CURRENT_SOURCE_DIR}/Timer.h
@@ -39,12 +38,11 @@ set(SOURCE
    ${CMAKE_CURRENT_SOURCE_DIR}/GameState.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/GfxSystem.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/InputProvider.cpp
+   ${CMAKE_CURRENT_SOURCE_DIR}/json11.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/Randomizer.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/Shader.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/Sprite.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/SpritePool.cpp
-   ${CMAKE_CURRENT_SOURCE_DIR}/Stardust.cpp
-   ${CMAKE_CURRENT_SOURCE_DIR}/Starfield.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/Texture.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/TextureGenerator.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/Timer.cpp

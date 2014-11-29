@@ -1,9 +1,9 @@
 #pragma once
 
-#include "GameState.h"
-#include "EventSystem.h"
-#include "InputProvider.h"
-#include "SpritePool.h"
+#include <GameState.h>
+#include <EventSystem.h>
+#include <InputProvider.h>
+#include <SpritePool.h>
 #include <GLheaders.h>
 #include <Shader.h>
 #include <Texture.h>
@@ -16,6 +16,7 @@
 #include <Randomizer.h>
 #include <Collisions.h>
 #include <FpsCounter.h>
+#include <Enemy.h>
 
 namespace Acidrain {
 
@@ -35,14 +36,16 @@ namespace Acidrain {
 
     private:
 
+        vector<Enemy*> enemies;
+
         FpsCounter fpsCounter;
         CollisionHull collisionHull;
 
         std::shared_ptr<Shader> shader;
         std::shared_ptr<SpriteSheet> spriteSheet;
 
-        AnimationData animationData;
-        std::shared_ptr<Animation> animation;
+        AnimationData* animationData;
+        Animation* animation;
 
         std::shared_ptr<Font> font;
         std::shared_ptr<Font> fontSmall;

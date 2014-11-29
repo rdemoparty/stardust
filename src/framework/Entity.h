@@ -25,6 +25,9 @@ namespace Acidrain {
 
         Entity* parent;
 
+        Entity() {
+        }
+
         vector<vec2> computeVertices() const;
 
         virtual void update(float dt);
@@ -34,6 +37,9 @@ namespace Acidrain {
 
     class DrawableEntity : public Entity {
     public:
+
+        DrawableEntity() : Entity() {}
+
         void addTo(SpritePool& spritePool) const;
 
         virtual void update(float dt) override;

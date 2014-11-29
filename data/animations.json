@@ -1,0 +1,51 @@
+{
+  "spriteSheets": [
+    {
+      "name": "enemyship2b",
+      "texture": "sprites/enemyship2b.png",
+      "spriteWidth": 64,
+      "spriteHeight": 64
+    }
+  ],
+  "animations": [
+    {
+      "name": "enemy2",
+      "frameTimeInMilliseconds": 200,
+      "loopType": "PING_PONG",
+      "frames": [
+        {
+          "spriteSheet": "enemyship2b",
+          "index": 0
+        },
+        {
+          "spriteSheet": "enemyship2b",
+          "index": 1
+        },
+        {
+          "spriteSheet": "enemyship2b",
+          "index": 2
+        },
+        {
+          "spriteSheet": "enemyship2b",
+          "index": 3
+        },
+        {
+          "spriteSheet": "enemyship2b",
+          "index": 4
+        },
+        {
+          "spriteSheet": "enemyship2b",
+          "index": 5
+        },
+        {
+          "spriteSheet": "enemyship2b",
+          "index": 6
+        },
+        {
+          "spriteSheet": "enemyship2b",
+          "index": 7
+        }
+      ]
+    }
+  ]
+}
