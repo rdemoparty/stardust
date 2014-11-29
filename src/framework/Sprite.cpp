@@ -38,10 +38,10 @@ namespace Acidrain {
     vector<vec2> Sprite::getTexCoords() const {
         const Box& texCoords = spriteSheet->sprites[spriteIndex].texCoords;
         return vector<vec2> {
-                vec2(texCoords.left(), texCoords.bottom()),
-                vec2(texCoords.right(), texCoords.bottom()),
+                vec2(texCoords.left(), texCoords.top()),
                 vec2(texCoords.right(), texCoords.top()),
-                vec2(texCoords.left(), texCoords.top())
+                vec2(texCoords.right(), texCoords.bottom()),
+                vec2(texCoords.left(), texCoords.bottom())
         };
     }
 

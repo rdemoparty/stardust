@@ -6,17 +6,15 @@ namespace Acidrain {
 
     class Animation;
 
-    class Enemy {
+    class Enemy : public DrawableEntity {
     public:
         explicit Enemy();
         virtual ~Enemy();
 
         void update(float dt);
 
-        void render(SpritePool& spritePool);
-
     private:
-        DrawableEntity entity;
+        float movementPhase = 0;
         Animation* animation;
     };
 }

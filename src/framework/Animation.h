@@ -53,7 +53,7 @@ namespace Acidrain {
         AnimationDirection pingPongDirection = AnimationDirection::RIGHT;
         bool paused = true;
         bool animationFinished = false;
-        unsigned long currentFrameIndex = 0;
+        int currentFrameIndex = 0;
 
     };
 

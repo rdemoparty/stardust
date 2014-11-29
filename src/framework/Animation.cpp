@@ -2,7 +2,7 @@
 
 namespace Acidrain {
 
-    Animation::Animation(const AnimationData* animData)
+    Animation::Animation(const AnimationData *animData)
             : animationData(animData) {
     }
 
@@ -43,14 +43,13 @@ namespace Acidrain {
 
         while (frameTimeAccumulator > animationData->frameTimeInMilliseconds) {
             frameTimeAccumulator -= animationData->frameTimeInMilliseconds;
-
             currentFrameIndex += nextFrameDirection() == AnimationDirection::RIGHT ? 1 : -1;
 
             if (isFrameIndexOutOfRange()) {
                 if (currentFrameIndex < 0) {
                     switch (animationData->loopType) {
                         case AnimationLoopType::PING_PONG:
-                            currentFrameIndex = 1 % animationData->frames.size();
+                            currentFrameIndex = (int) (1 % animationData->frames.size());
                             pingPongDirection = AnimationDirection::RIGHT;
                             break;
                         case AnimationLoopType::REVERSE:
@@ -64,17 +63,17 @@ namespace Acidrain {
                     switch (animationData->loopType) {
                         case AnimationLoopType::NONE:
                             animationFinished = true;
-                            currentFrameIndex = animationData->frames.size() - 1; // leave frame index valid at last frame
+                            currentFrameIndex = (int) (animationData->frames.size() - 1); // leave frame index valid at last frame
                             frameTimeAccumulator = 0;
                             break;
                         case AnimationLoopType::PING_PONG:
-                            currentFrameIndex = animationData->frames.size() > 1
-                                    ? animationData->frames.size() - 2
-                                    : 0;
+                            currentFrameIndex = (int) (animationData->frames.size() > 1
+                                                                ? animationData->frames.size() - 2
+                                                                : 0);
                             pingPongDirection = AnimationDirection::LEFT;
                             break;
                         case AnimationLoopType::FORWARD:
-                            currentFrameIndex = currentFrameIndex % animationData->frames.size();
+                            currentFrameIndex = (int) (currentFrameIndex % animationData->frames.size());
                             break;
                         default:
                             // throw exception, invalid state

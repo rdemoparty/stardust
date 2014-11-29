@@ -126,7 +126,7 @@ namespace Acidrain {
         entity.addTo(spritePool);
 
         for (auto &enemy : enemies) {
-            enemy->render(spritePool);
+            enemy->addTo(spritePool);
         }
 
         spritePool.draw(shader);

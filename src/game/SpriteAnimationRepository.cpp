@@ -4,7 +4,6 @@
 #include <FileSystem.h>
 #include <iostream>
 #include <GfxSystem.h>
-#include <Sprite.h>
 
 namespace Acidrain {
 
@@ -59,7 +58,7 @@ namespace Acidrain {
     }
 
     Animation *SpriteAnimationRepository::newAnimation(std::string name) {
-        AnimationData* animData = animationData[name];
+        AnimationData *animData = animationData[name];
         if (animData == nullptr) {
             cout << "Error: cannot retrieve animation data with name [" << name << "]" << endl;
         }
