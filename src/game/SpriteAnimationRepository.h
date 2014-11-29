@@ -8,6 +8,7 @@
 namespace Acidrain {
 
     using namespace std;
+
     class Animation;
     class AnimationData;
     class SpriteSheet;

@@ -1,3 +1,4 @@
+#include <Entity.h>
 #include <MovementStrategySinusoidal.h>
 
 namespace Acidrain {

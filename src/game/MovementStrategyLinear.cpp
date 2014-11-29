@@ -1,5 +1,5 @@
 #include <MovementStrategyLinear.h>
-#include <framework/Entity.h>
+#include <Entity.h>
 
 namespace Acidrain {
 

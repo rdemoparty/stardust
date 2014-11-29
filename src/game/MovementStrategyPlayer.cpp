@@ -1,6 +1,6 @@
 #include "MovementStrategyPlayer.h"
 #include <glm/glm.hpp>
-#include <framework/Entity.h>
+#include <Entity.h>
 
 namespace Acidrain {
 

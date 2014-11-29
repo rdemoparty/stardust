@@ -1,7 +1,5 @@
 #pragma once
 
-#include <framework/Entity.h>
-
 namespace Acidrain {
 
     class Entity;

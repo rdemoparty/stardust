@@ -64,17 +64,14 @@ namespace Acidrain {
     void Stardust::update(float elapsedSeconds) {
         EVENTSYS.update();
 
-        if (input->isKeyJustPressed(SDL_SCANCODE_ESCAPE))
+        if (input->isKeyDown(SDL_SCANCODE_ESCAPE))
             quitGame = true;
 
-        for (auto &enemy : gameObjects) {
-            enemy->update(elapsedSeconds);
-        }
+        for (auto &gameObject : gameObjects)
+            gameObject->update(elapsedSeconds);
 
         starfield->update(elapsedSeconds);
         fpsCounter->update(elapsedSeconds);
-
-        input->copyNewStateToOldState();
     }
 
     void Stardust::render() {
@@ -90,11 +87,9 @@ namespace Acidrain {
         starfield->render();
         shader->unuse();
 
-        // draw entities
         spritePool->clear();
-        for (auto &enemy : gameObjects) {
-            enemy->addTo(*spritePool);
-        }
+        for (auto &gameObject : gameObjects)
+            gameObject->addTo(*spritePool);
         spritePool->draw(shader);
 
         drawStats();

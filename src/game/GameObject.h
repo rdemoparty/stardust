@@ -13,16 +13,17 @@ namespace Acidrain {
 
     class GameObject : public DrawableEntity {
     public:
-        explicit GameObject();
+        explicit GameObject() {};
 
-        virtual ~GameObject();
+        virtual ~GameObject() {};
 
         void setMovementController(shared_ptr<MovementStrategy> const &movementController);
 
         void update(float dt);
 
     protected:
-        float movementPhase = 0;
+        friend class GameObjectFactory;
+
         shared_ptr<MovementStrategy> movementController;
         Animation *animation;
     };

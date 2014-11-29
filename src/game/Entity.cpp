@@ -20,11 +20,9 @@ namespace Acidrain {
         // scale value from the transform matrix and use it to scale the collision
         // hull circles properly
         localTransform = glm::scale(localTransform, vec3(scale.x, scale.y, scale.x));
-
-        // std::cout << "position is " << to_string(localTransform) << std::endl;
     }
 
-    vector<vec2> Entity::computeVertices() const {
+    vector<vec2> DrawableEntity::computeVertices() const {
         Box box(size);
         vector<vec2> vertices = box.computeVertices();
         for (auto& v : vertices) {
@@ -49,7 +47,4 @@ namespace Acidrain {
         );
     }
 
-    void DrawableEntity::draw() {
-
-    }
 } // namespace Acidrain

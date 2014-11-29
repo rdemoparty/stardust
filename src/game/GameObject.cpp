@@ -5,18 +5,6 @@
 
 namespace Acidrain {
 
-    GameObject::GameObject() {
-        animation = ANIMREPO.newAnimation("enemy2");
-        animation->start();
-
-        position = vec2(100, 100);
-        rotation = 0;
-        size = vec2(64, 64);
-    }
-
-    GameObject::~GameObject() {
-    }
-
     void GameObject::setMovementController(shared_ptr<MovementStrategy> const &movementController) {
         this->movementController = movementController;
         movementController->setControlledEntity(this);
