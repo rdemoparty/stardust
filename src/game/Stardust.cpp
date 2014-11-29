@@ -1,10 +1,16 @@
 #include <Stardust.h>
+#include <Starfield.h>
+#include <FpsCounter.h>
 #include <FileSystem.h>
 #include <GfxSystem.h>
 #include <iostream>
 #include <glm/gtc/matrix_transform.hpp>
 #include <sstream>
 #include <SpriteAnimationRepository.h>
+#include <Font.h>
+#include <GameObject.h>
+#include <GameObjectFactory.h>
+#include <InputProvider.h>
 
 namespace Acidrain {
 
@@ -23,32 +29,29 @@ namespace Acidrain {
                 FILESYS.getFileContent("shaders/normal.ps")
         );
 
-        spriteSheet = std::shared_ptr<SpriteSheet>(new SpriteSheet);
-        spriteSheet->texture = GFXSYS.loadTexture("sprites/enemyship2b.png");
-        spriteSheet->autoAdd(64, 64);
+        font = shared_ptr<Font>(new Font("fonts/Impact.ttf", 70.0f));
+        fontSmall = shared_ptr<Font>(new Font("fonts/a.ttf", 20.0f));
 
-        animation = ANIMREPO.newAnimation("enemy2");
-        animation->start();
-
-        font = std::shared_ptr<Font>(new Font("fonts/Impact.ttf", 70.0f));
-        fontSmall = std::shared_ptr<Font>(new Font("fonts/a.ttf", 20.0f));
-
-        starfield = std::shared_ptr<Starfield>(new Starfield(40, vec2(1024, 768)));
-
-        collisionHull.add(Circle(10, vec2(-10, 0)));
-        collisionHull.add(Circle(10, vec2(10, 0)));
+        fpsCounter = shared_ptr<FpsCounter>(new FpsCounter());
+        starfield = shared_ptr<Starfield>(new Starfield(40, vec2(1024, 768)));
 
         GFXSYS.setClearColor(vec3(0.1f, 0.0f, 0.1f));
 
-        enemies.push_back(new Enemy());
-    }
+        // initialize sprite pool
+        spritePool = shared_ptr<SpritePool>(new SpritePool());
 
+        gameObjectFactory = shared_ptr<GameObjectFactory>(new GameObjectFactory());
+
+        // add game objects
+        gameObjects.push_back(gameObjectFactory->enemy(vec2(300, -64)));
+        gameObjects.push_back(gameObjectFactory->enemy2(vec2(300, -64)));
+        gameObjects.push_back(gameObjectFactory->player(vec2(300, 700)));
+    }
 
     Stardust::~Stardust() {
     }
 
-
-    void Stardust::onEvent(SDL_Event const& event) {
+    void Stardust::onEvent(SDL_Event const &event) {
         switch (event.type) {
             case SDL_QUIT:
                 quitGame = true;
@@ -61,51 +64,17 @@ namespace Acidrain {
     void Stardust::update(float elapsedSeconds) {
         EVENTSYS.update();
 
-        fpsCounter.update(elapsedSeconds);
-
         if (input->isKeyJustPressed(SDL_SCANCODE_ESCAPE))
             quitGame = true;
 
-        const float PLAYER_SPEED = 200.0f;
-        vec2 velocity = velocityFromInput() * PLAYER_SPEED * elapsedSeconds;
-        position += velocity;
-
-        animation->update(elapsedSeconds);
-
-        entity.position = position;
-        entity.currentSprite = animation->getSprite();
-        entity.size = entity.currentSprite.getSize();
-        entity.rotation += 1 * elapsedSeconds;
-        entity.scale = vec2(sin(entity.rotation) + 2);
-        entity.update(elapsedSeconds);
-
-        for (auto &enemy : enemies) {
+        for (auto &enemy : gameObjects) {
             enemy->update(elapsedSeconds);
         }
 
         starfield->update(elapsedSeconds);
-
-        collisionHull.transform(entity.localTransform);
+        fpsCounter->update(elapsedSeconds);
 
         input->copyNewStateToOldState();
-    }
-
-    vec2 Stardust::velocityFromInput() {
-        vec2 velocity = vec2(0);
-
-        if (input->isKeyDown(SDL_SCANCODE_LEFT) || input->isJoystickPressedLeft()) {
-            velocity.x = -1;
-        } else if (input->isKeyDown(SDL_SCANCODE_RIGHT) || input->isJoystickPressedRight()) {
-            velocity.x = 1;
-        }
-
-        if (input->isKeyDown(SDL_SCANCODE_UP) || input->isJoystickPressedUp()) {
-            velocity.y = -1;
-        } else if (input->isKeyDown(SDL_SCANCODE_DOWN) || input->isJoystickPressedDown()) {
-            velocity.y = 1;
-        }
-        vec2 normalizedVelocity = length(velocity) > 0 ? normalize(velocity) : velocity;
-        return normalizedVelocity;
     }
 
     void Stardust::render() {
@@ -122,31 +91,24 @@ namespace Acidrain {
         shader->unuse();
 
         // draw entities
-        spritePool.clear();
-        entity.addTo(spritePool);
-
-        for (auto &enemy : enemies) {
-            enemy->addTo(spritePool);
+        spritePool->clear();
+        for (auto &enemy : gameObjects) {
+            enemy->addTo(*spritePool);
         }
-
-        spritePool.draw(shader);
-
-        // draw collisionHull
-        collisionHull.draw();
+        spritePool->draw(shader);
 
         drawStats();
 
-        fpsCounter.frameRendered();
+        fpsCounter->frameRendered();
         GFXSYS.show();
     }
 
     void Stardust::drawStats() {
         GFXSYS.setTransparencyMode(TransparencyMode::Transparent);
-
         GFXSYS.drawFilledRectangle(vec2(-1), vec2(1024, 50), vec4(0, 0, 0, 0.7f));
 
         std::stringstream s;
-        s << "FPS: " << fpsCounter.getFps();
+        s << "FPS: " << fpsCounter->getFps();
 
         GFXSYS.setTransparencyMode(TransparencyMode::Additive);
         fontSmall->print(10, 10, s.str().c_str(), vec4(1, 1, 1, 0.9f));

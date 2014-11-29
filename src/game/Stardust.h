@@ -1,26 +1,27 @@
 #pragma once
 
-#include <GameState.h>
 #include <EventSystem.h>
-#include <InputProvider.h>
-#include <SpritePool.h>
-#include <GLheaders.h>
-#include <Shader.h>
-#include <Texture.h>
 #include <memory>
-#include <Sprite.h>
-#include <Animation.h>
-#include <Font.h>
-#include <Starfield.h>
-#include <Entity.h>
-#include <Randomizer.h>
-#include <Collisions.h>
-#include <FpsCounter.h>
-#include <Enemy.h>
 
 namespace Acidrain {
 
-    using namespace glm;
+    using namespace std;
+
+    class GameObject;
+
+    class GameObjectFactory;
+
+    class Shader;
+
+    class Font;
+
+    class InputProvider;
+
+    class SpritePool;
+
+    class FpsCounter;
+
+    class Starfield;
 
     class Stardust : public EventListener {
     public:
@@ -36,39 +37,26 @@ namespace Acidrain {
 
     private:
 
-        vector<Enemy*> enemies;
+        shared_ptr<GameObjectFactory> gameObjectFactory;
+        vector<GameObject *> gameObjects;
 
-        FpsCounter fpsCounter;
-        CollisionHull collisionHull;
+        shared_ptr<FpsCounter> fpsCounter;
 
-        std::shared_ptr<Shader> shader;
-        std::shared_ptr<SpriteSheet> spriteSheet;
+        shared_ptr<Shader> shader;
 
-        AnimationData* animationData;
-        Animation* animation;
+        shared_ptr<Font> font;
+        shared_ptr<Font> fontSmall;
 
-        std::shared_ptr<Font> font;
-        std::shared_ptr<Font> fontSmall;
+        shared_ptr<InputProvider> input;
 
-        std::shared_ptr<InputProvider> input;
+        shared_ptr<Starfield> starfield;
 
-        std::shared_ptr<Starfield> starfield;
-
-        DrawableEntity entity;
-
-        vec2 position = vec2(1024.0f/2.0f, 768.0f/2.0f);
-
-        SpritePool spritePool;
+        shared_ptr<SpritePool> spritePool;
 
         bool quitGame = false;
 
-        void drawSprite(const Sprite& sprite, const vec2& position);
-
         void drawStats();
 
-        virtual void onEvent(SDL_Event const& param);
-
-        vec2 velocityFromInput();
+        virtual void onEvent(SDL_Event const &param);
     };
-
 }
