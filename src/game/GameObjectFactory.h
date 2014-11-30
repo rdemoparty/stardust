@@ -22,7 +22,7 @@ namespace Acidrain {
 
         GameObject * createEnemy(vec2 position);
 
-        GameObject * createEnemy2(vec2 position);
+        GameObject * createExplosion(vec2 position);
 
     private:
         shared_ptr<InputProvider> input;

@@ -46,7 +46,7 @@ namespace Acidrain {
 
         // add game objects
         gameObjects.push_back(gameObjectFactory->createEnemy(vec2(300, -64)));
-        gameObjects.push_back(gameObjectFactory->createEnemy2(vec2(300, -64)));
+        gameObjects.push_back(gameObjectFactory->createExplosion(vec2(300, -64)));
         gameObjects.push_back(gameObjectFactory->createPlayer(vec2(300, 700)));
 
         gpuProgramConstantBundle = make_shared<GpuProgramConstantBundle>();
@@ -90,6 +90,7 @@ namespace Acidrain {
 
         starfield->draw(gpuProgram);
 
+        GFXSYS.setTransparencyMode(TransparencyMode::Additive);
         spritePool->clear();
         for (auto& gameObject : gameObjects)
             gameObject->addTo(*spritePool);

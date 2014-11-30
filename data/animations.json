@@ -5,45 +5,36 @@
       "texture": "sprites/enemyship2b.png",
       "spriteWidth": 64,
       "spriteHeight": 64
+    },
+    {
+      "name": "explosion",
+      "texture": "sprites/explosion.png",
+      "spriteWidth": 128,
+      "spriteHeight": 128
     }
   ],
   "animations": [
     {
       "name": "enemy2",
       "frameTimeInMilliseconds": 200,
-      "loopType": "PING_PONG",
+      "loopType": "REVERSE",
       "frames": [
         {
           "spriteSheet": "enemyship2b",
-          "index": 0
-        },
+          "index": 0,
+          "indexTo": 7
+        }
+      ]
+    },
+    {
+      "name": "explosion",
+      "frameTimeInMilliseconds": 20,
+      "loopType": "PING_PONG",
+      "frames": [
         {
-          "spriteSheet": "enemyship2b",
-          "index": 1
-        },
-        {
-          "spriteSheet": "enemyship2b",
-          "index": 2
-        },
-        {
-          "spriteSheet": "enemyship2b",
-          "index": 3
-        },
-        {
-          "spriteSheet": "enemyship2b",
-          "index": 4
-        },
-        {
-          "spriteSheet": "enemyship2b",
-          "index": 5
-        },
-        {
-          "spriteSheet": "enemyship2b",
-          "index": 6
-        },
-        {
-          "spriteSheet": "enemyship2b",
-          "index": 7
+          "spriteSheet": "explosion",
+          "index": 0,
+          "indexTo": 31
         }
       ]
     }

@@ -84,6 +84,18 @@ namespace Acidrain {
     }
 
     void GfxSystem::clearScreen() {
+        // clear whole screen with bands color
+        glViewport(0, 0, window->width(), window->height());
+        glScissor(0, 0, window->width(), window->height());
+
+        glClearColor(0, 0, 0, 1);
+        glClear(GL_COLOR_BUFFER_BIT);
+
+        // clear only drawable area with set colour
+        glViewport(offsetX, offsetY, width, height);
+        glScissor(offsetX, offsetY, width, height);
+
+        glClearColor(clearScreenColor.r, clearScreenColor.g, clearScreenColor.b, 0.0f);
         glClear(GL_COLOR_BUFFER_BIT);
     }
 

@@ -10,17 +10,21 @@ namespace Acidrain {
     using namespace std;
     using namespace json11;
 
-    SpriteAnimationRepository &SpriteAnimationRepository::getInstance() {
+    SpriteAnimationRepository& SpriteAnimationRepository::getInstance() {
         static SpriteAnimationRepository instance;
         return instance;
     }
 
 
     AnimationLoopType animationLoopType(string name) {
-        if (name == "NONE") return AnimationLoopType::NONE;
-        else if (name == "FORWARD") return AnimationLoopType::FORWARD;
-        else if (name == "REVERSE") return AnimationLoopType::REVERSE;
-        else if (name == "PING_PONG") return AnimationLoopType::PING_PONG;
+        if (name == "NONE")
+            return AnimationLoopType::NONE;
+        else if (name == "FORWARD")
+            return AnimationLoopType::FORWARD;
+        else if (name == "REVERSE")
+            return AnimationLoopType::REVERSE;
+        else if (name == "PING_PONG")
+            return AnimationLoopType::PING_PONG;
     }
 
     void SpriteAnimationRepository::initialize(std::string filename) {
@@ -31,24 +35,31 @@ namespace Acidrain {
         if (!parseError.empty()) {
             cout << "Error while parsing " << filename << endl;
         } else {
-            for (auto &k : json["spriteSheets"].array_items()) {
-                SpriteSheet *sheet = new SpriteSheet();
+            for (auto& k : json["spriteSheets"].array_items()) {
+                SpriteSheet* sheet = new SpriteSheet();
                 sheet->texture = GFXSYS.loadTexture(k["texture"].string_value());
                 sheet->autoAdd(k["spriteWidth"].int_value(), k["spriteHeight"].int_value());
                 spriteSheets[k["name"].string_value()] = sheet;
             }
 
-            for (auto &k : json["animations"].array_items()) {
-                AnimationData *animData = new AnimationData();
+            for (auto& k : json["animations"].array_items()) {
+                AnimationData* animData = new AnimationData();
                 animationData[k["name"].string_value()] = animData;
 
                 animData->frameTimeInMilliseconds = (float) k["frameTimeInMilliseconds"].number_value();
                 animData->loopType = animationLoopType(k["loopType"].string_value());
 
-                for (auto &f : k["frames"].array_items()) {
-                    animData->frames.push_back(
-                            Sprite(spriteSheets[f["spriteSheet"].string_value()],
-                                    f["index"].int_value()));
+                for (auto& f : k["frames"].array_items()) {
+                    string spriteSheetName = f["spriteSheet"].string_value();
+                    int index = f["index"].int_value();
+                    int indexTo = f["indexTo"].int_value();
+
+                    if (indexTo > index) {
+                        for (int i = index; i <= indexTo; i++)
+                            animData->frames.push_back(Sprite(spriteSheets[spriteSheetName], i));
+                    } else {
+                        animData->frames.push_back(Sprite(spriteSheets[spriteSheetName], index));
+                    }
                 }
             }
         }
@@ -57,8 +68,8 @@ namespace Acidrain {
     SpriteAnimationRepository::SpriteAnimationRepository() {
     }
 
-    Animation *SpriteAnimationRepository::newAnimation(std::string name) {
-        AnimationData *animData = animationData[name];
+    Animation* SpriteAnimationRepository::newAnimation(std::string name) {
+        AnimationData* animData = animationData[name];
         if (animData == nullptr) {
             cout << "Error: cannot retrieve animation data with name [" << name << "]" << endl;
         }

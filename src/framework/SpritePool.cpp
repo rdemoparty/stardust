@@ -19,9 +19,7 @@ namespace Acidrain {
     }
 
     void SpritePool::draw(std::shared_ptr<GpuProgram> shader) {
-        GFXSYS.setTransparencyMode(TransparencyMode::Transparent);
         shader->use();
-
         for (auto& kv : vbos) {
             kv.first->useForUnit(0);
             kv.second.draw();
