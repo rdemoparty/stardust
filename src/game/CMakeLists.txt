@@ -7,9 +7,11 @@ set(HEADERS
    ${CMAKE_CURRENT_SOURCE_DIR}/MovementStrategyPlayer.h
    ${CMAKE_CURRENT_SOURCE_DIR}/MovementStrategyLinear.h
    ${CMAKE_CURRENT_SOURCE_DIR}/MovementStrategySinusoidal.h
+   ${CMAKE_CURRENT_SOURCE_DIR}/Scene.h
    ${CMAKE_CURRENT_SOURCE_DIR}/SpriteAnimationRepository.h
    ${CMAKE_CURRENT_SOURCE_DIR}/Stardust.h
    ${CMAKE_CURRENT_SOURCE_DIR}/Starfield.h
+   ${CMAKE_CURRENT_SOURCE_DIR}/Weapon.h
    PARENT_SCOPE
 )
 set(SOURCE
@@ -21,8 +23,10 @@ set(SOURCE
    ${CMAKE_CURRENT_SOURCE_DIR}/MovementStrategyPlayer.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/MovementStrategyLinear.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/MovementStrategySinusoidal.cpp
+   ${CMAKE_CURRENT_SOURCE_DIR}/Scene.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/SpriteAnimationRepository.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/Stardust.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/Starfield.cpp
+   ${CMAKE_CURRENT_SOURCE_DIR}/Weapon.cpp
    PARENT_SCOPE
 )

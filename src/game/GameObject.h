@@ -11,6 +11,12 @@ namespace Acidrain {
 
     class MovementStrategy;
 
+    class Weapon;
+
+    class BulletInfo;
+
+    class Scene;
+
     class GameObject : public DrawableEntity {
     public:
         explicit GameObject() {};
@@ -19,12 +25,26 @@ namespace Acidrain {
 
         void setMovementController(shared_ptr<MovementStrategy> const &movementController);
 
-        void update(float dt);
+        void fireWeapons(bool shouldFire);
+
+        void setScene(Scene* scene);
+
+        void addWeapon(Weapon* weapon, const vec2& offset);
+
+        void update(float elapsedSeconds);
+
+        void updateAnimation(float elapsedSeconds);
 
     protected:
         friend class GameObjectFactory;
 
+        void updateWeapons(float elapsedSeconds);
+
+        GameObject* newBullet(BulletInfo* info);
+
+        Scene* scene;
         shared_ptr<MovementStrategy> movementController;
         Animation *animation;
+        std::map<Weapon*, vec2> weapons;
     };
 }

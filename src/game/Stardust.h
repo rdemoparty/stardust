@@ -4,6 +4,8 @@
 #include <memory>
 #include <map>
 #include <string>
+#include <Weapon.h>
+#include <Scene.h>
 
 namespace Acidrain {
 
@@ -41,10 +43,14 @@ namespace Acidrain {
 
     private:
 
+        Weapon weapon;
+        Scene scene;
+
+        GameObject* player;
+
         shared_ptr<GpuProgramConstantBundle> gpuProgramConstantBundle;
 
         shared_ptr<GameObjectFactory> gameObjectFactory;
-        vector<GameObject *> gameObjects;
 
         shared_ptr<FpsCounter> fpsCounter;
 

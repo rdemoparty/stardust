@@ -24,6 +24,8 @@ namespace Acidrain {
 
         GameObject * createExplosion(vec2 position);
 
+        GameObject * createLaser();
+
     private:
         shared_ptr<InputProvider> input;
     };

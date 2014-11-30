@@ -11,6 +11,12 @@
       "texture": "sprites/explosion.png",
       "spriteWidth": 128,
       "spriteHeight": 128
+    },
+    {
+      "name": "laser",
+      "texture": "sprites/lazorblue.png",
+      "spriteWidth": 18,
+      "spriteHeight": 48
     }
   ],
   "animations": [
@@ -35,6 +41,17 @@
           "spriteSheet": "explosion",
           "index": 0,
           "indexTo": 31
+        }
+      ]
+    },
+    {
+      "name": "laser",
+      "frameTimeInMilliseconds": 20,
+      "loopType": "FORWARD",
+      "frames": [
+        {
+          "spriteSheet": "laser",
+          "index": 0
         }
       ]
     }
