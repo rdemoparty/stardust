@@ -11,6 +11,7 @@
 #include <GameObject.h>
 #include <GameObjectFactory.h>
 #include <InputProvider.h>
+#include "GpuProgramConstants.h"
 
 namespace Acidrain {
 
@@ -20,38 +21,48 @@ namespace Acidrain {
     Stardust::Stardust() {
         ANIMREPO.initialize("animations.json");
 
+        // TODO Adrian: figure out a better name for the event system. It is too generic. Events of?
         EVENTSYS.addListener(this, SDL_QUIT);
 
-        input = std::shared_ptr<InputProvider>(new InputProvider());
+        input = make_shared<InputProvider>();
 
-        shader = make_shared<Shader>(
+        gpuProgram = make_shared<GpuProgram>(
                 FILESYS.getFileContent("shaders/normal.vs"),
                 FILESYS.getFileContent("shaders/normal.ps")
         );
 
-        font = shared_ptr<Font>(new Font("fonts/Impact.ttf", 70.0f));
-        fontSmall = shared_ptr<Font>(new Font("fonts/a.ttf", 20.0f));
+        font = make_shared<Font>("fonts/Impact.ttf", 70.0f);
+        fontSmall = make_shared<Font>("fonts/a.ttf", 20.0f);
 
-        fpsCounter = shared_ptr<FpsCounter>(new FpsCounter());
-        starfield = shared_ptr<Starfield>(new Starfield(40, vec2(1024, 768)));
+        fpsCounter = make_shared<FpsCounter>();
+        starfield = make_shared<Starfield>(40, vec2(1024, 768));
 
         GFXSYS.setClearColor(vec3(0.1f, 0.0f, 0.1f));
 
         // initialize sprite pool
-        spritePool = shared_ptr<SpritePool>(new SpritePool());
+        spritePool = make_shared<SpritePool>();
 
-        gameObjectFactory = shared_ptr<GameObjectFactory>(new GameObjectFactory());
+        gameObjectFactory = make_shared<GameObjectFactory>();
 
         // add game objects
-        gameObjects.push_back(gameObjectFactory->enemy(vec2(300, -64)));
-        gameObjects.push_back(gameObjectFactory->enemy2(vec2(300, -64)));
-        gameObjects.push_back(gameObjectFactory->player(vec2(300, 700)));
+        gameObjects.push_back(gameObjectFactory->createEnemy(vec2(300, -64)));
+        gameObjects.push_back(gameObjectFactory->createEnemy2(vec2(300, -64)));
+        gameObjects.push_back(gameObjectFactory->createPlayer(vec2(300, 700)));
+
+        gpuProgramConstantBundle = make_shared<GpuProgramConstantBundle>();
+
+        // initialize some gpuProgram constants
+        gpuProgramConstantBundle->add("orthoMatrix", GpuProgramConstant(glm::ortho(0.0f, 1024.0f, 768.0f, 0.0f, 0.0f, 1.0f)));
+        int textureSamplerIndex = 0;
+        gpuProgramConstantBundle->add("diffuseSampler", GpuProgramConstant(textureSamplerIndex));
+
+        gpuProgram->addConstants(gpuProgramConstantBundle.get());
     }
 
     Stardust::~Stardust() {
     }
 
-    void Stardust::onEvent(SDL_Event const &event) {
+    void Stardust::onEvent(SDL_Event const& event) {
         switch (event.type) {
             case SDL_QUIT:
                 quitGame = true;
@@ -67,7 +78,7 @@ namespace Acidrain {
         if (input->isKeyDown(SDL_SCANCODE_ESCAPE))
             quitGame = true;
 
-        for (auto &gameObject : gameObjects)
+        for (auto& gameObject : gameObjects)
             gameObject->update(elapsedSeconds);
 
         starfield->update(elapsedSeconds);
@@ -77,24 +88,16 @@ namespace Acidrain {
     void Stardust::render() {
         GFXSYS.clearScreen();
 
-        // draw starfield
-        shader->use();
-        mat4 orthoMatrix = glm::ortho(0.0f, 1024.0f, 768.0f, 0.0f, 0.0f, 1.0f);
-        shader->setMatrix4Uniform(&orthoMatrix[0][0], "orthoMatrix");
-        glEnable(GL_TEXTURE_2D);
-        glActiveTexture(GL_TEXTURE0 + 0);
-        shader->setIntUniform(0, "texture");
-        starfield->render();
-        shader->unuse();
+        starfield->draw(gpuProgram);
 
         spritePool->clear();
-        for (auto &gameObject : gameObjects)
+        for (auto& gameObject : gameObjects)
             gameObject->addTo(*spritePool);
-        spritePool->draw(shader);
+        spritePool->draw(gpuProgram);
 
         drawStats();
 
-        fpsCounter->frameRendered();
+        fpsCounter->addFrame();
         GFXSYS.show();
     }
 

@@ -18,24 +18,15 @@ namespace Acidrain {
         vbos[texture].addQuad(vertices, texCoords, color);
     }
 
-    void SpritePool::draw(std::shared_ptr<Shader> shader) {
+    void SpritePool::draw(std::shared_ptr<GpuProgram> shader) {
+        GFXSYS.setTransparencyMode(TransparencyMode::Transparent);
         shader->use();
 
-        mat4 orthoMatrix = glm::ortho(0.0f, 1024.0f, 768.0f, 0.0f, 0.0f, 1.0f);
-        shader->setMatrix4Uniform(&orthoMatrix[0][0], "orthoMatrix");
-
-        glEnable(GL_TEXTURE_2D);
-        glActiveTexture(GL_TEXTURE0 + 0);
-        shader->setIntUniform(0, "texture");
-
-        GFXSYS.setTransparencyMode(TransparencyMode::Transparent);
-
         for (auto& kv : vbos) {
-            kv.first->use();
+            kv.first->useForUnit(0);
             kv.second.draw();
         }
         shader->unuse();
-        glDisable(GL_TEXTURE_2D);
     }
 
 } // namespace acidrain

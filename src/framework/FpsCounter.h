@@ -7,7 +7,7 @@ namespace Acidrain {
 
         void update(float elapsedSeconds);
 
-        void frameRendered();
+        void addFrame();
 
         int getFps() const;
 

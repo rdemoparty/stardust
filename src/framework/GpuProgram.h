@@ -3,17 +3,22 @@
 #include <GLheaders.h>
 #include <map>
 #include <string>
+#include <vector>
 
 namespace Acidrain {
 
-    class Shader {
+    class GpuProgramConstantBundle;
+
+    class GpuProgram {
     public:
 
-        Shader(const char* vertexShaderContent, const char* pixelShaderContent);
+        GpuProgram(const char* vertexShaderContent, const char* pixelShaderContent);
 
-        Shader(const std::string& vertexShaderContent, const std::string& pixelShaderContent);
+        GpuProgram(const std::string& vertexShaderContent, const std::string& pixelShaderContent);
 
-        virtual ~Shader();
+        virtual ~GpuProgram();
+
+        void addConstants(GpuProgramConstantBundle* bundle);
 
         void use();
 
@@ -37,6 +42,7 @@ namespace Acidrain {
         GLuint programId;
         GLuint shaderIds[2];
         std::map<const char*, int> uniformCache;
+        std::vector<GpuProgramConstantBundle*> constantBundles;
     };
 
 } // namespace Acidrain

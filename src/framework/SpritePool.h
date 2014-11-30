@@ -4,7 +4,7 @@
 #include <glm/vec2.hpp>
 #include <glm/vec4.hpp>
 #include <Vbo.h>
-#include <Shader.h>
+#include "GpuProgram.h"
 #include <memory>
 #include <map>
 
@@ -18,7 +18,7 @@ namespace Acidrain {
 
         void addTexturedQuad(const Texture* texture, const vector<vec2>& vertices, const vector<vec2>& texCoords, const vec4& color);
 
-        void draw(std::shared_ptr<Shader> shader);
+        void draw(std::shared_ptr<GpuProgram> shader);
 
     private:
         map<const Texture*, Vbo> vbos;

@@ -5,7 +5,7 @@
 #define STB_IMAGE_IMPLEMENTATION
 
 #include <stb_image.h>
-#include "FileSystem.h"
+#include <FileSystem.h>
 
 namespace Acidrain {
 
@@ -15,7 +15,6 @@ namespace Acidrain {
     }
 
     void GfxSystem::init(const int desiredWidth, const int desiredHeight) {
-
         SDL_DisplayMode desktopDisplayMode;
         if (SDL_GetDesktopDisplayMode(0, &desktopDisplayMode) != 0) {
             SDL_Log("SDL_GetDesktopDisplayMode failed: %s", SDL_GetError());
@@ -32,10 +31,10 @@ namespace Acidrain {
 
         if (wantedAspectRatio < windowAspectRatio) {
             height = windowHeight;
-            width = height * wantedAspectRatio;
+            width = (int) (height * wantedAspectRatio);
         } else {
             width = windowWidth;
-            height = width / wantedAspectRatio;
+            height = (int) (width / wantedAspectRatio);
         }
 
         offsetX = (windowWidth - width) / 2;
@@ -78,7 +77,6 @@ namespace Acidrain {
 
         return result;
     }
-
 
     void GfxSystem::setClearColor(const glm::vec3& color) {
         clearScreenColor = color;
@@ -158,7 +156,21 @@ namespace Acidrain {
         }
     }
 
+    int GfxSystem::windowWidth() const {
+        return window->width();
+    }
 
+    int GfxSystem::windowHeight() const {
+        return window->height();
+    }
+
+    int GfxSystem::drawableWidth() const {
+        return width;
+    }
+
+    int GfxSystem::drawableHeight() const {
+        return height;
+    }
 
 } // namespace Acidrain
 

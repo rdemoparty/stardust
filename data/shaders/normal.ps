@@ -1,11 +1,11 @@
 #version 130
 
-uniform sampler2D texture;
+uniform sampler2D diffuseSampler;
 
 in vec4 interpolatedColor;
 in vec2 interpolatedTextCoords;
 out vec4 fragmentColor;
 
 void main() {
-	fragmentColor = texture2D(texture, interpolatedTextCoords) * interpolatedColor;
+	fragmentColor = texture2D(diffuseSampler, interpolatedTextCoords) * interpolatedColor;
 }

@@ -12,7 +12,8 @@ set(HEADERS
    ${CMAKE_CURRENT_SOURCE_DIR}/InputProvider.h
    ${CMAKE_CURRENT_SOURCE_DIR}/json11.hpp
    ${CMAKE_CURRENT_SOURCE_DIR}/Randomizer.h
-   ${CMAKE_CURRENT_SOURCE_DIR}/Shader.h
+   ${CMAKE_CURRENT_SOURCE_DIR}/GpuProgram.h
+   ${CMAKE_CURRENT_SOURCE_DIR}/GpuProgramConstants.h
    ${CMAKE_CURRENT_SOURCE_DIR}/Sprite.h
    ${CMAKE_CURRENT_SOURCE_DIR}/SpritePool.h
    ${CMAKE_CURRENT_SOURCE_DIR}/stb_image.h
@@ -37,7 +38,8 @@ set(SOURCE
    ${CMAKE_CURRENT_SOURCE_DIR}/InputProvider.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/json11.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/Randomizer.cpp
-   ${CMAKE_CURRENT_SOURCE_DIR}/Shader.cpp
+   ${CMAKE_CURRENT_SOURCE_DIR}/GpuProgram.cpp
+   ${CMAKE_CURRENT_SOURCE_DIR}/GpuProgramConstants.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/Sprite.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/SpritePool.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/Texture.cpp

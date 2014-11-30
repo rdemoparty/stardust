@@ -1,7 +1,8 @@
 #include <Starfield.h>
 #include <TextureGenerator.h>
 #include <iostream>
-#include "GfxSystem.h"
+#include <GfxSystem.h>
+#include "GpuProgram.h"
 
 namespace Acidrain {
 
@@ -26,7 +27,7 @@ namespace Acidrain {
     }
 
     void Starfield::spawn(const std::shared_ptr<StarParticle>& particle) {
-        particle->speed = rnd.randomUnitDouble() * 3.0 + 1.0;
+        particle->speed = (float) (rnd.randomUnitDouble() * 3.0 + 1.0);
         particle->direction = glm::vec2(0.0f, 1.0f) * particle->speed;
 
         if (particle->firstSpawn) {
@@ -53,44 +54,32 @@ namespace Acidrain {
     }
 
     bool Starfield::isOutOfTerrain(const std::shared_ptr<StarParticle>& particle) {
-        return particle->position.x<-(spriteWidth / 2) ||
-                particle->position.x>(terrainSize.x + spriteWidth / 2) ||
-                particle->position.y<-(spriteWidth / 2) ||
-                        particle->position.y>(terrainSize.y + spriteWidth / 2);
+        float halfWidth = spriteWidth / 2.0f;
+        float halfHeight = spriteHeight / 2.0f;
+
+        return particle->position.x<(-halfWidth) ||
+                particle->position.x>(terrainSize.x + halfWidth) ||
+                particle->position.y<-halfWidth ||
+                        particle->position.y>(terrainSize.y + halfWidth);
     }
 
-    void Starfield::render() {
-        glEnable(GL_TEXTURE_2D);
-        flareTexture->use();
-
+    void Starfield::draw(shared_ptr<GpuProgram> shader) {
         vbo.empty();
         for (auto& particle : particles) {
             particle->box.centerAround(particle->position);
-            vbo.addQuad(particle->box.computeVertices(), textCoords.computeVertices(), vec4(1, 1, 1, particle->speed * 0.25f));
+            vbo.addQuad(
+                    particle->box.computeVertices(),
+                    textCoords.computeVertices(),
+                    vec4(1, 1, 1, particle->speed * 0.25f)
+            );
         }
 
-        GFXSYS.setTransparencyMode(TransparencyMode::Additive);
-        vbo.draw();
+        shader->use();
+        {
+            GFXSYS.setTransparencyMode(TransparencyMode::Additive);
+            flareTexture->useForUnit(0);
+            vbo.draw();
+        }
+        shader->unuse();
     }
-
-    void Starfield::draw(const std::shared_ptr<StarParticle>& particle) {
-//        glColor4f(1, 1, 1, particle->speed * 0.25f);
-//
-//        glBegin(GL_QUADS);
-//        {
-//            glTexCoord2f(0, 1);
-//            glVertex2f(particle->position.x, particle->position.y);
-//
-//            glTexCoord2f(0, 0);
-//            glVertex2f(particle->position.x, flareTexture->getHeight() + particle->position.y);
-//
-//            glTexCoord2f(1, 0);
-//            glVertex2f(particle->position.x + flareTexture->getWidth(), flareTexture->getHeight() + particle->position.y);
-//
-//            glTexCoord2f(1, 1);
-//            glVertex2f(particle->position.x + flareTexture->getWidth(), particle->position.y);
-//        }
-//        glEnd();
-    }
-
 } // namespace Acidrain

@@ -18,11 +18,11 @@ namespace Acidrain {
         GameObjectFactory();
         ~GameObjectFactory();
 
-        GameObject *player(vec2 position);
+        GameObject * createPlayer(vec2 position);
 
-        GameObject *enemy(vec2 position);
+        GameObject * createEnemy(vec2 position);
 
-        GameObject *enemy2(vec2 position);
+        GameObject * createEnemy2(vec2 position);
 
     private:
         shared_ptr<InputProvider> input;

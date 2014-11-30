@@ -2,6 +2,8 @@
 
 #include <EventSystem.h>
 #include <memory>
+#include <map>
+#include <string>
 
 namespace Acidrain {
 
@@ -11,7 +13,7 @@ namespace Acidrain {
 
     class GameObjectFactory;
 
-    class Shader;
+    class GpuProgram;
 
     class Font;
 
@@ -22,6 +24,8 @@ namespace Acidrain {
     class FpsCounter;
 
     class Starfield;
+
+    class GpuProgramConstantBundle;
 
     class Stardust : public EventListener {
     public:
@@ -37,12 +41,14 @@ namespace Acidrain {
 
     private:
 
+        shared_ptr<GpuProgramConstantBundle> gpuProgramConstantBundle;
+
         shared_ptr<GameObjectFactory> gameObjectFactory;
         vector<GameObject *> gameObjects;
 
         shared_ptr<FpsCounter> fpsCounter;
 
-        shared_ptr<Shader> shader;
+        shared_ptr<GpuProgram> gpuProgram;
 
         shared_ptr<Font> font;
         shared_ptr<Font> fontSmall;

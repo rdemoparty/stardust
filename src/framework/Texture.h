@@ -19,6 +19,8 @@ namespace Acidrain {
 
         void use() const;
 
+        void useForUnit(int unit) const;
+
         void unuse() const;
 
     private:

@@ -11,7 +11,7 @@ namespace Acidrain {
         }
     }
 
-    void FpsCounter::frameRendered() {
+    void FpsCounter::addFrame() {
         currentFps++;
     }
 

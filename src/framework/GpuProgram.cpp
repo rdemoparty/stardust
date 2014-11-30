@@ -1,6 +1,7 @@
-#include <Shader.h>
+#include <GpuProgram.h>
 #include <iostream>
-#include <vector>
+#include <glm/glm/gtc/matrix_transform.hpp>
+#include "GpuProgramConstants.h"
 
 namespace Acidrain {
 
@@ -24,11 +25,11 @@ namespace Acidrain {
     }
 
 
-    Shader::Shader(const std::string& vertexShaderContent, const std::string& pixelShaderContent) :
-            Shader(vertexShaderContent.c_str(), pixelShaderContent.c_str()) {
+    GpuProgram::GpuProgram(const std::string& vertexShaderContent, const std::string& pixelShaderContent) :
+            GpuProgram(vertexShaderContent.c_str(), pixelShaderContent.c_str()) {
     }
 
-    Shader::Shader(const char* vertexShaderContent, const char* pixelShaderContent) {
+    GpuProgram::GpuProgram(const char* vertexShaderContent, const char* pixelShaderContent) {
         shaderIds[0] = glCreateShader(GL_VERTEX_SHADER);
         glShaderSource(shaderIds[0], 1, &vertexShaderContent, nullptr);
         glCompileShader(shaderIds[0]);
@@ -47,7 +48,7 @@ namespace Acidrain {
         glUseProgram(programId);
     }
 
-    Shader::~Shader() {
+    GpuProgram::~GpuProgram() {
         glDetachShader(programId, shaderIds[0]);
         glDetachShader(programId, shaderIds[1]);
 
@@ -57,53 +58,60 @@ namespace Acidrain {
         glDeleteProgram(programId);
     }
 
-    void Shader::use() {
-        glUseProgram(programId);
+    void GpuProgram::addConstants(GpuProgramConstantBundle* bundle) {
+        constantBundles.push_back(bundle);
     }
 
-    void Shader::unuse() {
+    void GpuProgram::use() {
+        glUseProgram(programId);
+        for (auto &bundle : constantBundles) {
+            bundle->uploadTo(this);
+        }
+    }
+
+    void GpuProgram::unuse() {
         glUseProgram(0);
     }
 
 
-    int Shader::getUniform(const char* uniformName) {
+    int GpuProgram::getUniform(const char* uniformName) {
         if (uniformCache.count(uniformName) == 0) {
             uniformCache[uniformName] = glGetUniformLocation(programId, uniformName);
         }
         return uniformCache[uniformName];
     }
 
-    void Shader::setMatrix3Uniform(float* matrix, const char* uniformName) {
+    void GpuProgram::setMatrix3Uniform(float* matrix, const char* uniformName) {
         GLint location = getUniform(uniformName);
         if (location != -1)
             glUniformMatrix3fv(location, 1, false, matrix);
     }
 
-    void Shader::setMatrix4Uniform(float* matrix, const char* uniformName) {
+    void GpuProgram::setMatrix4Uniform(float* matrix, const char* uniformName) {
         GLint location = getUniform(uniformName);
         if (location != -1)
             glUniformMatrix4fv(location, 1, false, matrix);
     }
 
-    void Shader::setVec3Uniform(float* value, const char* uniformName) {
+    void GpuProgram::setVec3Uniform(float* value, const char* uniformName) {
         GLint location = getUniform(uniformName);
         if (location != -1)
             glUniform3fv(location, 1, value);
     }
 
-    void Shader::setVec4Uniform(float* value, const char* uniformName) {
+    void GpuProgram::setVec4Uniform(float* value, const char* uniformName) {
         GLint location = getUniform(uniformName);
         if (location != -1)
             glUniform4fv(location, 1, value);
     }
 
-    void Shader::setIntUniform(int value, const char* uniformName) {
+    void GpuProgram::setIntUniform(int value, const char* uniformName) {
         GLint location = getUniform(uniformName);
         if (location != -1)
             glUniform1i(location, value);
     }
 
-    void Shader::setFloatUniform(float value, const char* uniformName) {
+    void GpuProgram::setFloatUniform(float value, const char* uniformName) {
         GLint location = getUniform(uniformName);
         if (location != -1)
             glUniform1f(location, value);

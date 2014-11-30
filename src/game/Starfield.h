@@ -10,11 +10,16 @@
 
 namespace Acidrain {
 
+    using namespace std;
+    using namespace glm;
+
+    class GpuProgram;
+
     const int FLARE_SIZE = 48;
 
     struct StarParticle {
-        glm::vec2 position;
-        glm::vec2 direction;
+        vec2 position;
+        vec2 direction;
 
         Box box = Box(vec2(FLARE_SIZE));
 
@@ -25,21 +30,19 @@ namespace Acidrain {
     class Starfield {
     public:
 
-        Starfield(int howMany, glm::vec2 terrainSize);
+        Starfield(int howMany, vec2 terrainSize);
 
         virtual ~Starfield();
 
         void update(float dt);
 
-        void render();
+        void draw(shared_ptr<GpuProgram> shader);
 
     private:
 
-        void spawn(const std::shared_ptr<StarParticle>& particle);
+        void spawn(const shared_ptr<StarParticle>& particle);
 
-        bool isOutOfTerrain(const std::shared_ptr<StarParticle>& particle);
-
-        void draw(const std::shared_ptr<StarParticle>& particle);
+        bool isOutOfTerrain(const shared_ptr<StarParticle>& particle);
 
         int spriteWidth;
         int spriteHeight;
@@ -47,9 +50,9 @@ namespace Acidrain {
         Box textCoords;
         Vbo vbo;
         Randomizer rnd;
-        glm::vec2 terrainSize;
-        std::shared_ptr<Texture> flareTexture;
-        std::vector<std::shared_ptr<StarParticle>> particles;
+        vec2 terrainSize;
+        shared_ptr<Texture> flareTexture;
+        vector<shared_ptr<StarParticle>> particles;
     };
 
 } // namespace Acidrain

@@ -4,6 +4,7 @@
 #include <Texture.h>
 #include <Window.h>
 #include <glm/vec3.hpp>
+#include <map>
 #include <string>
 #include <Entity.h>
 
@@ -42,8 +43,15 @@ namespace Acidrain {
 
         void show();
 
-    private:
+        int windowWidth() const;
 
+        int windowHeight() const;
+
+        int drawableWidth() const;
+
+        int drawableHeight() const;
+
+    private:
         std::shared_ptr<Window> window;
         int width, height;
         int offsetX, offsetY;

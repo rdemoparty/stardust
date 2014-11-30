@@ -28,11 +28,9 @@ namespace Acidrain {
                 buffer);
     }
 
-
     Texture::Texture(GLuint textId, int w, int h)
             : width(w), height(h), textureId(textId), destroyable(false) {
     }
-
 
     Texture::~Texture() {
         if (destroyable)
@@ -51,9 +49,14 @@ namespace Acidrain {
         glBindTexture(GL_TEXTURE_2D, textureId);
     }
 
+    void Texture::useForUnit(int unit) const {
+        glEnable(GL_TEXTURE_2D);
+        glActiveTexture(GL_TEXTURE0 + unit);
+        use();
+    }
+
     void Texture::unuse() const {
         glBindTexture(GL_TEXTURE_2D, 0);
     }
 
 } // namespace Acidrain
-
