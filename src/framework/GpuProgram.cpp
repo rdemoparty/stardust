@@ -1,6 +1,6 @@
 #include <GpuProgram.h>
 #include <iostream>
-#include <glm/glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 #include "GpuProgramConstants.h"
 
 namespace Acidrain {
