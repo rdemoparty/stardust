@@ -15,7 +15,8 @@ namespace Acidrain {
     enum class TransparencyMode {
         Opaque,
         Transparent,
-        Additive
+        Additive,
+        Special
     };
 
     class GfxSystem {

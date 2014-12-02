@@ -71,6 +71,14 @@ namespace Acidrain {
         int w, h, comp;
         unsigned char* image = stbi_load_from_memory((stbi_uc const*) content.c_str(), content.size(), &w, &h, &comp, STBI_rgb_alpha);
 
+        for (int y = 0; y < h; y++)
+            for (int x = 0; x < w; x++) {
+                image[(x+y*w)*4 + 0] = (image[(x+y*w)*4 + 0] * image[(x+y*w)*4 + 3]) >> 8;
+                image[(x+y*w)*4 + 1] = (image[(x+y*w)*4 + 1] * image[(x+y*w)*4 + 3]) >> 8;
+                image[(x+y*w)*4 + 2] = (image[(x+y*w)*4 + 2] * image[(x+y*w)*4 + 3]) >> 8;
+            }
+
+
         std::cout << "Loading texture " << filename << " with size: " << w << "x" << h << std::endl;
         std::shared_ptr<Texture> result = std::shared_ptr<Texture>(new Texture(w, h, image));
         stbi_image_free(image);
@@ -164,6 +172,12 @@ namespace Acidrain {
                 glEnable(GL_BLEND);
                 glBlendEquationSeparate(GL_FUNC_ADD, GL_FUNC_ADD);
                 glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE, GL_ONE, GL_ZERO);
+                break;
+            case TransparencyMode::Special:
+                glEnable(GL_BLEND);
+//                glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+                glBlendEquationSeparate(GL_FUNC_ADD, GL_FUNC_ADD);
+                glBlendFuncSeparate(GL_ONE, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
                 break;
         }
     }

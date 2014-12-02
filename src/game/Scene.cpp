@@ -77,8 +77,6 @@ namespace Acidrain {
 
 
     void Scene::update(float elapsedSeconds) {
-        GFXSYS.setTransparencyMode(TransparencyMode::Transparent);
-
         // add the objects created last frame
         addNewObjectsToScene();
 
@@ -97,6 +95,7 @@ namespace Acidrain {
         for (auto& gameObject : objects)
             gameObject->addTo(*spritePool);
 
+        GFXSYS.setTransparencyMode(TransparencyMode::Special);
         spritePool->draw(gpuProgram);
     }
 
