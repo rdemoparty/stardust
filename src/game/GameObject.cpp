@@ -4,16 +4,23 @@
 #include <MovementStrategy.h>
 #include <Weapon.h>
 #include <Scene.h>
+#include <iostream>
 
 namespace Acidrain {
 
-    void GameObject::setMovementController(shared_ptr<MovementStrategy> const &movementController) {
+    GameObject::GameObject() {
+    };
+
+    GameObject::~GameObject() {
+    };
+
+    void GameObject::setMovementController(shared_ptr<MovementStrategy> const& movementController) {
         this->movementController = movementController;
         movementController->setControlledEntity(this);
     }
 
     void GameObject::fireWeapons(bool shouldFire) {
-        for (auto &weaponOffsetPair : weapons) {
+        for (auto weaponOffsetPair : weapons) {
             if (shouldFire)
                 weaponOffsetPair.first->fireOn();
             else
@@ -46,7 +53,7 @@ namespace Acidrain {
     void GameObject::updateWeapons(float elapsedSeconds) {
         vector<BulletInfo> bullets;
 
-        for (auto &weaponOffsetPair : weapons) {
+        for (auto& weaponOffsetPair : weapons) {
             bullets = weaponOffsetPair.first->update(elapsedSeconds);
 
             for (auto bullet : bullets) {

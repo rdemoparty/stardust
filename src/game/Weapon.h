@@ -1,4 +1,5 @@
 #pragma once
+
 #include <vector>
 #include <glm/vec2.hpp>
 #include <string>
@@ -9,10 +10,10 @@ namespace Acidrain {
     using namespace glm;
 
     class GameObject;
+
     class GameObjectFactory;
 
-    struct BulletInfo
-    {
+    struct BulletInfo {
         std::string gameObjectName;
     };
 
@@ -20,7 +21,9 @@ namespace Acidrain {
     public:
 
         void fireOn();
+
         void fireOff();
+
         vector<BulletInfo> update(float elapsedSeconds);
 
     private:

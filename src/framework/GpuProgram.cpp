@@ -1,6 +1,8 @@
 #include <GpuProgram.h>
 #include <iostream>
+
 #define GLM_FORCE_RADIANS
+
 #include <glm/gtc/matrix_transform.hpp>
 #include "GpuProgramConstants.h"
 
@@ -65,20 +67,19 @@ namespace Acidrain {
 
     void GpuProgram::use() {
         glUseProgram(programId);
-        for (auto &bundle : constantBundles) {
+        for (auto& bundle : constantBundles)
             bundle->uploadTo(this);
-        }
     }
 
     void GpuProgram::unuse() {
         glUseProgram(0);
+        glDisable(GL_TEXTURE_2D);
     }
 
-
     int GpuProgram::getUniform(const char* uniformName) {
-        if (uniformCache.count(uniformName) == 0) {
+        if (uniformCache.count(uniformName) == 0)
             uniformCache[uniformName] = glGetUniformLocation(programId, uniformName);
-        }
+
         return uniformCache[uniformName];
     }
 

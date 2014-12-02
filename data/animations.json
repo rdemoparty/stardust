@@ -14,7 +14,7 @@
     },
     {
       "name": "laser",
-      "texture": "sprites/lazorblue.png",
+      "texture": "sprites/lazorred.png",
       "spriteWidth": 18,
       "spriteHeight": 48
     }

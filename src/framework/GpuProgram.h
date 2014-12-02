@@ -44,6 +44,5 @@ namespace Acidrain {
         std::map<const char*, int> uniformCache;
         std::vector<GpuProgramConstantBundle*> constantBundles;
     };
-
 } // namespace Acidrain
 

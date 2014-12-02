@@ -4,7 +4,6 @@
 #include <memory>
 #include <map>
 #include <string>
-#include <Weapon.h>
 #include <Scene.h>
 
 namespace Acidrain {
@@ -43,10 +42,7 @@ namespace Acidrain {
 
     private:
 
-        Weapon weapon;
         Scene scene;
-
-        GameObject* player;
 
         shared_ptr<GpuProgramConstantBundle> gpuProgramConstantBundle;
 
@@ -69,6 +65,6 @@ namespace Acidrain {
 
         void drawStats();
 
-        virtual void onEvent(SDL_Event const &param);
+        virtual void onEvent(SDL_Event const& param);
     };
 }

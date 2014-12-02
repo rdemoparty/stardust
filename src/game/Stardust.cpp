@@ -11,7 +11,7 @@
 #include <GameObject.h>
 #include <GameObjectFactory.h>
 #include <InputProvider.h>
-#include "GpuProgramConstants.h"
+#include <GpuProgramConstants.h>
 
 namespace Acidrain {
 
@@ -44,16 +44,10 @@ namespace Acidrain {
 
         gameObjectFactory = make_shared<GameObjectFactory>();
         scene.setGameObjectFactory(gameObjectFactory.get());
+        scene.setVisibleArea(vec2(1024, 768));
 
         // add game objects
-        player = gameObjectFactory->createPlayer(vec2(300, 700));
-        Weapon* weapon1 = new Weapon();
-        player->addWeapon(weapon1, vec2(-10, -32));
-
-        Weapon* weapon2 = new Weapon();
-        player->addWeapon(weapon2, vec2(12, -32));
-
-        scene.add(player);
+        scene.add(gameObjectFactory->createPlayer(vec2(300, 700)));
         scene.add(gameObjectFactory->createEnemy(vec2(300, -64)));
         scene.add(gameObjectFactory->createExplosion(vec2(300, -64)));
 
@@ -86,18 +80,7 @@ namespace Acidrain {
         if (input->isKeyDown(SDL_SCANCODE_ESCAPE))
             quitGame = true;
 
-        if (input->isKeyJustPressed(SDL_SCANCODE_SPACE) || input->isKeyJustPressed(SDL_SCANCODE_LCTRL))
-            player->fireWeapons(true);
-        else if (input->isKeyJustReleased(SDL_SCANCODE_SPACE) || input->isKeyJustReleased(SDL_SCANCODE_LCTRL))
-            player->fireWeapons(false);
-
-        for (auto& gameObject : scene.objects)
-            gameObject->update(elapsedSeconds);
-
-        scene.addNewObjectsToScene();
-
-        for (auto& gameObject : scene.objects)
-            gameObject->updateAnimation(elapsedSeconds);
+        scene.update(elapsedSeconds);
 
         starfield->update(elapsedSeconds);
         fpsCounter->update(elapsedSeconds);
@@ -107,14 +90,9 @@ namespace Acidrain {
 
     void Stardust::render() {
         GFXSYS.clearScreen();
-
         starfield->draw(gpuProgram);
 
-        GFXSYS.setTransparencyMode(TransparencyMode::Additive);
-        spritePool->clear();
-        for (auto& gameObject : scene.objects)
-            gameObject->addTo(*spritePool);
-        spritePool->draw(gpuProgram);
+        scene.draw(gpuProgram);
 
         drawStats();
 
@@ -127,7 +105,7 @@ namespace Acidrain {
         GFXSYS.drawFilledRectangle(vec2(-1), vec2(1024, 50), vec4(0, 0, 0, 0.7f));
 
         std::stringstream s;
-        s << "FPS: " << fpsCounter->getFps() << ", Objects: " << scene.objects.size();
+        s << "FPS: " << fpsCounter->getFps() << ", Objects: " << scene.countObjects();
 
         GFXSYS.setTransparencyMode(TransparencyMode::Additive);
         fontSmall->print(10, 10, s.str().c_str(), vec4(1, 1, 1, 0.9f));

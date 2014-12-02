@@ -7,6 +7,7 @@ set(HEADERS
    ${CMAKE_CURRENT_SOURCE_DIR}/MovementStrategyPlayer.h
    ${CMAKE_CURRENT_SOURCE_DIR}/MovementStrategyLinear.h
    ${CMAKE_CURRENT_SOURCE_DIR}/MovementStrategySinusoidal.h
+   ${CMAKE_CURRENT_SOURCE_DIR}/PlayerShip.h
    ${CMAKE_CURRENT_SOURCE_DIR}/Scene.h
    ${CMAKE_CURRENT_SOURCE_DIR}/SpriteAnimationRepository.h
    ${CMAKE_CURRENT_SOURCE_DIR}/Stardust.h
@@ -23,6 +24,7 @@ set(SOURCE
    ${CMAKE_CURRENT_SOURCE_DIR}/MovementStrategyPlayer.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/MovementStrategyLinear.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/MovementStrategySinusoidal.cpp
+   ${CMAKE_CURRENT_SOURCE_DIR}/PlayerShip.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/Scene.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/SpriteAnimationRepository.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/Stardust.cpp

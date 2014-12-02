@@ -16,15 +16,16 @@ namespace Acidrain {
     public:
 
         GameObjectFactory();
+
         ~GameObjectFactory();
 
-        GameObject * createPlayer(vec2 position);
+        GameObject* createPlayer(vec2 position);
 
-        GameObject * createEnemy(vec2 position);
+        GameObject* createEnemy(vec2 position);
 
-        GameObject * createExplosion(vec2 position);
+        GameObject* createExplosion(vec2 position);
 
-        GameObject * createLaser();
+        GameObject* createLaser();
 
     private:
         shared_ptr<InputProvider> input;

@@ -1,4 +1,5 @@
 #pragma once
+
 #include <string>
 #include <memory>
 #include <map>
@@ -10,7 +11,9 @@ namespace Acidrain {
     using namespace std;
 
     class Animation;
+
     class AnimationData;
+
     class SpriteSheet;
 
     class SpriteAnimationRepository {
@@ -23,6 +26,7 @@ namespace Acidrain {
 
     private:
         SpriteAnimationRepository();
+
         map<string, AnimationData*> animationData;
         map<string, SpriteSheet*> spriteSheets;
     };
