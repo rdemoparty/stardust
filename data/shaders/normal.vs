@@ -1,16 +1,8 @@
-#version 130
+#version 120
 
 uniform mat4 orthoMatrix;
 
-in vec2 position;
-in vec2 textCoords;
-in vec4 color;
-
-out vec4 interpolatedColor;
-out vec2 interpolatedTextCoords;
-
 void main() {
-    gl_Position = orthoMatrix * vec4(position.x, position.y, 0.0f, 1.0f);
-    interpolatedColor = color;
-    interpolatedTextCoords = textCoords;
+    gl_Position = orthoMatrix * vec4(gl_Vertex.x, gl_Vertex.y, 0.0f, 1.0f);
+    gl_TexCoord[0] = gl_MultiTexCoord0;
 }
