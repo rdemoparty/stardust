@@ -50,6 +50,9 @@ namespace Acidrain {
     }
 
     void Vbo::draw() {
+        if (triangles == 0)
+            return;
+        
         if (id == 0)
             glGenBuffers(1, &id);
 
