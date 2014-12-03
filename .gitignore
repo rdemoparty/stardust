@@ -28,7 +28,7 @@
 *.app
 .idea
 build
-run
+bin/*
 *.trace
 *.mp4
 
