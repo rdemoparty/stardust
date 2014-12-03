@@ -2,7 +2,7 @@
 
 namespace Acidrain {
 
-    Animation::Animation(const AnimationData *animData)
+    Animation::Animation(const AnimationData* animData)
             : animationData(animData) {
     }
 
@@ -68,8 +68,8 @@ namespace Acidrain {
                             break;
                         case AnimationLoopType::PING_PONG:
                             currentFrameIndex = (int) (animationData->frames.size() > 1
-                                                                ? animationData->frames.size() - 2
-                                                                : 0);
+                                    ? animationData->frames.size() - 2
+                                    : 0);
                             pingPongDirection = AnimationDirection::LEFT;
                             break;
                         case AnimationLoopType::FORWARD:

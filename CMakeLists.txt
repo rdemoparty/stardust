@@ -31,7 +31,7 @@ if (WIN32)
 	endif (CMAKE_CL_64)
 else(WIN32)
 	# just for Linux GCC
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -g -O0")
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall")
 endif(WIN32)
 
 # SDL setup

@@ -50,7 +50,7 @@ namespace Acidrain {
         }
 
         void uploadTo(GpuProgram* program) {
-            for (auto &kv : constants) {
+            for (auto& kv : constants) {
                 switch (kv.second.type) {
                     case GpuProgramConstantType::Matrix4:
                         program->setMatrix4Uniform(&kv.second.matrix4Value[0][0], kv.first.c_str());

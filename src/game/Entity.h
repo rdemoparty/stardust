@@ -6,6 +6,7 @@
 #include <glm/mat4x4.hpp>
 
 #include <Sprite.h>
+#include <Collisions.h>
 
 namespace Acidrain {
 
@@ -22,6 +23,8 @@ namespace Acidrain {
 
         mat4 localTransform;
         mat4 worldTransform;
+
+        CollisionHull collisionHull;
 
         Entity* parent;
 

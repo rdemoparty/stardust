@@ -33,20 +33,20 @@ namespace Acidrain {
                 : spriteSheet(nullptr), spriteIndex(0) {
         }
 
-        Sprite(SpriteSheet *sprSheet, int index)
+        Sprite(SpriteSheet* sprSheet, int index)
                 : spriteSheet(sprSheet), spriteIndex(index) {
         }
 
-        Texture *getTexture() const;
+        Texture* getTexture() const;
 
         vector<vec2> getTexCoords() const;
 
-        SpriteInfo &getSpriteInfo() const;
+        SpriteInfo& getSpriteInfo() const;
 
         vec2 getSize() const;
 
     private:
-        SpriteSheet *spriteSheet;
+        SpriteSheet* spriteSheet;
         int spriteIndex;
     };
 } // namespace Acidrain

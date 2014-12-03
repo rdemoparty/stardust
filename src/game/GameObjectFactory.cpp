@@ -34,6 +34,8 @@ namespace Acidrain {
         Weapon* weapon2 = new Weapon();
         object->addWeapon(weapon2, vec2(12, -32));
 
+        object->collisionHull.add(Circle(32));
+
         return object;
     }
 
@@ -45,6 +47,7 @@ namespace Acidrain {
         object->size = vec2(64, 64);
         object->position = position;
         object->setMovementController(mc);
+        object->collisionHull.add(Circle(32));
         return object;
     }
 
@@ -67,6 +70,10 @@ namespace Acidrain {
         object->animation->start();
         object->size = object->animation->getSprite().getSize();
         object->setMovementController(mc);
+
+        object->collisionHull.add(Circle(4, vec2(0, -10)));
+        object->collisionHull.add(Circle(4, vec2(0, 10)));
+
         return object;
     }
 }

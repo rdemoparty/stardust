@@ -20,6 +20,9 @@ namespace Acidrain {
         // scale value from the transform matrix and use it to scale the collision
         // hull circles properly
         localTransform = glm::scale(localTransform, vec3(scale.x, scale.y, scale.x));
+
+        // Keep collision hull transformed
+        collisionHull.transform(localTransform);
     }
 
     vector<vec2> DrawableEntity::computeVertices() const {

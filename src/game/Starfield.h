@@ -15,11 +15,12 @@ namespace Acidrain {
 
     class GpuProgram;
 
-    const int FLARE_SIZE = 48;
+    const int FLARE_SIZE = 32;
 
     struct StarParticle {
         vec2 position;
         vec2 direction;
+        vec4 color;
 
         Box box = Box(vec2(FLARE_SIZE));
 

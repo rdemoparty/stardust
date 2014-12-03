@@ -2,11 +2,11 @@
 #include <TextureGenerator.h>
 #include <iostream>
 #include <GfxSystem.h>
-#include "GpuProgram.h"
+#include <GpuProgram.h>
 
 namespace Acidrain {
 
-    Starfield::Starfield(int howMany, glm::vec2 size) {
+    Starfield::Starfield(int howMany, vec2 size) {
         terrainSize = size;
 
         spriteWidth = FLARE_SIZE;
@@ -14,10 +14,10 @@ namespace Acidrain {
 
         textCoords.centerAround(vec2(0.5, 0.5));
 
-        flareTexture = TextureGenerator(spriteWidth, spriteHeight).lens(0, spriteWidth / 2).getTexture(0);
+        flareTexture = TextureGenerator(spriteWidth, spriteHeight).lens(0, spriteWidth / 4).getTexture(0);
 
         for (int i = 0; i < howMany; i++) {
-            auto particle = std::shared_ptr<StarParticle>(new StarParticle);
+            auto particle = make_shared<StarParticle>();
             particles.push_back(particle);
             spawn(particle);
         }
@@ -28,7 +28,7 @@ namespace Acidrain {
 
     void Starfield::spawn(const std::shared_ptr<StarParticle>& particle) {
         particle->speed = (float) (rnd.randomUnitDouble() * 3.0 + 1.0);
-        particle->direction = glm::vec2(0.0f, 1.0f) * particle->speed;
+        particle->direction = vec2(0.0f, 1.0f) * particle->speed;
 
         if (particle->firstSpawn) {
             particle->position = glm::vec2(
@@ -42,6 +42,12 @@ namespace Acidrain {
                     -spriteHeight / 2.f
             );
         }
+        particle->color = vec4(
+                1,
+                1,
+                1,
+                particle->speed * 0.25f
+        );
     }
 
     void Starfield::update(float dt) {
@@ -57,10 +63,16 @@ namespace Acidrain {
         float halfWidth = spriteWidth / 2.0f;
         float halfHeight = spriteHeight / 2.0f;
 
-        return particle->position.x<(-halfWidth) ||
-                particle->position.x>(terrainSize.x + halfWidth) ||
-                particle->position.y<-halfWidth ||
-                        particle->position.y>(terrainSize.y + halfWidth);
+        if (particle->position.x < -halfWidth)
+            return true;
+        else if (particle->position.x > (terrainSize.x + halfWidth))
+            return true;
+        else if (particle->position.y < -halfWidth)
+            return true;
+        else if (particle->position.y > (terrainSize.y + halfWidth))
+            return true;
+        else
+            return false;
     }
 
     void Starfield::draw(shared_ptr<GpuProgram> shader) {
@@ -70,7 +82,7 @@ namespace Acidrain {
             vbo.addQuad(
                     particle->box.computeVertices(),
                     textCoords.computeVertices(),
-                    vec4(1, 1, 1, particle->speed * 0.25f)
+                    particle->color
             );
         }
 

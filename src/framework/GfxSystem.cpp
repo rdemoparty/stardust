@@ -73,9 +73,9 @@ namespace Acidrain {
 
         for (int y = 0; y < h; y++)
             for (int x = 0; x < w; x++) {
-                image[(x+y*w)*4 + 0] = (image[(x+y*w)*4 + 0] * image[(x+y*w)*4 + 3]) >> 8;
-                image[(x+y*w)*4 + 1] = (image[(x+y*w)*4 + 1] * image[(x+y*w)*4 + 3]) >> 8;
-                image[(x+y*w)*4 + 2] = (image[(x+y*w)*4 + 2] * image[(x+y*w)*4 + 3]) >> 8;
+                image[(x + y * w) * 4 + 0] = (image[(x + y * w) * 4 + 0] * image[(x + y * w) * 4 + 3]) >> 8;
+                image[(x + y * w) * 4 + 1] = (image[(x + y * w) * 4 + 1] * image[(x + y * w) * 4 + 3]) >> 8;
+                image[(x + y * w) * 4 + 2] = (image[(x + y * w) * 4 + 2] * image[(x + y * w) * 4 + 3]) >> 8;
             }
 
 
@@ -114,12 +114,13 @@ namespace Acidrain {
 
     void GfxSystem::drawCircle(const glm::vec2& center, float radius, const glm::vec4& color) {
         const int SEGMENTS = 20;
-        glLineWidth(3);
+        glLineWidth(2);
         glEnable(GL_LINE_SMOOTH);
         glBegin(GL_LINE_STRIP);
-        glColor4f(color.r, color.g, color.b, color.a);
-        for (int i = 0; i <= SEGMENTS; i++) {
-            glVertex2d(sin(i * 2 * M_PI / SEGMENTS) * radius + center.x, cos(i * 2 * M_PI / SEGMENTS) * radius + center.y);
+        {
+            glColor4f(color.r, color.g, color.b, color.a);
+            for (int i = 0; i <= SEGMENTS; i++)
+                glVertex2d(sin(i * 2 * M_PI / SEGMENTS) * radius + center.x, cos(i * 2 * M_PI / SEGMENTS) * radius + center.y);
         }
         glEnd();
     }

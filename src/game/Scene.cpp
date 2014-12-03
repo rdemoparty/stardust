@@ -80,11 +80,13 @@ namespace Acidrain {
         // add the objects created last frame
         addNewObjectsToScene();
 
-        for (auto& gameObject : objects)
+        for (auto& gameObject : objects) {
             gameObject->update(elapsedSeconds);
-
-        for (auto& gameObject : objects)
             gameObject->updateAnimation(elapsedSeconds);
+        }
+
+        detectCollisions();
+        solveCollisions();
 
         removeEntitiesOutOfVisibleArea();
     }
@@ -97,6 +99,10 @@ namespace Acidrain {
 
         GFXSYS.setTransparencyMode(TransparencyMode::Special);
         spritePool->draw(gpuProgram);
+
+        GFXSYS.setTransparencyMode(TransparencyMode::Transparent);
+        for (auto& gameObject : objects)
+            gameObject->collisionHull.draw();
     }
 
     void Scene::confineEntityInVisibleArea(GameObject* object) {
@@ -111,5 +117,33 @@ namespace Acidrain {
 
         if (object->position.y > (visibleArea.y - object->size.y / 2.0f))
             object->position.y = visibleArea.y - object->size.y / 2.0f;
+    }
+
+
+    void Scene::detectCollisions() {
+        collisions.clear();
+        for (auto it = objects.begin(); it != objects.end(); it++) {
+            for (auto it2 = it; it2 != objects.end(); it2++) {
+                if (it == it2)
+                    continue;
+                else
+                    detectCollisionBetweenGameObjects(*it, *it2);
+            }
+        }
+    }
+
+    void Scene::solveCollisions() {
+        // TODO: implement collision result handling
+    }
+
+    void Scene::detectCollisionBetweenGameObjects(GameObject* a, GameObject* b) {
+        if (a->collisionHull.collidesWith(b->collisionHull)) {
+            collisions.push_back(CollisionInfo(a, b, vec2(0, 0)));
+        }
+    }
+
+
+    int Scene::countCollisions() const {
+        return collisions.size();
     }
 }
