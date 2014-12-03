@@ -25,6 +25,7 @@ namespace Acidrain {
             return AnimationLoopType::REVERSE;
         else if (name == "PING_PONG")
             return AnimationLoopType::PING_PONG;
+        return AnimationLoopType::NONE;
     }
 
     void SpriteAnimationRepository::initialize(std::string filename) {

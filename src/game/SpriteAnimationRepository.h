@@ -12,7 +12,7 @@ namespace Acidrain {
 
     class Animation;
 
-    class AnimationData;
+    struct AnimationData;
 
     class SpriteSheet;
 

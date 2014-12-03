@@ -36,6 +36,10 @@ using std::make_shared;
 using std::initializer_list;
 using std::move;
 
+#ifdef _WIN32
+#define snprintf _snprintf
+#endif
+
 /* * * * * * * * * * * * * * * * * * * *
  * Serialization
  */

@@ -60,6 +60,10 @@ namespace json11 {
 
 class JsonValue;
 
+#ifdef _WIN32
+#define noexcept
+#endif
+
 class Json final {
 public:
     // Types

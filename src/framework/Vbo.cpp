@@ -2,15 +2,15 @@
 
 namespace Acidrain {
 
-    constexpr char* BUFFER_OFFSET(int i) {
+    const char* BUFFER_OFFSET(int i) {
         return (char*) NULL + i * sizeof(float);
     }
 
-    constexpr int componentsInVertex() {
+    int componentsInVertex() {
         return 2 + 2 + 4; // position, uv, color
     }
 
-    constexpr int sizeOfVertexInBytes() {
+    int sizeOfVertexInBytes() {
         return componentsInVertex() * sizeof(float);
     }
 

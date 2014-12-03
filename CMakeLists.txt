@@ -16,26 +16,50 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${stardust_SOURCE_DIR}/cmake")
 #	endif()
 #endif()
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -g -O0")
+if (WIN32)
+	set(SDL2_INCLUDE_DIR "src/3rdparty/SDL2/include")
+	if (CMAKE_CL_64)
+		set(SDL2_LIBRARY "../src/3rdparty/SDL2/lib/x64/SDL2")
+		set(SDL2_MAIN_LIBRARY "../src/3rdparty/SDL2/lib/x64/SDL2main")
+		set(BIN_PATH ../bin64)
+	else (CMAKE_CL_64)
+		set(SDL2_LIBRARY "../src/3rdparty/SDL2/lib/x86/SDL2")
+		set(SDL2_MAIN_LIBRARY "../src/3rdparty/SDL2/lib/x86/SDL2main")
+		set(BIN_PATH ../bin32)
+		# GLM: on x86 there is an error related to align(16), so we force non SIMD here
+		add_definitions(-DGLM_FORCE_PURE)
+	endif (CMAKE_CL_64)
+else(WIN32)
+	# just for Linux GCC
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -g -O0")
+endif(WIN32)
 
-
+# SDL setup
 find_package(SDL2 REQUIRED)
 include_directories(${SDL2_INCLUDE_DIR})
 
+# GL setup
 find_package(OpenGL REQUIRED)
 include_directories(${OpenGL_INCLUDE_DIRS})
 link_directories(${OpenGL_LIBRARY_DIRS})
 
-find_package(GLEW REQUIRED)
-include_directories(${GLEW_INCLUDE_DIRS})
-link_directories(${GLEW_LIBRARY_DIRS})
+# GLEW setup
+include_directories(./src/3rdparty/glew/include)
+file(GLOB GLEW_SOURCES ./src/3rdparty/glew/src/glew.c)
+add_definitions(-DGLEW_STATIC)
 
 include_directories("src/")
-include_directories("src/glm")
+include_directories("src/3rdparty/glm")
 include_directories("src/framework")
 include_directories("src/game")
 add_subdirectory(src)
 
 add_executable(stardust src/main.cpp ${SOURCE})
-target_link_libraries(stardust ${SDL2_LIBRARY} ${OPENGL_LIBRARIES} ${GLEW_LIBRARIES})
-	
+target_link_libraries(stardust ${SDL2_LIBRARY} ${SDL2_MAIN_LIBRARY} ${OPENGL_LIBRARIES})
+
+if(WIN32)
+	# move the exe file to the specific bin32 or bin64 folder
+	set_target_properties(stardust PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${BIN_PATH})
+	set_target_properties(stardust PROPERTIES RUNTIME_OUTPUT_DIRECTORY_DEBUG ${BIN_PATH})
+	set_target_properties(stardust PROPERTIES RUNTIME_OUTPUT_DIRECTORY_RELEASE ${BIN_PATH})
+endif(WIN32)

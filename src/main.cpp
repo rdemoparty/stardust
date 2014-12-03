@@ -12,7 +12,7 @@ int main(int argc, char** argv) {
 
     EVENTSYS.init();
     GFXSYS.init(GAME_LOGICAL_RESOLUTION_X, GAME_LOGICAL_RESOLUTION_Y);
-    FILESYS.init("./data");
+    FILESYS.init("../data");
 
     Timer timer;
     Stardust game;
