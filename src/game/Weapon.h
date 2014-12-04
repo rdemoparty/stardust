@@ -28,7 +28,7 @@ namespace Acidrain {
 
     private:
         bool isFiring = false;
-        float fireDelay = 0.4f;
+        float fireDelay = 0.2f;
         float accumulator = 0.0f;
     };
 }

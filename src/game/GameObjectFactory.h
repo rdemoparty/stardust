@@ -23,7 +23,7 @@ namespace Acidrain {
 
         GameObject* createEnemy(vec2 position);
 
-        GameObject* createExplosion(vec2 position);
+        GameObject* createExplosion();
 
         GameObject* createLaser();
 

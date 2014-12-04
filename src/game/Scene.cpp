@@ -24,21 +24,31 @@ namespace Acidrain {
     }
 
     GameObject* Scene::createByName(string name) {
-        if (name == "laser") {
+        if (name == "laser")
             return objectFactory->createLaser();
-        } else {
+        else if (name == "explosion")
+            return objectFactory->createExplosion();
+        else
             return nullptr;
-        }
     }
 
     int Scene::countObjects() const {
         return static_cast<int>(objects.size());
     }
 
-    void Scene::removeEntitiesOutOfVisibleArea() {
+    void Scene::flagEntitiesOutOfVisibleArea() {
+        for (auto object : objects) {
+            if (object->state.killIfOutsideOfVisibleArea && isObjectOutOfVisibleArea(object)) {
+                object->state.isDead = true;
+                object->state.deathReason = EntityDeathReason::OutOfVisibleArea;
+            }
+        }
+    }
+
+    void Scene::removeDeadEntities() {
         auto i = begin(objects);
         while (i != end(objects)) {
-            if (isObjectOutOfVisibleArea(*i)) {
+            if ((*i)->state.shouldRemove()) {
                 delete *i;
                 i = objects.erase(i);
             } else {
@@ -69,6 +79,9 @@ namespace Acidrain {
 
 
     void Scene::update(float elapsedSeconds) {
+        // remove entities killed the previous frame
+        removeDeadEntities();
+
         // add the objects created last frame
         addNewObjectsToScene();
 
@@ -79,8 +92,7 @@ namespace Acidrain {
 
         detectCollisions();
         solveCollisions();
-
-        removeEntitiesOutOfVisibleArea();
+        flagEntitiesOutOfVisibleArea();
     }
 
     void Scene::draw(shared_ptr<GpuProgram> gpuProgram) {
@@ -92,9 +104,9 @@ namespace Acidrain {
         GFXSYS.setTransparencyMode(TransparencyMode::Special);
         spritePool->draw(gpuProgram);
 
-        GFXSYS.setTransparencyMode(TransparencyMode::Transparent);
-        for (auto& gameObject : objects)
-            gameObject->collisionHull.draw();
+//        GFXSYS.setTransparencyMode(TransparencyMode::Transparent);
+//        for (auto& gameObject : objects)
+//            gameObject->collisionHull.draw();
     }
 
     void Scene::confineEntityInVisibleArea(GameObject* object) {
@@ -114,28 +126,31 @@ namespace Acidrain {
 
     void Scene::detectCollisions() {
         collisions.clear();
-        for (auto it = objects.begin(); it != objects.end(); it++) {
-            for (auto it2 = it; it2 != objects.end(); it2++) {
-                if (it == it2)
-                    continue;
-                else
-                    detectCollisionBetweenGameObjects(*it, *it2);
+
+        for (auto i = objects.begin(); i != objects.end(); i++)
+            for (auto j = i; j != objects.end(); j++)
+                if (i != j)
+                    detectCollisionBetweenGameObjects(*i, *j);
+    }
+
+    void Scene::solveCollisions() {
+        for (auto& collisionInfo : collisions) {
+            GameObject* a = collisionInfo.from;
+            GameObject* b = collisionInfo.to;
+            if (!a->state.isDead && !b->state.isDead) {
+                a->inflictDamage(b->state.damageProvidedOnCollision);
+                b->inflictDamage(a->state.damageProvidedOnCollision);
             }
         }
     }
 
-    void Scene::solveCollisions() {
-        // TODO: implement collision result handling
-    }
-
     void Scene::detectCollisionBetweenGameObjects(GameObject* a, GameObject* b) {
+        if (!a->state.isCollidable || !b->state.isCollidable) return;
+        if (a->state.side == b->state.side) return;
+        if (a->state.isDead || b->state.isDead) return;
+
         if (a->collisionHull.collidesWith(b->collisionHull)) {
-            collisions.push_back(CollisionInfo(a, b, vec2(0, 0)));
+            collisions.push_back(CollisionInfo(a, b, (a->position + b->position) / 2.0f));
         }
-    }
-
-
-    int Scene::countCollisions() const {
-        return collisions.size();
     }
 }

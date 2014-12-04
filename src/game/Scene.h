@@ -48,13 +48,13 @@ namespace Acidrain {
 
         int countObjects() const;
 
-        int countCollisions() const;
-
     private:
 
         void addNewObjectsToScene();
 
-        void removeEntitiesOutOfVisibleArea();
+        void flagEntitiesOutOfVisibleArea();
+
+        void removeDeadEntities();
 
         bool isObjectOutOfVisibleArea(GameObject* object);
 

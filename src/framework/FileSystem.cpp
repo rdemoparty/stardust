@@ -2,9 +2,9 @@
 #include <fstream>
 
 #ifdef _WIN32
-	#include <Windows.h> // getmodulefilename
+	#include <windows.h> // getmodulefilename
     #include <stdio.h>
-    #include <Psapi.h>
+    #include <psapi.h>
 #else
 
 #include <libgen.h> // dirname

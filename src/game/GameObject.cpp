@@ -69,4 +69,14 @@ namespace Acidrain {
         GameObject* bullet = scene->createByName(info->gameObjectName);
         return bullet;
     }
+
+
+    void GameObject::inflictDamage(float amount) {
+        state.inflictDamage(amount);
+        if (state.isDead && state.type == EntityType::Ship) {
+            GameObject* explosion = scene->createByName("explosion");
+            explosion->position = position;
+            scene->add(explosion);
+        }
+    }
 }
