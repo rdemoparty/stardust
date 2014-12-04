@@ -38,7 +38,7 @@ namespace Acidrain {
         glColor4f(color.r, color.g, color.b, color.a);
         glBegin(GL_QUADS);
         while (*text) {
-            if (*text >= 32 && *text < 128) {
+            if (static_cast<unsigned char>(*text) >= 32 && static_cast<unsigned char>(*text) < 128) {
                 stbtt_aligned_quad q;
                 stbtt_GetBakedQuad(cdata, 512, 512, *text - 32, &x, &y, &q, 1);//1=opengl,0=old d3d
 

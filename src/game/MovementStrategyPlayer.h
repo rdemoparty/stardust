@@ -21,7 +21,7 @@ namespace Acidrain {
     private:
         vec2 velocityFromInput();
 
-        float speed = 100.0f;
         shared_ptr<InputProvider> input;
+        float speed = 100.0f;
     };
 }

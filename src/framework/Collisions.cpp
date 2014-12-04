@@ -51,7 +51,7 @@ namespace Acidrain {
             return false;
 
         // evaluate the time of collision
-        double t = (-bb - sqrt(d)) / aa;
+        double t = (-bb - ::sqrt(d)) / aa;
         return t <= 1;
     }
 

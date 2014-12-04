@@ -67,9 +67,9 @@ namespace Acidrain {
             return true;
         else if (particle->position.x > (terrainSize.x + halfWidth))
             return true;
-        else if (particle->position.y < -halfWidth)
+        else if (particle->position.y < -halfHeight)
             return true;
-        else if (particle->position.y > (terrainSize.y + halfWidth))
+        else if (particle->position.y > (terrainSize.y + halfHeight))
             return true;
         else
             return false;

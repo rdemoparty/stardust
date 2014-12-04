@@ -14,7 +14,7 @@ namespace Acidrain {
 
     struct AnimationData;
 
-    class SpriteSheet;
+    struct SpriteSheet;
 
     class SpriteAnimationRepository {
     public:

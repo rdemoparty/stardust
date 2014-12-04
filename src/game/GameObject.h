@@ -13,7 +13,7 @@ namespace Acidrain {
 
     class Weapon;
 
-    class BulletInfo;
+    struct BulletInfo;
 
     class Scene;
 
