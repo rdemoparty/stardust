@@ -32,21 +32,13 @@ namespace Acidrain {
     class Scene {
     public:
 
-        Scene();
+        Scene(GameObjectFactory* objectFactory, const vec2& visibleArea);
 
         ~Scene();
-
-        void setGameObjectFactory(GameObjectFactory* objectFactory);
-
-        void setVisibleArea(const vec2& size);
 
         void add(GameObject* object);
 
         GameObject* createByName(string name);
-
-        void addNewObjectsToScene();
-
-        void removeEntitiesOutOfVisibleArea();
 
         void update(float elapsedSeconds);
 
@@ -59,6 +51,10 @@ namespace Acidrain {
         int countCollisions() const;
 
     private:
+
+        void addNewObjectsToScene();
+
+        void removeEntitiesOutOfVisibleArea();
 
         bool isObjectOutOfVisibleArea(GameObject* object);
 

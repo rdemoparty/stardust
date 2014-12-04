@@ -12,6 +12,7 @@
 #include <GameObjectFactory.h>
 #include <InputProvider.h>
 #include <GpuProgramConstants.h>
+#include <Scene.h>
 
 namespace Acidrain {
 
@@ -40,16 +41,14 @@ namespace Acidrain {
         GFXSYS.setClearColor(vec3(0.1f, 0.0f, 0.1f));
 
         // initialize sprite pool
-        spritePool = make_shared<SpritePool>();
 
         gameObjectFactory = make_shared<GameObjectFactory>();
-        scene.setGameObjectFactory(gameObjectFactory.get());
-        scene.setVisibleArea(vec2(1024, 768));
+        scene = make_shared<Scene>(gameObjectFactory.get(), vec2(1024, 768));
 
         // add game objects
-        scene.add(gameObjectFactory->createPlayer(vec2(300, 700)));
-        scene.add(gameObjectFactory->createEnemy(vec2(300, -64)));
-        scene.add(gameObjectFactory->createExplosion(vec2(300, -64)));
+        scene->add(gameObjectFactory->createPlayer(vec2(300, 700)));
+        scene->add(gameObjectFactory->createEnemy(vec2(300, -64)));
+        scene->add(gameObjectFactory->createExplosion(vec2(300, -64)));
 
         gpuProgramConstantBundle = make_shared<GpuProgramConstantBundle>();
 
@@ -80,7 +79,7 @@ namespace Acidrain {
         if (input->isKeyDown(SDL_SCANCODE_ESCAPE))
             quitGame = true;
 
-        scene.update(elapsedSeconds);
+        scene->update(elapsedSeconds);
 
         starfield->update(elapsedSeconds);
         fpsCounter->update(elapsedSeconds);
@@ -92,7 +91,7 @@ namespace Acidrain {
         GFXSYS.clearScreen();
         starfield->draw(gpuProgram);
 
-        scene.draw(gpuProgram);
+        scene->draw(gpuProgram);
 
         drawStats();
 
@@ -105,7 +104,9 @@ namespace Acidrain {
         GFXSYS.drawFilledRectangle(vec2(-1), vec2(1024, 50), vec4(0, 0, 0, 0.7f));
 
         std::stringstream s;
-        s << "FPS: " << fpsCounter->getFps() << ", Objects: " << scene.countObjects() << ", Collision count: " << scene.countCollisions();
+        s << "FPS: " << fpsCounter->getFps()
+                << ", Objects: " << scene->countObjects()
+                << ", Collision count: " << scene->countCollisions();
 
         GFXSYS.setTransparencyMode(TransparencyMode::Additive);
         fontSmall->print(10, 10, s.str().c_str(), vec4(1, 1, 1, 0.9f));

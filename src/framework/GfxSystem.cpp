@@ -1,9 +1,8 @@
 #include <GfxSystem.h>
 #include <GLheaders.h>
+#include <Window.h>
 #include <iostream>
-
 #define STB_IMAGE_IMPLEMENTATION
-
 #include <stb_image.h>
 #include <FileSystem.h>
 
@@ -21,7 +20,7 @@ namespace Acidrain {
             exit(1);
         }
 
-        window = std::shared_ptr<Window>(new Window(desktopDisplayMode.w, desktopDisplayMode.h, WindowType::Fullscreen));
+        window = make_shared<Window>(desktopDisplayMode.w, desktopDisplayMode.h, WindowType::Fullscreen);
 
         const int windowWidth = window->width();
         const int windowHeight = window->height();
@@ -42,7 +41,7 @@ namespace Acidrain {
 
         // clear screen before setting scissors so we remove the possible garbage
         glClearColor(0, 0, 0, 1);
-        setClearColor(glm::vec3(0));
+        setClearColor(vec3(0));
         clearScreen();
 
         glViewport(offsetX, offsetY, width, height);
@@ -52,7 +51,6 @@ namespace Acidrain {
         glDisable(GL_DEPTH_TEST);
 
         glMatrixMode(GL_PROJECTION);
-//        glOrtho(0, desiredWidth, 0, desiredHeight, 0, 1);
         glOrtho(0, desiredWidth, desiredHeight, 0, 0, 1);
 
         glMatrixMode(GL_MODELVIEW);
@@ -62,15 +60,16 @@ namespace Acidrain {
         glTranslatef(0.375, 0.375, 0);
     }
 
-    std::shared_ptr<Texture> GfxSystem::loadTexture(const std::string& filename) {
+    shared_ptr<Texture> GfxSystem::loadTexture(const string& filename) {
         return loadTexture(filename.c_str());
     }
 
-    std::shared_ptr<Texture> GfxSystem::loadTexture(const char* filename) {
-        std::string content = FILESYS.getFileContent(filename);
+    shared_ptr<Texture> GfxSystem::loadTexture(const char* filename) {
+        string content = FILESYS.getFileContent(filename);
         int w, h, comp;
         unsigned char* image = stbi_load_from_memory((stbi_uc const*) content.c_str(), content.size(), &w, &h, &comp, STBI_rgb_alpha);
 
+        // premultiply RGB with alpha
         for (int y = 0; y < h; y++)
             for (int x = 0; x < w; x++) {
                 image[(x + y * w) * 4 + 0] = (image[(x + y * w) * 4 + 0] * image[(x + y * w) * 4 + 3]) >> 8;
@@ -78,15 +77,14 @@ namespace Acidrain {
                 image[(x + y * w) * 4 + 2] = (image[(x + y * w) * 4 + 2] * image[(x + y * w) * 4 + 3]) >> 8;
             }
 
-
         std::cout << "Loading texture " << filename << " with size: " << w << "x" << h << std::endl;
-        std::shared_ptr<Texture> result = std::shared_ptr<Texture>(new Texture(w, h, image));
-        stbi_image_free(image);
 
+        shared_ptr<Texture> result = make_shared<Texture>(w, h, image);
+        stbi_image_free(image);
         return result;
     }
 
-    void GfxSystem::setClearColor(const glm::vec3& color) {
+    void GfxSystem::setClearColor(const vec3& color) {
         clearScreenColor = color;
         glClearColor(clearScreenColor.r, clearScreenColor.g, clearScreenColor.b, 0.0f);
     }
@@ -112,7 +110,7 @@ namespace Acidrain {
             window->present();
     }
 
-    void GfxSystem::drawCircle(const glm::vec2& center, float radius, const glm::vec4& color) {
+    void GfxSystem::drawCircle(const vec2& center, float radius, const vec4& color) {
         const int SEGMENTS = 20;
         glLineWidth(2);
         glEnable(GL_LINE_SMOOTH);
@@ -125,7 +123,7 @@ namespace Acidrain {
         glEnd();
     }
 
-    void GfxSystem::drawFilledRectangle(const glm::vec2& topLeft, const glm::vec2& bottomRight, const glm::vec4& color) {
+    void GfxSystem::drawFilledRectangle(const vec2& topLeft, const vec2& bottomRight, const vec4& color) {
         glBegin(GL_QUADS);
         {
             glColor4f(color.r, color.g, color.b, color.a);

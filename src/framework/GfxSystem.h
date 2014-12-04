@@ -2,7 +2,6 @@
 
 #include <memory>
 #include <Texture.h>
-#include <Window.h>
 #include <glm/vec3.hpp>
 #include <map>
 #include <string>
@@ -11,6 +10,11 @@
 #define GFXSYS Acidrain::GfxSystem::getInstance()
 
 namespace Acidrain {
+
+    using namespace std;
+    using namespace glm;
+
+    class Window;
 
     enum class TransparencyMode {
         Opaque,
@@ -26,19 +30,19 @@ namespace Acidrain {
 
         void init(const int desiredWidth, const int desiredHeight);
 
-        std::shared_ptr<Texture> loadTexture(const char* filename);
+        shared_ptr<Texture> loadTexture(const char* filename);
 
-        std::shared_ptr<Texture> loadTexture(const std::string& filename);
+        shared_ptr<Texture> loadTexture(const string& filename);
 
         void setTransparencyMode(TransparencyMode mode);
 
-        void drawCircle(const glm::vec2& center, float radius, const glm::vec4& color);
+        void drawCircle(const vec2& center, float radius, const vec4& color);
 
-        void drawFilledRectangle(const glm::vec2& topLeft, const glm::vec2& bottomRight, const glm::vec4& color);
+        void drawFilledRectangle(const vec2& topLeft, const vec2& bottomRight, const vec4& color);
 
         void drawSprite(const Sprite& sprite, const vec2& position);
 
-        void setClearColor(const glm::vec3& color);
+        void setClearColor(const vec3& color);
 
         void clearScreen();
 
@@ -53,10 +57,10 @@ namespace Acidrain {
         int drawableHeight() const;
 
     private:
-        std::shared_ptr<Window> window;
+        shared_ptr<Window> window;
         int width, height;
         int offsetX, offsetY;
-        glm::vec3 clearScreenColor = glm::vec3(0);
+        vec3 clearScreenColor = vec3(0);
     };
 } // namespace Acidrain
 

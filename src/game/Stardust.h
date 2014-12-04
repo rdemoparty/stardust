@@ -4,7 +4,6 @@
 #include <memory>
 #include <map>
 #include <string>
-#include <Scene.h>
 
 namespace Acidrain {
 
@@ -28,6 +27,8 @@ namespace Acidrain {
 
     class GpuProgramConstantBundle;
 
+    class Scene;
+
     class Stardust : public EventListener {
     public:
         Stardust();
@@ -42,7 +43,7 @@ namespace Acidrain {
 
     private:
 
-        Scene scene;
+        shared_ptr<Scene> scene;
 
         shared_ptr<GpuProgramConstantBundle> gpuProgramConstantBundle;
 
@@ -58,8 +59,6 @@ namespace Acidrain {
         shared_ptr<InputProvider> input;
 
         shared_ptr<Starfield> starfield;
-
-        shared_ptr<SpritePool> spritePool;
 
         bool quitGame = false;
 

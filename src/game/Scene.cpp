@@ -5,12 +5,12 @@
 
 namespace Acidrain {
 
-    Scene::Scene() {
+    Scene::Scene(GameObjectFactory* objFactory, const vec2& visibleAreaSize)
+            : objectFactory(objFactory), visibleArea(visibleAreaSize) {
         spritePool = make_shared<SpritePool>();
     }
 
     Scene::~Scene() {
-
     }
 
     void Scene::add(GameObject* object) {
@@ -21,14 +21,6 @@ namespace Acidrain {
     void Scene::addNewObjectsToScene() {
         objects.insert(objects.end(), newlyCreatedObjects.begin(), newlyCreatedObjects.end());
         newlyCreatedObjects.clear();
-    }
-
-    void Scene::setGameObjectFactory(GameObjectFactory* objectFactory) {
-        this->objectFactory = objectFactory;
-    }
-
-    void Scene::setVisibleArea(const vec2& size) {
-        this->visibleArea = size;
     }
 
     GameObject* Scene::createByName(string name) {
