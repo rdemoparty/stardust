@@ -8,7 +8,7 @@
     },
     {
       "name": "explosion",
-      "texture": "sprites/explosion.png",
+      "texture": "sprites/explosion3.png",
       "spriteWidth": 128,
       "spriteHeight": 128
     },
@@ -35,7 +35,7 @@
     {
       "name": "explosion",
       "frameTimeInMilliseconds": 20,
-      "loopType": "PING_PONG",
+      "loopType": "NONE",
       "frames": [
         {
           "spriteSheet": "explosion",

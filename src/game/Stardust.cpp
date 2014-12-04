@@ -40,15 +40,11 @@ namespace Acidrain {
 
         GFXSYS.setClearColor(vec3(0.1f, 0.0f, 0.1f));
 
-        // initialize sprite pool
-
         gameObjectFactory = make_shared<GameObjectFactory>();
         scene = make_shared<Scene>(gameObjectFactory.get(), vec2(1024, 768));
 
         // add game objects
         scene->add(gameObjectFactory->createPlayer(vec2(300, 700)));
-        scene->add(gameObjectFactory->createEnemy(vec2(300, -64)));
-        scene->add(gameObjectFactory->createExplosion(vec2(300, -64)));
 
         gpuProgramConstantBundle = make_shared<GpuProgramConstantBundle>();
 
@@ -79,6 +75,13 @@ namespace Acidrain {
         if (input->isKeyDown(SDL_SCANCODE_ESCAPE))
             quitGame = true;
 
+        static float timeUntilNextSpawn = 0;
+        timeUntilNextSpawn -= elapsedSeconds;
+        if (timeUntilNextSpawn < 0) {
+            scene->add(gameObjectFactory->createEnemy(vec2(rand() % 1024, -64)));
+            timeUntilNextSpawn = rand() % 3 + 1;
+        }
+
         scene->update(elapsedSeconds);
 
         starfield->update(elapsedSeconds);
@@ -104,9 +107,7 @@ namespace Acidrain {
         GFXSYS.drawFilledRectangle(vec2(-1), vec2(1024, 50), vec4(0, 0, 0, 0.7f));
 
         std::stringstream s;
-        s << "FPS: " << fpsCounter->getFps()
-                << ", Objects: " << scene->countObjects()
-                << ", Collision count: " << scene->countCollisions();
+        s << "FPS: " << fpsCounter->getFps() << ", Objects: " << scene->countObjects();
 
         GFXSYS.setTransparencyMode(TransparencyMode::Additive);
         fontSmall->print(10, 10, s.str().c_str(), vec4(1, 1, 1, 0.9f));

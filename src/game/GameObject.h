@@ -17,6 +17,49 @@ namespace Acidrain {
 
     class Scene;
 
+    enum class EntitySide {
+        Friendly,
+        Adverse,
+        Neutral
+    };
+
+    enum class EntityType {
+        Ship,
+        Bullet,
+        Explosion
+    };
+
+    enum class EntityDeathReason {
+        OutOfVisibleArea,
+        Killed,
+        JobFinished
+    };
+
+    struct EntityState {
+        bool isCollidable;
+        float damageProvidedOnCollision;
+        bool isToBeRemovedOnDeath;
+        bool killIfOutsideOfVisibleArea;
+        float maxLife;
+        float life;
+        bool isDead;
+        EntityDeathReason deathReason;
+        EntityType type;
+        EntitySide side;
+
+        bool shouldRemove() {
+            return isToBeRemovedOnDeath && isDead;
+        }
+
+        void inflictDamage(float amount) {
+            life -= amount;
+            if (life < 0) {
+                isDead = true;
+                deathReason = EntityDeathReason::Killed;
+            }
+        }
+    };
+
     class GameObject : public DrawableEntity {
     public:
         explicit GameObject();
@@ -34,6 +77,10 @@ namespace Acidrain {
         virtual void update(float elapsedSeconds) override;
 
         void updateAnimation(float elapsedSeconds);
+
+        void inflictDamage(float amount);
+
+        EntityState state;
 
     protected:
         friend class GameObjectFactory;
