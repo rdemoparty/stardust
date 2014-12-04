@@ -1,0 +1,2 @@
+call win_build_x64_debug.cmd
+call win_run_x64.cmd
