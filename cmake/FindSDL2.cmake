@@ -108,8 +108,11 @@ FIND_PATH(SDL2_INCLUDE_DIR SDL.h
 	$ENV{SDL2}
 	PATH_SUFFIXES include/SDL2 include SDL2
 	i686-w64-mingw32/include/SDL2
+	i686-w64-mingw32/include
 	x86_64-w64-mingw32/include/SDL2
+	x86_64-w64-mingw32/include
 	PATHS
+	/opt/cross-tools
 	~/Library/Frameworks
 	/Library/Frameworks
 	/usr/local/include/SDL2
@@ -129,6 +132,7 @@ IF(CMAKE_SIZEOF_VOID_P EQUAL 8)
 		lib/x64
 		x86_64-w64-mingw32/lib
 		PATHS
+		/opt/cross-tools
 		/sw
 		/opt/local
 		/opt/csw
@@ -143,6 +147,7 @@ ELSE(CMAKE_SIZEOF_VOID_P EQUAL 8)
 		lib/x86
 		i686-w64-mingw32/lib
 		PATHS
+		/opt/cross-tools
 		/sw
 		/opt/local
 		/opt/csw
@@ -166,6 +171,7 @@ IF(NOT SDL2_BUILDING_LIBRARY)
 				lib/x64
 				x86_64-w64-mingw32/lib
 				PATHS
+				/opt/cross-tools
 				/sw
 				/opt/local
 				/opt/csw
@@ -181,6 +187,7 @@ IF(NOT SDL2_BUILDING_LIBRARY)
 				lib/x86
 				i686-w64-mingw32/lib
 				PATHS
+				/opt/cross-tools
 				/sw
 				/opt/local
 				/opt/csw

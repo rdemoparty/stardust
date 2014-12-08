@@ -2,7 +2,7 @@
 
 #include <map>
 #include <vector>
-#include <SDL2/SDL.h>
+#include <SDL.h>
 
 #define EVENTSYS Acidrain::EventSystem::getInstance()
 

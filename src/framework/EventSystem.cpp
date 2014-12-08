@@ -1,5 +1,5 @@
 #include <EventSystem.h>
-#include <SDL2/SDL.h>
+#include <SDL.h>
 #include <assert.h>
 #include <algorithm>
 
