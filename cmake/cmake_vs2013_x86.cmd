@@ -2,7 +2,7 @@ cls
 set CRTDIR=%CD%
 REM go up to the repo root
 cd ..
-set BUILD_PATH=%CD%/build_vs2013
+set BUILD_PATH=%CD%/build_vs2013_x86
 set ROOT_PATH=%CD%
 
 if "%VS120COMNTOOLS%"=="" goto VSNotInstalledError

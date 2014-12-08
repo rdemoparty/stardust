@@ -1,0 +1,2 @@
+call win_build_x86_release.cmd
+call win_run_x86.cmd
