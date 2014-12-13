@@ -2,6 +2,8 @@
 
 #pragma once
 
+#define INPUT Acidrain::InputProvider::getInstance()
+
 namespace Acidrain {
 
     struct JoystickState {
@@ -25,7 +27,8 @@ namespace Acidrain {
 
     class InputProvider : public EventListener {
     public:
-        InputProvider();
+
+        static InputProvider& getInstance();
 
         ~InputProvider();
 
@@ -58,6 +61,8 @@ namespace Acidrain {
         virtual void onEvent(SDL_Event const& param) override;
 
     private:
+        InputProvider();
+
         KeyboardState keyboardState, oldKeyboardState;
         JoystickState joystickState, oldJoystickState;
         std::vector<SDL_Joystick*> joysticks;

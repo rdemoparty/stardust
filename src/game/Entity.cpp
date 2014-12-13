@@ -1,7 +1,6 @@
 #include <Entity.h>
 #include <glm/gtc/matrix_transform.hpp>
 #include <SpritePool.h>
-#include <GfxSystem.h>
 //#include <iostream>
 // #include <glm/ext.hpp>
 

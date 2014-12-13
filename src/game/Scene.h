@@ -64,11 +64,14 @@ namespace Acidrain {
 
         void detectCollisionBetweenGameObjects(GameObject* a, GameObject* b);
 
+        void drawObjectsOfType(EntityType type, shared_ptr<GpuProgram> gpuProgram);
+
         vector<GameObject*> objects;
         vector<GameObject*> newlyCreatedObjects;
         shared_ptr<SpritePool> spritePool;
         GameObjectFactory* objectFactory;
         vec2 visibleArea;
+
         vector<CollisionInfo> collisions;
     };
 

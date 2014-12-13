@@ -13,10 +13,22 @@
       "spriteHeight": 128
     },
     {
-      "name": "laser",
+      "name": "laser.red",
       "texture": "sprites/lazorred.png",
       "spriteWidth": 18,
       "spriteHeight": 48
+    },
+    {
+      "name": "laser.blue",
+      "texture": "sprites/lazorblue.png",
+      "spriteWidth": 18,
+      "spriteHeight": 48
+    },
+    {
+      "name": "player",
+      "texture": "sprites/player-stage1.png",
+      "spriteWidth": 64,
+      "spriteHeight": 64
     }
   ],
   "animations": [
@@ -33,6 +45,17 @@
       ]
     },
     {
+      "name": "player",
+      "frameTimeInMilliseconds": 200,
+      "loopType": "NONE",
+      "frames": [
+        {
+          "spriteSheet": "player",
+          "index": 0
+        }
+      ]
+    },
+    {
       "name": "explosion",
       "frameTimeInMilliseconds": 20,
       "loopType": "NONE",
@@ -45,12 +68,23 @@
       ]
     },
     {
-      "name": "laser",
+      "name": "laser.red",
       "frameTimeInMilliseconds": 20,
       "loopType": "FORWARD",
       "frames": [
         {
-          "spriteSheet": "laser",
+          "spriteSheet": "laser.red",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "name": "laser.blue",
+      "frameTimeInMilliseconds": 20,
+      "loopType": "FORWARD",
+      "frames": [
+        {
+          "spriteSheet": "laser.blue",
           "index": 0
         }
       ]

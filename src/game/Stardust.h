@@ -17,8 +17,6 @@ namespace Acidrain {
 
     class Font;
 
-    class InputProvider;
-
     class SpritePool;
 
     class FpsCounter;
@@ -59,8 +57,6 @@ namespace Acidrain {
 
         shared_ptr<Font> font;
         shared_ptr<Font> fontSmall;
-
-        shared_ptr<InputProvider> input;
 
         shared_ptr<Starfield> starfield;
 

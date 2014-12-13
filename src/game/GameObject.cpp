@@ -14,26 +14,23 @@ namespace Acidrain {
     GameObject::~GameObject() {
     };
 
-    void GameObject::setMovementController(shared_ptr<MovementStrategy> const& movementController) {
-        this->movementController = movementController;
-        movementController->setControlledEntity(this);
-    }
-
     void GameObject::fireWeapons(bool shouldFire) {
-        for (auto weaponOffsetPair : weapons) {
+        for (auto weapon : weapons) {
             if (shouldFire)
-                weaponOffsetPair.first->fireOn();
+                weapon->fireOn();
             else
-                weaponOffsetPair.first->fireOff();
+                weapon->fireOff();
         }
     }
 
-    void GameObject::addWeapon(Weapon* weapon, const vec2& offset) {
-        weapons[weapon] = offset;
+    void GameObject::addWeapon(Weapon* weapon) {
+        weapons.push_back(shared_ptr<Weapon>(weapon));
     }
 
     void GameObject::setScene(Scene* scene) {
         this->scene = scene;
+        if (brain)
+            brain->injectScene(scene);
     }
 
     void GameObject::setBrain(shared_ptr<ScriptedBrain> brain) {
@@ -41,9 +38,6 @@ namespace Acidrain {
     }
 
     void GameObject::update(float elapsedSeconds) {
-        if (movementController)
-            movementController->update(elapsedSeconds);
-
         if (brain)
             brain->onUpdate(this, elapsedSeconds);
 
@@ -58,36 +52,40 @@ namespace Acidrain {
     }
 
     void GameObject::updateWeapons(float elapsedSeconds) {
-        vector<BulletInfo> bullets;
-
-        for (auto& weaponOffsetPair : weapons) {
-            bullets = weaponOffsetPair.first->update(elapsedSeconds);
-
-            for (auto bullet : bullets) {
-                GameObject* bulletObject = newBullet(&bullet);
-                bulletObject->position = this->position + weaponOffsetPair.second;
-                scene->add(bulletObject);
+        for (auto weapon : weapons) {
+            if (weapon->update(elapsedSeconds)) {
+//                std::cout << "Creating a bullet with name " << weapon->getBulletType() << std::endl;
+                auto bullet = scene->createByName(weapon->getBulletType());
+//                std::cout << "Created pointer " << bullet << std::endl;
+                bullet->position = this->position + weapon->getMountingPoint();
+                scene->add(bullet);
             }
         }
     }
 
-    GameObject* GameObject::newBullet(BulletInfo* info) {
-        // switch from bullet name
-        GameObject* bullet = scene->createByName(info->gameObjectName);
-        return bullet;
-    }
-
-
     void GameObject::inflictDamage(float amount) {
         state.inflictDamage(amount);
-        if (state.isDead && state.type == EntityType::Ship) {
-            GameObject* explosion = scene->createByName("explosion");
-            explosion->position = position;
-            scene->add(explosion);
-        }
+        if (state.isDead && brain)
+            brain->onDeath(this);
     }
 
     AttributeBag& GameObject::attributes() {
         return attrs;
+    }
+
+    void GameObject::spawned() {
+        if (brain)
+            brain->onSpawn(this);
+    }
+
+    bool GameObject::isAnimationFinished() {
+        return animation == nullptr || animation->isFinished();
+    }
+
+    void GameObject::kill(EntityDeathReason deathReason) {
+        state.isDead = true;
+        state.deathReason = deathReason;
+        if (brain)
+            brain->onDeath(this);
     }
 }

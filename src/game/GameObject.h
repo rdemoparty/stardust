@@ -4,6 +4,7 @@
 #include <SpritePool.h>
 #include <AttributeBag.h>
 #include <ScriptedBrain.h>
+#include <vector>
 
 namespace Acidrain {
 
@@ -11,11 +12,7 @@ namespace Acidrain {
 
     class Animation;
 
-    class MovementStrategy;
-
     class Weapon;
-
-    struct BulletInfo;
 
     class Scene;
 
@@ -33,8 +30,8 @@ namespace Acidrain {
         Explosion
     };
 
-    enum class EntityDeathReason {
-        OutOfVisibleArea,
+    enum EntityDeathReason {
+        OutOfVisibleArea = 1,
         Killed,
         JobFinished
     };
@@ -70,15 +67,13 @@ namespace Acidrain {
 
         virtual ~GameObject();
 
-        void setMovementController(shared_ptr<MovementStrategy> const& movementController);
-
         void fireWeapons(bool shouldFire);
 
         void setScene(Scene* scene);
 
         void setBrain(shared_ptr<ScriptedBrain> brain);
 
-        void addWeapon(Weapon* weapon, const vec2& offset);
+        void addWeapon(Weapon* weapon);
 
         virtual void update(float elapsedSeconds) override;
 
@@ -86,9 +81,15 @@ namespace Acidrain {
 
         void inflictDamage(float amount);
 
+        void kill(EntityDeathReason deathReason);
+
         AttributeBag& attributes();
 
         EntityState state;
+
+        void spawned();
+
+        bool isAnimationFinished();
 
     protected:
         AttributeBag attrs;
@@ -98,11 +99,8 @@ namespace Acidrain {
 
         void updateWeapons(float elapsedSeconds);
 
-        GameObject* newBullet(BulletInfo* info);
-
         Scene* scene;
-        shared_ptr<MovementStrategy> movementController;
         Animation* animation;
-        std::map<Weapon*, vec2> weapons;
+        vector<shared_ptr<Weapon>> weapons;
     };
 }

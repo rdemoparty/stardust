@@ -1,9 +1,13 @@
 #include <Weapon.h>
 #include <GameObject.h>
-#include <GameObjectFactory.h>
-#include <iostream>
 
 namespace Acidrain {
+
+    Weapon::Weapon(string bulletType, float shotsPerSecond, vec2 mountingPoint) {
+        this->bulletType = bulletType;
+        this->mountingPoint = mountingPoint;
+        this->fireDelay = 1.0f / shotsPerSecond;
+    }
 
     void Weapon::fireOn() {
         isFiring = true;
@@ -14,20 +18,25 @@ namespace Acidrain {
         isFiring = false;
     }
 
-    vector<BulletInfo> Weapon::update(float elapsedSeconds) {
-        vector<BulletInfo> result;
+    bool Weapon::update(float elapsedSeconds) {
+        bool shouldAddBullet = false;
 
         if (isFiring) {
             accumulator += elapsedSeconds;
             if (accumulator > fireDelay) {
                 accumulator = 0;
-                BulletInfo bullet;
-                bullet.gameObjectName = "laser";
-                result.push_back(bullet);
+                shouldAddBullet = true;
             }
         }
 
-        return result;
+        return shouldAddBullet;
     }
 
+    const string& Weapon::getBulletType() const {
+        return bulletType;
+    }
+
+    const vec2& Weapon::getMountingPoint() const {
+        return mountingPoint;
+    }
 }

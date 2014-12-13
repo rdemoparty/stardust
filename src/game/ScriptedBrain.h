@@ -2,6 +2,7 @@
 
 #include <string>
 #include <lua.hpp>
+#include <memory>
 
 namespace Acidrain {
 
@@ -9,12 +10,16 @@ namespace Acidrain {
 
     class GameObject;
 
+    class Scene;
+
     class ScriptedBrain {
     public:
 
         explicit ScriptedBrain(std::string brainFilename);
 
         virtual ~ScriptedBrain();
+
+        void injectScene(Scene* scene);
 
         void onSpawn(GameObject* gameObject);
 
@@ -28,8 +33,6 @@ namespace Acidrain {
         void initializeLuaContext(string& brainFilename);
 
         void registerExports();
-
-        void callGenericEntityFunction(GameObject* gameObject, string functionName);
     };
 
 }

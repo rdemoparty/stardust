@@ -1,5 +1,4 @@
 #include <Scene.h>
-#include <GameObject.h>
 #include <GameObjectFactory.h>
 #include <GfxSystem.h>
 
@@ -16,6 +15,7 @@ namespace Acidrain {
     void Scene::add(GameObject* object) {
         object->setScene(this);
         newlyCreatedObjects.push_back(object);
+        object->spawned();
     }
 
     void Scene::addNewObjectsToScene() {
@@ -24,12 +24,15 @@ namespace Acidrain {
     }
 
     GameObject* Scene::createByName(string name) {
-        if (name == "laser")
-            return objectFactory->createLaser();
-        else if (name == "explosion")
-            return objectFactory->createExplosion();
-        else
-            return nullptr;
+        return objectFactory->createByName(name);
+//        if (name == "laser")
+//            return objectFactory->createLaser();
+//        if (name == "enemyLaser")
+//            return objectFactory->createEnemyLaser();
+//        else if (name == "explosion")
+//            return objectFactory->createExplosion();
+//        else
+//            return nullptr;
     }
 
     int Scene::countObjects() const {
@@ -96,13 +99,12 @@ namespace Acidrain {
     }
 
     void Scene::draw(shared_ptr<GpuProgram> gpuProgram) {
-        spritePool->clear();
+        GFXSYS.setTransparencyMode(TransparencyMode::Special);
+        drawObjectsOfType(EntityType::Ship, gpuProgram);
+        drawObjectsOfType(EntityType::Bullet, gpuProgram);
 
-        for (auto& gameObject : objects)
-            gameObject->addTo(*spritePool);
-
-        GFXSYS.setTransparencyMode(TransparencyMode::Transparent);
-        spritePool->draw(gpuProgram);
+        GFXSYS.setTransparencyMode(TransparencyMode::Additive);
+        drawObjectsOfType(EntityType::Explosion, gpuProgram);
 
 //        GFXSYS.setTransparencyMode(TransparencyMode::Transparent);
 //        for (auto& gameObject : objects)
@@ -148,9 +150,21 @@ namespace Acidrain {
         if (!a->state.isCollidable || !b->state.isCollidable) return;
         if (a->state.side == b->state.side) return;
         if (a->state.isDead || b->state.isDead) return;
+        // no bullet-to-bullet collision
+        if (a->state.type == EntityType::Bullet && b->state.type == a->state.type) return;
 
         if (a->collisionHull.collidesWith(b->collisionHull)) {
             collisions.push_back(CollisionInfo(a, b, (a->position + b->position) / 2.0f));
         }
+    }
+
+    void Scene::drawObjectsOfType(EntityType type, shared_ptr<GpuProgram> gpuProgram) {
+        spritePool->clear();
+
+        for (auto& gameObject : objects)
+            if (gameObject->state.type == type)
+                gameObject->addTo(*spritePool);
+
+        spritePool->draw(gpuProgram);
     }
 }

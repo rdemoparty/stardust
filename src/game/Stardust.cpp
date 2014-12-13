@@ -13,7 +13,6 @@
 #include <InputProvider.h>
 #include <GpuProgramConstants.h>
 #include <Scene.h>
-#include <ScriptedBrain.h>
 
 namespace Acidrain {
 
@@ -25,8 +24,6 @@ namespace Acidrain {
 
         // TODO Adrian: figure out a better name for the event system. It is too generic. Events of?
         EVENTSYS.addListener(this, SDL_QUIT);
-
-        input = make_shared<InputProvider>();
 
         gpuProgram = make_shared<GpuProgram>(
                 FILESYS.getFileContent("shaders/normal.vs"),
@@ -45,9 +42,12 @@ namespace Acidrain {
         scene = make_shared<Scene>(gameObjectFactory.get(), vec2(1024, 768));
 
         // add game objects
-        brain = make_shared<ScriptedBrain>("scripts/test.lua");
+        brain = make_shared<ScriptedBrain>("scripts/brain.enemy.lua");
+        brain->injectScene(scene.get());
 
-        scene->add(gameObjectFactory->createPlayer(vec2(300, 700)));
+        auto player = gameObjectFactory->createByName("player");
+        player->position = vec2(300, 700);
+        scene->add(player);
 
         gpuProgramConstantBundle = make_shared<GpuProgramConstantBundle>();
 
@@ -75,14 +75,14 @@ namespace Acidrain {
     void Stardust::update(float elapsedSeconds) {
         EVENTSYS.update();
 
-        if (input->isKeyDown(SDL_SCANCODE_ESCAPE))
+        if (INPUT.isKeyDown(SDL_SCANCODE_ESCAPE))
             quitGame = true;
 
         static float timeUntilNextSpawn = 0;
         timeUntilNextSpawn -= elapsedSeconds;
         if (timeUntilNextSpawn < 0) {
-            GameObject* enemy = gameObjectFactory->createEnemy(vec2(rand() % 1024, -64));
-            enemy->setBrain(brain);
+            GameObject* enemy = gameObjectFactory->createByName("enemy");
+            enemy->position = vec2(rand() % 1024, -64);
             scene->add(enemy);
             timeUntilNextSpawn = rand() % 3 + 1;
         }
@@ -92,7 +92,7 @@ namespace Acidrain {
         starfield->update(elapsedSeconds);
         fpsCounter->update(elapsedSeconds);
 
-        input->copyNewStateToOldState();
+        INPUT.copyNewStateToOldState();
     }
 
     void Stardust::render() {

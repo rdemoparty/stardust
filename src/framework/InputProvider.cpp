@@ -3,6 +3,11 @@
 
 namespace Acidrain {
 
+    InputProvider& InputProvider::getInstance() {
+        static InputProvider instance;
+        return instance;
+    }
+
     InputProvider::InputProvider() {
         if (SDL_WasInit(SDL_INIT_JOYSTICK) == 0)
             SDL_InitSubSystem(SDL_INIT_JOYSTICK);

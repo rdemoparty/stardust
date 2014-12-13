@@ -1,117 +1,162 @@
 #include <GameObjectFactory.h>
-#include <InputProvider.h>
-#include <GameObject.h>
 #include <MovementStrategyLinear.h>
-#include <MovementStrategySinusoidal.h>
-#include <MovementStrategyPlayer.h>
 #include <Animation.h>
 #include <SpriteAnimationRepository.h>
-#include <Weapon.h>
-#include <PlayerShip.h>
-#include <Explosion.h>
 
 namespace Acidrain {
+
+    GameObjectRecipe playerBulletRecipe() {
+        GameObjectRecipe recipe;
+        recipe.name = "player.bullet";
+        recipe.animation = "laser.red";
+        recipe.brain = "scripts/brain.player.bullet.lua";
+        recipe.collidable = true;
+        recipe.damageProvidedOnCollision = 2000;
+        recipe.removeOnDeath = true;
+        recipe.killIfOutside = true;
+        recipe.maxLife = 1;
+        recipe.team = EntitySide::Friendly;
+        recipe.type = EntityType::Bullet;
+        recipe.hull.push_back({4, {0, -10}});
+        recipe.hull.push_back({4, {0, 10}});
+
+        return recipe;
+    }
+
+    GameObjectRecipe enemyBulletRecipe() {
+        GameObjectRecipe recipe;
+        recipe.name = "enemy.bullet";
+        recipe.animation = "laser.blue";
+        recipe.brain = "scripts/brain.enemy.bullet.lua";
+        recipe.collidable = true;
+        recipe.damageProvidedOnCollision = 1;
+        recipe.removeOnDeath = true;
+        recipe.killIfOutside = true;
+        recipe.maxLife = 1;
+        recipe.team = EntitySide::Adverse;
+        recipe.type = EntityType::Bullet;
+        recipe.hull.push_back({4, {0, -10}});
+        recipe.hull.push_back({4, {0, 10}});
+
+        return recipe;
+    }
+
+    GameObjectRecipe explosionRecipe() {
+        GameObjectRecipe recipe;
+        recipe.name = "enemy.death.explosion";
+        recipe.animation = "explosion";
+        recipe.brain = "scripts/brain.enemy.explosion.lua";
+        recipe.collidable = false;
+        recipe.killIfOutside = false;
+        recipe.team = EntitySide::Neutral;
+        recipe.type = EntityType::Explosion;
+
+        return recipe;
+    }
+
+    GameObjectRecipe playerRecipe() {
+        GameObjectRecipe recipe;
+        recipe.name = "player";
+        recipe.animation = "player";
+        recipe.brain = "scripts/brain.player.lua";
+        recipe.collidable = true;
+        recipe.damageProvidedOnCollision = 10000;
+        recipe.removeOnDeath = false;
+        recipe.killIfOutside = false;
+        recipe.maxLife = 200;
+        recipe.team = EntitySide::Friendly;
+        recipe.type = EntityType::Ship;
+
+        recipe.hull.push_back({16, {0, 0}});
+
+        recipe.weapons.push_back({"player.bullet", {-10, -32}, 10});
+        recipe.weapons.push_back({"player.bullet", {12, -32}, 10});
+
+        return recipe;
+    }
+
+    GameObjectRecipe enemyRecipe() {
+        GameObjectRecipe recipe;
+        recipe.name = "enemy";
+        recipe.animation = "enemy2";
+        recipe.brain = "scripts/brain.enemy.lua";
+        recipe.collidable = true;
+        recipe.damageProvidedOnCollision = 10;
+        recipe.removeOnDeath = true;
+        recipe.killIfOutside = false;
+        recipe.maxLife = 100;
+        recipe.team = EntitySide::Adverse;
+        recipe.type = EntityType::Ship;
+
+        recipe.hull.push_back({32, {0, 0}});
+
+        recipe.weapons.push_back({"enemy.bullet", {0, 32}, 2});
+        return recipe;
+    }
+
     GameObjectFactory::GameObjectFactory() {
-        input = shared_ptr<InputProvider>(new InputProvider());
+        addRecipe(playerBulletRecipe());
+        addRecipe(enemyRecipe());
+        addRecipe(enemyBulletRecipe());
+        addRecipe(explosionRecipe());
+        addRecipe(playerRecipe());
     }
 
     GameObjectFactory::~GameObjectFactory() {
     }
 
-    GameObject* GameObjectFactory::createPlayer(vec2 position) {
-        shared_ptr<MovementStrategyPlayer> playerMovement = make_shared<MovementStrategyPlayer>(input, 300.0f);
-
-        GameObject* object = new PlayerShip();
-        object->animation = ANIMREPO.newAnimation("enemy2");
-        object->animation->start();
-        object->size = vec2(64, 64);
-        object->rotation = (float) M_PI;
-        object->position = position;
-        object->setMovementController(playerMovement);
-
-        Weapon* weapon1 = new Weapon();
-        object->addWeapon(weapon1, vec2(-10, -32));
-
-        Weapon* weapon2 = new Weapon();
-        object->addWeapon(weapon2, vec2(12, -32));
-
-        object->state.isToBeRemovedOnDeath = false;
-        object->state.killIfOutsideOfVisibleArea = false;
-        object->state.damageProvidedOnCollision = 100;
-        object->state.isCollidable = true;
-        object->state.isDead = false;
-        object->state.life = 200;
-        object->state.maxLife = 200;
-        object->state.type = EntityType::Ship;
-        object->state.side = EntitySide::Friendly;
-
-        object->collisionHull.add(Circle(32));
-
-        return object;
+    GameObject* GameObjectFactory::createByName(const string& name) {
+        GameObject* result = nullptr;
+        if (recipes.find(name) != recipes.end()) {
+            result = cookGameObject(recipes[name]);
+        }
+        return result;
     }
 
-    GameObject* GameObjectFactory::createEnemy(vec2 position) {
-//        shared_ptr<MovementStrategyLinear> mc = make_shared<MovementStrategyLinear>(vec2(0, 1), 100.0f);
-        GameObject* object = new GameObject();
-        object->animation = ANIMREPO.newAnimation("enemy2");
-        object->animation->start();
-        object->size = vec2(64, 64);
-        object->position = position;
-//        object->setMovementController(mc);
+    GameObject* GameObjectFactory::cookGameObject(GameObjectRecipe& recipe) {
+        GameObject* result = new GameObject();
+        if (!recipe.brain.empty())
+            result->setBrain(cookBrain(recipe.brain));
 
-        object->state.isToBeRemovedOnDeath = true;
-        object->state.killIfOutsideOfVisibleArea = true;
-        object->state.damageProvidedOnCollision = 10;
-        object->state.isCollidable = true;
-        object->state.isDead = false;
-        object->state.life = 100;
-        object->state.maxLife = 100;
-        object->state.type = EntityType::Ship;
-        object->state.side = EntitySide::Adverse;
+        result->animation = ANIMREPO.newAnimation(recipe.animation);
+        result->animation->start();
+        result->size = result->animation->getSprite().getSize();
 
-        object->collisionHull.add(Circle(32));
-        return object;
+        result->state.isToBeRemovedOnDeath = recipe.removeOnDeath;
+        result->state.killIfOutsideOfVisibleArea = recipe.killIfOutside;
+        result->state.damageProvidedOnCollision = recipe.damageProvidedOnCollision;
+        result->state.isCollidable = recipe.collidable;
+        result->state.isDead = false;
+        result->state.life = recipe.maxLife;
+        result->state.maxLife = recipe.maxLife;
+        result->state.type = recipe.type;
+        result->state.side = recipe.team;
+
+        for (auto weaponRecipe : recipe.weapons)
+            result->addWeapon(cookWeapon(weaponRecipe));
+
+        for (auto hullPart : recipe.hull)
+            result->collisionHull.add(cookHullPart(hullPart));
+
+        return result;
     }
 
-    GameObject* GameObjectFactory::createExplosion() {
-        Explosion* object = new Explosion();
-        object->animation = ANIMREPO.newAnimation("explosion");
-        object->animation->start();
-        object->size = object->animation->getSprite().getSize();
-
-        object->state.isToBeRemovedOnDeath = true;
-        object->state.killIfOutsideOfVisibleArea = true;
-        object->state.damageProvidedOnCollision = 10;
-        object->state.isCollidable = false;
-        object->state.isDead = false;
-        object->state.type = EntityType::Explosion;
-        object->state.side = EntitySide::Neutral;
-
-        return object;
+    Weapon* GameObjectFactory::cookWeapon(WeaponRecipe recipe) {
+        return new Weapon(recipe.bulletName, recipe.shotsPerSecond, recipe.mountingPoint);
     }
 
-    GameObject* GameObjectFactory::createLaser() {
-        shared_ptr<MovementStrategyLinear> mc = make_shared<MovementStrategyLinear>(vec2(0, -1), 4000.0f);
+    Circle GameObjectFactory::cookHullPart(CollisionHullRecipe recipe) {
+        return Circle(recipe.radius, recipe.center);
+    }
 
-        GameObject* object = new GameObject();
-        object->animation = ANIMREPO.newAnimation("laser");
-        object->animation->start();
-        object->size = object->animation->getSprite().getSize();
-        object->setMovementController(mc);
+    shared_ptr<ScriptedBrain> GameObjectFactory::cookBrain(string brainFilename) {
+        if (brains.find(brainFilename) == brains.end()) {
+            brains[brainFilename] = make_shared<ScriptedBrain>(brainFilename);
+        }
+        return brains[brainFilename];
+    }
 
-        object->state.isToBeRemovedOnDeath = true;
-        object->state.killIfOutsideOfVisibleArea = true;
-        object->state.damageProvidedOnCollision = 20;
-        object->state.isCollidable = true;
-        object->state.isDead = false;
-        object->state.life = 1;
-        object->state.maxLife = 1;
-        object->state.type = EntityType::Bullet;
-        object->state.side = EntitySide::Friendly;
-
-        object->collisionHull.add(Circle(4, vec2(0, -10)));
-        object->collisionHull.add(Circle(4, vec2(0, 10)));
-
-        return object;
+    void GameObjectFactory::addRecipe(GameObjectRecipe recipe) {
+        recipes[recipe.name] = recipe;
     }
 }
