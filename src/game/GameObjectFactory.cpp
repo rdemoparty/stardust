@@ -1,5 +1,4 @@
 #include <GameObjectFactory.h>
-#include <MovementStrategyLinear.h>
 #include <Animation.h>
 #include <SpriteAnimationRepository.h>
 

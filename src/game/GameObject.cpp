@@ -1,10 +1,8 @@
 #include <GameObject.h>
 #include <Animation.h>
 #include <SpriteAnimationRepository.h>
-#include <MovementStrategy.h>
 #include <Weapon.h>
 #include <Scene.h>
-#include <iostream>
 
 namespace Acidrain {
 
