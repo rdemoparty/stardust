@@ -2,6 +2,8 @@
 
 #include <Entity.h>
 #include <SpritePool.h>
+#include <AttributeBag.h>
+#include <ScriptedBrain.h>
 
 namespace Acidrain {
 
@@ -16,6 +18,8 @@ namespace Acidrain {
     struct BulletInfo;
 
     class Scene;
+
+    class ScriptedBrain;
 
     enum class EntitySide {
         Friendly,
@@ -72,6 +76,8 @@ namespace Acidrain {
 
         void setScene(Scene* scene);
 
+        void setBrain(shared_ptr<ScriptedBrain> brain);
+
         void addWeapon(Weapon* weapon, const vec2& offset);
 
         virtual void update(float elapsedSeconds) override;
@@ -80,9 +86,14 @@ namespace Acidrain {
 
         void inflictDamage(float amount);
 
+        AttributeBag& attributes();
+
         EntityState state;
 
     protected:
+        AttributeBag attrs;
+        shared_ptr<ScriptedBrain> brain;
+
         friend class GameObjectFactory;
 
         void updateWeapons(float elapsedSeconds);

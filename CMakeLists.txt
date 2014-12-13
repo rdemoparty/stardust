@@ -33,12 +33,15 @@ set(BIN_PATH ../bin)
 # 	endif (CMAKE_CL_64)
 # else(WIN32)
 	set(GAME_EXECUTABLE_NAME "stardust")
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -static-libstdc++ -static-libgcc")
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -static-libstdc++ -static-libgcc -O3")
 # endif(WIN32)
 
 # SDL setup
 find_package(SDL2 REQUIRED)
 include_directories(${SDL2_INCLUDE_DIR})
+
+#find_package(SDL2_mixer REQUIRED)
+#include_directories(${SDL2_MIXER_INCLUDE_DIRS})
 
 # GL setup
 find_package(OpenGL REQUIRED)
@@ -52,11 +55,13 @@ add_definitions(-DGLEW_STATIC)
 
 include_directories("src/")
 include_directories("src/3rdparty/glm")
+include_directories("src/3rdparty/lua-5.2.3/src")
 include_directories("src/framework")
 include_directories("src/game")
 add_subdirectory(src)
 
 add_executable(stardust src/main.cpp ${SOURCE})
+#target_link_libraries(stardust ${SDL2_LIBRARY} ${SDL2_MIXER_LIBRARIES} ${SDL2_MAIN_LIBRARY} ${OPENGL_LIBRARIES})
 target_link_libraries(stardust ${SDL2_LIBRARY} ${SDL2_MAIN_LIBRARY} ${OPENGL_LIBRARIES})
 
 # set_target_properties(stardust PROPERTIES OUTPUT_NAME ${GAME_EXECUTABLE_NAME})

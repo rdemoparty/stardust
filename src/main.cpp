@@ -1,14 +1,14 @@
-#include "Timer.h"
-#include "Stardust.h"
-#include "FileSystem.h"
+#include <Timer.h>
+#include <Stardust.h>
+#include <FileSystem.h>
 #include <GfxSystem.h>
 
 using namespace Acidrain;
 
-const int GAME_LOGICAL_RESOLUTION_X = 1024;
-const int GAME_LOGICAL_RESOLUTION_Y = 768;
-
 int main(int argc, char** argv) {
+
+    const int GAME_LOGICAL_RESOLUTION_X = 1024;
+    const int GAME_LOGICAL_RESOLUTION_Y = 768;
 
     EVENTSYS.init();
     GFXSYS.init(GAME_LOGICAL_RESOLUTION_X, GAME_LOGICAL_RESOLUTION_Y);

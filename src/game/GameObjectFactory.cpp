@@ -51,13 +51,13 @@ namespace Acidrain {
     }
 
     GameObject* GameObjectFactory::createEnemy(vec2 position) {
-        shared_ptr<MovementStrategyLinear> mc = make_shared<MovementStrategyLinear>(vec2(0, 1), 100.0f);
+//        shared_ptr<MovementStrategyLinear> mc = make_shared<MovementStrategyLinear>(vec2(0, 1), 100.0f);
         GameObject* object = new GameObject();
         object->animation = ANIMREPO.newAnimation("enemy2");
         object->animation->start();
         object->size = vec2(64, 64);
         object->position = position;
-        object->setMovementController(mc);
+//        object->setMovementController(mc);
 
         object->state.isToBeRemovedOnDeath = true;
         object->state.killIfOutsideOfVisibleArea = true;
@@ -91,7 +91,7 @@ namespace Acidrain {
     }
 
     GameObject* GameObjectFactory::createLaser() {
-        shared_ptr<MovementStrategyLinear> mc = make_shared<MovementStrategyLinear>(vec2(0, -1), 1000.0f);
+        shared_ptr<MovementStrategyLinear> mc = make_shared<MovementStrategyLinear>(vec2(0, -1), 4000.0f);
 
         GameObject* object = new GameObject();
         object->animation = ANIMREPO.newAnimation("laser");
@@ -101,7 +101,7 @@ namespace Acidrain {
 
         object->state.isToBeRemovedOnDeath = true;
         object->state.killIfOutsideOfVisibleArea = true;
-        object->state.damageProvidedOnCollision = 10;
+        object->state.damageProvidedOnCollision = 20;
         object->state.isCollidable = true;
         object->state.isDead = false;
         object->state.life = 1;

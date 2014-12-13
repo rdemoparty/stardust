@@ -1,5 +1,6 @@
 set(HEADERS
    ${HEADERS}
+   ${CMAKE_CURRENT_SOURCE_DIR}/AttributeBag.h
    ${CMAKE_CURRENT_SOURCE_DIR}/Entity.h
    ${CMAKE_CURRENT_SOURCE_DIR}/Explosion.h
    ${CMAKE_CURRENT_SOURCE_DIR}/GameObject.h
@@ -10,6 +11,7 @@ set(HEADERS
    ${CMAKE_CURRENT_SOURCE_DIR}/MovementStrategySinusoidal.h
    ${CMAKE_CURRENT_SOURCE_DIR}/PlayerShip.h
    ${CMAKE_CURRENT_SOURCE_DIR}/Scene.h
+   ${CMAKE_CURRENT_SOURCE_DIR}/ScriptedBrain.h
    ${CMAKE_CURRENT_SOURCE_DIR}/SpriteAnimationRepository.h
    ${CMAKE_CURRENT_SOURCE_DIR}/Stardust.h
    ${CMAKE_CURRENT_SOURCE_DIR}/Starfield.h
@@ -18,6 +20,7 @@ set(HEADERS
 )
 set(SOURCE
    ${SOURCE}
+   ${CMAKE_CURRENT_SOURCE_DIR}/AttributeBag.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/Entity.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/Explosion.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/GameObject.cpp
@@ -28,6 +31,7 @@ set(SOURCE
    ${CMAKE_CURRENT_SOURCE_DIR}/MovementStrategySinusoidal.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/PlayerShip.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/Scene.cpp
+   ${CMAKE_CURRENT_SOURCE_DIR}/ScriptedBrain.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/SpriteAnimationRepository.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/Stardust.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/Starfield.cpp

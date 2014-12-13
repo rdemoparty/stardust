@@ -36,9 +36,16 @@ namespace Acidrain {
         this->scene = scene;
     }
 
+    void GameObject::setBrain(shared_ptr<ScriptedBrain> brain) {
+        this->brain = brain;
+    }
+
     void GameObject::update(float elapsedSeconds) {
         if (movementController)
             movementController->update(elapsedSeconds);
+
+        if (brain)
+            brain->onUpdate(this, elapsedSeconds);
 
         // update xform
         Entity::update(elapsedSeconds);
@@ -78,5 +85,9 @@ namespace Acidrain {
             explosion->position = position;
             scene->add(explosion);
         }
+    }
+
+    AttributeBag& GameObject::attributes() {
+        return attrs;
     }
 }

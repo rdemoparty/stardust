@@ -13,6 +13,7 @@
 #include <InputProvider.h>
 #include <GpuProgramConstants.h>
 #include <Scene.h>
+#include <ScriptedBrain.h>
 
 namespace Acidrain {
 
@@ -33,7 +34,7 @@ namespace Acidrain {
         );
 
         font = make_shared<Font>("fonts/Impact.ttf", 70.0f);
-        fontSmall = make_shared<Font>("fonts/a.ttf", 20.0f);
+        fontSmall = make_shared<Font>("fonts/Impact.ttf", 20.0f);
 
         fpsCounter = make_shared<FpsCounter>();
         starfield = make_shared<Starfield>(40, vec2(1024, 768));
@@ -44,6 +45,8 @@ namespace Acidrain {
         scene = make_shared<Scene>(gameObjectFactory.get(), vec2(1024, 768));
 
         // add game objects
+        brain = make_shared<ScriptedBrain>("scripts/test.lua");
+
         scene->add(gameObjectFactory->createPlayer(vec2(300, 700)));
 
         gpuProgramConstantBundle = make_shared<GpuProgramConstantBundle>();
@@ -78,7 +81,9 @@ namespace Acidrain {
         static float timeUntilNextSpawn = 0;
         timeUntilNextSpawn -= elapsedSeconds;
         if (timeUntilNextSpawn < 0) {
-            scene->add(gameObjectFactory->createEnemy(vec2(rand() % 1024, -64)));
+            GameObject* enemy = gameObjectFactory->createEnemy(vec2(rand() % 1024, -64));
+            enemy->setBrain(brain);
+            scene->add(enemy);
             timeUntilNextSpawn = rand() % 3 + 1;
         }
 

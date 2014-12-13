@@ -101,7 +101,7 @@ namespace Acidrain {
         for (auto& gameObject : objects)
             gameObject->addTo(*spritePool);
 
-        GFXSYS.setTransparencyMode(TransparencyMode::Special);
+        GFXSYS.setTransparencyMode(TransparencyMode::Transparent);
         spritePool->draw(gpuProgram);
 
 //        GFXSYS.setTransparencyMode(TransparencyMode::Transparent);

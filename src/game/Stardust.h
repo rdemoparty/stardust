@@ -29,6 +29,8 @@ namespace Acidrain {
 
     class Scene;
 
+    class ScriptedBrain;
+
     class Stardust : public EventListener {
     public:
         Stardust();
@@ -44,6 +46,8 @@ namespace Acidrain {
     private:
 
         shared_ptr<Scene> scene;
+
+        shared_ptr<ScriptedBrain> brain;
 
         shared_ptr<GpuProgramConstantBundle> gpuProgramConstantBundle;
 
