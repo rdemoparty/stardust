@@ -10,7 +10,7 @@ namespace Acidrain {
         recipe.animation = "laser.red";
         recipe.brain = "scripts/brain.player.bullet.lua";
         recipe.collidable = true;
-        recipe.damageProvidedOnCollision = 2000;
+        recipe.damageProvidedOnCollision = 10;
         recipe.removeOnDeath = true;
         recipe.killIfOutside = true;
         recipe.maxLife = 1;

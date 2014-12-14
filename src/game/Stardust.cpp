@@ -42,9 +42,6 @@ namespace Acidrain {
         scene = make_shared<Scene>(gameObjectFactory.get(), vec2(1024, 768));
 
         // add game objects
-        brain = make_shared<ScriptedBrain>("scripts/brain.enemy.lua");
-        brain->injectScene(scene.get());
-
         auto player = gameObjectFactory->createByName("player");
         player->position = vec2(300, 700);
         scene->add(player);
@@ -77,6 +74,13 @@ namespace Acidrain {
 
         if (INPUT.isKeyDown(SDL_SCANCODE_ESCAPE))
             quitGame = true;
+
+        if (shakeFactor > 0) {
+            shakeFactor -= 10 * elapsedSeconds;
+            if (shakeFactor < 0) {
+                shakeFactor = 0;
+            }
+        }
 
         static float timeUntilNextSpawn = 0;
         timeUntilNextSpawn -= elapsedSeconds;

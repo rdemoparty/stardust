@@ -17,8 +17,6 @@ namespace Acidrain {
 
     class Font;
 
-    class SpritePool;
-
     class FpsCounter;
 
     class Starfield;
@@ -26,8 +24,6 @@ namespace Acidrain {
     class GpuProgramConstantBundle;
 
     class Scene;
-
-    class ScriptedBrain;
 
     class Stardust : public EventListener {
     public:
@@ -43,17 +39,17 @@ namespace Acidrain {
 
     private:
 
-        shared_ptr<Scene> scene;
-
-        shared_ptr<ScriptedBrain> brain;
+        float shakeFactor = 10;
 
         shared_ptr<GpuProgramConstantBundle> gpuProgramConstantBundle;
+
+        shared_ptr<GpuProgram> gpuProgram;
+
+        shared_ptr<Scene> scene;
 
         shared_ptr<GameObjectFactory> gameObjectFactory;
 
         shared_ptr<FpsCounter> fpsCounter;
-
-        shared_ptr<GpuProgram> gpuProgram;
 
         shared_ptr<Font> font;
         shared_ptr<Font> fontSmall;
