@@ -2,13 +2,11 @@
 -- The brain functions
 ---------------------------------------------------------------------
 
-SQRT2 = math.sqrt(2)
-
 function onSpawn(objectPointer)
     local o = Entity.from(objectPointer)
     o:setFloat("mass", 10)
 
-    o:setFloat("thrusterForce", 30000)
+    o:setFloat("thrusterForce", 33000)
 
     o:setFloat("vx", 0)
     o:setFloat("vy", 0)
@@ -16,7 +14,7 @@ function onSpawn(objectPointer)
     o:setFloat("ax", 0)
     o:setFloat("ay", 0)
 
-    o:setFloat("friction", 0.95)
+    o:setFloat("friction", 0.94)
 
     o:setFloat("maxSpeed", 600)
 end
