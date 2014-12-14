@@ -88,6 +88,10 @@ namespace Acidrain {
 
         shader->use();
         {
+            // TODO: HACK! make this better
+            mat4 cameraShakeMatrix(1);
+            shader->setMatrix4Uniform(&cameraShakeMatrix[0][0], "cameraShakeMatrix");
+
             GFXSYS.setTransparencyMode(TransparencyMode::Additive);
             flareTexture->useForUnit(0);
             vbo.draw();

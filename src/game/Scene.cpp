@@ -2,6 +2,8 @@
 #include <GameObjectFactory.h>
 #include <GfxSystem.h>
 #include <iostream>
+#include <Randomizer.h>
+#include <glm/gtc/matrix_transform.hpp>
 
 namespace Acidrain {
 
@@ -25,9 +27,6 @@ namespace Acidrain {
     }
 
     GameObject* Scene::createByName(string name) {
-        if (name == "enemy.bullet.hit") {
-            int i = 1;
-        }
         return objectFactory->createByName(name);
     }
 
@@ -79,6 +78,14 @@ namespace Acidrain {
 
 
     void Scene::update(float elapsedSeconds) {
+        // dampen camera shake factor
+        if (cameraShakeFactor > 0)  {
+            cameraShakeFactor -= 10.0 * elapsedSeconds;
+            if (cameraShakeFactor < 0) {
+                cameraShakeFactor = 0;
+            }
+        }
+
         // remove entities killed the previous frame
         removeDeadEntities();
 
@@ -95,7 +102,23 @@ namespace Acidrain {
         flagEntitiesOutOfVisibleArea();
     }
 
+    static Randomizer randomizer;
+
     void Scene::draw(shared_ptr<GpuProgram> gpuProgram) {
+        mat4 cameraShakeMatrix(1);
+        if (cameraShakeFactor > 0) {
+            vec3 shakeVector = vec3(
+                    2 * cameraShakeFactor * (randomizer.randomUnitDouble() - 0.5),
+                    2 * cameraShakeFactor * (randomizer.randomUnitDouble() - 0.5),
+                    0
+            );
+            cameraShakeMatrix = glm::translate(cameraShakeMatrix, shakeVector);
+        }
+
+        // TODO: perhaps find a better way of doing this
+        gpuProgram->use();
+        gpuProgram->setMatrix4Uniform(&cameraShakeMatrix[0][0], "cameraShakeMatrix");
+
         GFXSYS.setTransparencyMode(TransparencyMode::Special);
         drawObjectsOfType(EntityType::Ship, gpuProgram);
         drawObjectsOfType(EntityType::Bullet, gpuProgram);
@@ -223,5 +246,9 @@ namespace Acidrain {
         std::cout << "===== Dumping game entities " << std::endl;
         for (auto& gameObject : objects)
             dump(gameObject);
+    }
+
+    void Scene::shakeCamera(float amount) {
+        cameraShakeFactor = amount;
     }
 }

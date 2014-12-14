@@ -40,6 +40,8 @@ namespace Acidrain {
 
         GameObject* createByName(string name);
 
+        void shakeCamera(float amount);
+
         void update(float elapsedSeconds);
 
         void draw(shared_ptr<GpuProgram> gpuProgram);
@@ -67,6 +69,8 @@ namespace Acidrain {
         void detectCollisionBetweenGameObjects(GameObject* a, GameObject* b);
 
         void drawObjectsOfType(EntityType type, shared_ptr<GpuProgram> gpuProgram);
+
+        float cameraShakeFactor;
 
         vector<GameObject*> objects;
         vector<GameObject*> newlyCreatedObjects;

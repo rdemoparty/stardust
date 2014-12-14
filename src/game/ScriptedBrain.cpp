@@ -180,6 +180,12 @@ namespace Acidrain {
         return 0; // arguments pushed on stack
     }
 
+    static int shakeCamera(lua_State* L) {
+        Scene* scene = (Scene*) lua_topointer(L, 1);
+        scene->shakeCamera((float)lua_tonumber(L, 2));
+        return 0; // arguments pushed on stack
+    }
+
     // ----------------------------------------
     // ScriptedBrain implementation
     // ----------------------------------------
@@ -235,6 +241,7 @@ namespace Acidrain {
         lua_register(L, "rightPressed", rightPressed);
         lua_register(L, "confineToPlayingArea", confineToPlayingArea);
         lua_register(L, "dumpEntities", dumpEntities);
+        lua_register(L, "shakeCamera", shakeCamera);
     }
 
     void ScriptedBrain::injectScene(Scene* scene) {
