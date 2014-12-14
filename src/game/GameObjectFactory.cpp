@@ -53,6 +53,19 @@ namespace Acidrain {
         return recipe;
     }
 
+    GameObjectRecipe bulletHitRecipe() {
+        GameObjectRecipe recipe;
+        recipe.name = "enemy.bullet.hit";
+        recipe.animation = "bullet.hit";
+        recipe.brain = "scripts/brain.enemy.explosion.lua";
+        recipe.collidable = false;
+        recipe.killIfOutside = false;
+        recipe.team = EntitySide::Neutral;
+        recipe.type = EntityType::Explosion;
+
+        return recipe;
+    }
+
     GameObjectRecipe playerRecipe() {
         GameObjectRecipe recipe;
         recipe.name = "player";
@@ -98,6 +111,7 @@ namespace Acidrain {
         addRecipe(enemyRecipe());
         addRecipe(enemyBulletRecipe());
         addRecipe(explosionRecipe());
+        addRecipe(bulletHitRecipe());
         addRecipe(playerRecipe());
     }
 

@@ -111,18 +111,30 @@ namespace Acidrain {
 //            gameObject->collisionHull.draw();
     }
 
-    void Scene::confineEntityInVisibleArea(GameObject* object) {
-        if (object->position.x < object->size.x / 2.0f)
+    bool Scene::confineEntityInVisibleArea(GameObject* object) {
+        bool hadToCorrect = false;
+
+        if (object->position.x < object->size.x / 2.0f) {
             object->position.x = object->size.x / 2.0f;
+            hadToCorrect = true;
+        }
 
-        if (object->position.x > (visibleArea.x - object->size.x / 2.0f))
+        if (object->position.x > (visibleArea.x - object->size.x / 2.0f)) {
             object->position.x = visibleArea.x - object->size.x / 2.0f;
+            hadToCorrect = true;
+        }
 
-        if (object->position.y < object->size.y / 2.0f)
+        if (object->position.y < object->size.y / 2.0f) {
             object->position.y = object->size.y / 2.0f;
+            hadToCorrect = true;
+        }
 
-        if (object->position.y > (visibleArea.y - object->size.y / 2.0f))
+        if (object->position.y > (visibleArea.y - object->size.y / 2.0f)) {
             object->position.y = visibleArea.y - object->size.y / 2.0f;
+            hadToCorrect = true;
+        }
+
+        return hadToCorrect;
     }
 
 
@@ -151,7 +163,7 @@ namespace Acidrain {
         if (a->state.side == b->state.side) return;
         if (a->state.isDead || b->state.isDead) return;
         // no bullet-to-bullet collision
-        if (a->state.type == EntityType::Bullet && b->state.type == a->state.type) return;
+        if (a->state.type == EntityType::Bullet && b->state.type == EntityType::Bullet) return;
 
         if (a->collisionHull.collidesWith(b->collisionHull)) {
             collisions.push_back(CollisionInfo(a, b, (a->position + b->position) / 2.0f));

@@ -88,6 +88,6 @@ function Scene.add(entity)
 end
 
 function Scene.confineToPlayingArea(entity)
-    confineToPlayingArea(SCENE, entity:getPointer())
+    return confineToPlayingArea(SCENE, entity:getPointer())
 end
 

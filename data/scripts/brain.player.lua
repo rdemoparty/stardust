@@ -6,31 +6,38 @@ SQRT2 = math.sqrt(2)
 
 function onSpawn(objectPointer)
     local o = Entity.from(objectPointer)
-    o:setFloat("speed", 300)
+    o:setFloat("mass", 10)
+
+    o:setFloat("thrusterForce", 30000)
+
+    o:setFloat("vx", 0)
+    o:setFloat("vy", 0)
+
+    o:setFloat("ax", 0)
+    o:setFloat("ay", 0)
+
+    o:setFloat("friction", 0.95)
+
+    o:setFloat("maxSpeed", 600)
 end
 
-function velocityFromInput()
-    local velocityX = 0
-    local velocityY = 0
+function calculateForces(thrusterForce)
+    local forceX = 0
+    local forceY = 0
 
     if leftPressed() then
-    	velocityX = -1
+    	forceX = -thrusterForce
     elseif rightPressed() then
-    	velocityX = 1
+    	forceX = thrusterForce
     end
 
     if upPressed() then
-    	velocityY = -1
+    	forceY = -thrusterForce
     elseif downPressed() then
-    	velocityY = 1
+    	forceY = thrusterForce
     end
 
-    if (math.abs(velocityX) > 0.00001) and (math.abs(velocityY) > 0.00001) then
-    	velocityX = velocityX / SQRT2
-    	velocityY = velocityY / SQRT2
-    end
-
-    return velocityX, velocityY
+    return forceX, forceY
 end
 
 function onUpdate(objectPointer, elapsedSeconds)
@@ -42,16 +49,53 @@ function onUpdate(objectPointer, elapsedSeconds)
     	o:fire(false)
     end
 
-    local speed = o:getFloat("speed")
+    -- calculate all forces acting upon the ship
+    local thrusterForce = o:getFloat("thrusterForce")
+    local forceX, forceY = calculateForces(thrusterForce)
 
-    local vx, vy = velocityFromInput()
+    -- figure out acceleration: a = F/m
+    local mass = o:getFloat("mass")
+    local accelX = forceX / mass
+    local accelY = forceY / mass
+
+    -- update velocity
+    local vx = o:getFloat("vx")
+    local vy = o:getFloat("vy")
+
+    vx = vx + accelX * elapsedSeconds
+    vy = vy + accelY * elapsedSeconds
+
+    -- cap velocity to a max value
+    local currentSpeed = math.sqrt(vx*vx + vy*vy)
+    local maxSpeed = o:getFloat("maxSpeed")
+    if currentSpeed > maxSpeed then
+        local ratio = maxSpeed / currentSpeed
+        vx = vx * ratio
+        vy = vy * ratio
+    end
+
+    -- apply friction
+    local friction = o:getFloat("friction")
+    vx = vx * friction
+    vy = vy * friction
+
+    -- update position
     local x, y = o:getPosition()
 
-    x = x + vx * speed * elapsedSeconds
-    y = y + vy * speed * elapsedSeconds
+    x = x + vx * elapsedSeconds
+    y = y + vy * elapsedSeconds
 
+    -- persist position and velocity
     o:setPosition(x, y)
-    Scene.confineToPlayingArea(o)
+
+    -- keep ship on screen and reset velocity if it hit a boundary
+    if Scene.confineToPlayingArea(o) then
+        -- vx = 0
+        -- vy = 0
+    end
+
+    o:setFloat("vx", vx)
+    o:setFloat("vy", vy)
 end
 
 

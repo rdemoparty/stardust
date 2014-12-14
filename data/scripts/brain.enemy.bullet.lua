@@ -17,5 +17,11 @@ function onUpdate(objectPointer, elapsedSeconds)
 end
 
 function onDeath(objectPointer, reason)
+    local killedEntity = Entity.from(objectPointer)
+    if reason == DeathReason.Killed then
+        local explosion = Scene.create("enemy.bullet.hit")
+        explosion:setPosition(killedEntity:getPosition())
+        Scene.add(explosion)
+    end
 end
 

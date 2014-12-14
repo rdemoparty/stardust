@@ -14,13 +14,13 @@ namespace Acidrain {
     }
 
     void GfxSystem::init(const int desiredWidth, const int desiredHeight) {
-        SDL_DisplayMode desktopDisplayMode;
-        if (SDL_GetDesktopDisplayMode(0, &desktopDisplayMode) != 0) {
-            SDL_Log("SDL_GetDesktopDisplayMode failed: %s", SDL_GetError());
+        SDL_DisplayMode displayMode;
+        if (SDL_GetCurrentDisplayMode(0, &displayMode) != 0) {
+            SDL_Log("SDL_GetCurrentDisplayMode failed: %s", SDL_GetError());
             exit(1);
         }
 
-        window = make_shared<Window>(desktopDisplayMode.w, desktopDisplayMode.h, WindowType::Fullscreen);
+        window = make_shared<Window>(displayMode.w, displayMode.h, WindowType::Fullscreen);
 
         const int windowWidth = window->width();
         const int windowHeight = window->height();
@@ -161,6 +161,7 @@ namespace Acidrain {
     void GfxSystem::setTransparencyMode(TransparencyMode mode) {
         switch (mode) {
             case TransparencyMode::Opaque:
+                glDisable(GL_BLEND);
                 break;
             case TransparencyMode::Transparent:
                 glEnable(GL_BLEND);
@@ -198,4 +199,3 @@ namespace Acidrain {
     }
 
 } // namespace Acidrain
-

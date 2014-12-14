@@ -165,8 +165,8 @@ namespace Acidrain {
     static int confineToPlayingArea(lua_State* L) {
         Scene* scene = (Scene*) lua_topointer(L, 1);
         GameObject* object = (GameObject*) lua_topointer(L, 2);
-        scene->confineEntityInVisibleArea(object);
-        return 0; // arguments pushed on stack
+        lua_pushboolean(L, scene->confineEntityInVisibleArea(object));
+        return 1; // arguments pushed on stack
     }
 
     // ----------------------------------------

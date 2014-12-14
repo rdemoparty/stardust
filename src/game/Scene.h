@@ -44,7 +44,7 @@ namespace Acidrain {
 
         void draw(shared_ptr<GpuProgram> gpuProgram);
 
-        void confineEntityInVisibleArea(GameObject* object);
+        bool confineEntityInVisibleArea(GameObject* object);
 
         int countObjects() const;
 

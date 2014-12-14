@@ -13,6 +13,12 @@
       "spriteHeight": 128
     },
     {
+      "name": "bullet.hit",
+      "texture": "sprites/bullet_hit.png",
+      "spriteWidth": 32,
+      "spriteHeight": 32
+    },
+    {
       "name": "laser.red",
       "texture": "sprites/lazorred.png",
       "spriteWidth": 18,
@@ -64,6 +70,18 @@
           "spriteSheet": "explosion",
           "index": 0,
           "indexTo": 31
+        }
+      ]
+    },
+    {
+      "name": "bullet.hit",
+      "frameTimeInMilliseconds": 20,
+      "loopType": "NONE",
+      "frames": [
+        {
+          "spriteSheet": "bullet.hit",
+          "index": 0,
+          "indexTo": 5
         }
       ]
     },
