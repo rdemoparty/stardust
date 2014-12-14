@@ -49,6 +49,8 @@ namespace Acidrain {
 
     private:
 
+        long NEXT_ID = 1;
+
         GameObject* cookGameObject(GameObjectRecipe& recipe);
 
         Weapon* cookWeapon(WeaponRecipe recipe);

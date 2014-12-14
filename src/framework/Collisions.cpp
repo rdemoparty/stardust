@@ -17,9 +17,25 @@ namespace Acidrain {
         vec4 transformedCenter = parentTransform * vec4(center.x, center.y, 0, 1);
         worldCenter = vec2(transformedCenter.x, transformedCenter.y);
         worldRadius = radius * parentTransform[2][2]; // we assume scale is uniform and we just take one component
+
+        // The code below fixes a subtle bug:
+        // - if the entity is created at large x, y, previous coordinates are 0
+        //   and collision detection code will take the huge velocities into account.
+        //   This way we can get false detections between entities that are nowhere near,
+        //   but the collision detection code assumes they collided somewhere between last
+        //   and current frame.
+        //
+        //   We fix this by setting previous state equal to the current state for first frame.
+        if (firstTransform) {
+            previousWorldCenter = worldCenter;
+            previousWorldRadius = worldRadius;
+        }
+
+        firstTransform = false;
     }
 
     void Circle::draw() {
+        GFXSYS.drawLine(previousWorldCenter, worldCenter, glm::vec4(1, 1, 1, 0.3));
         GFXSYS.drawCircle(worldCenter, worldRadius, glm::vec4(1, 1, 1, 0.3));
     }
 

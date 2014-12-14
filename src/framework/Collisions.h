@@ -23,6 +23,8 @@ namespace Acidrain {
 
     public:
 
+        bool firstTransform = true;
+
         float radius;
         vec2 center;
 

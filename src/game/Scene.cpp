@@ -1,6 +1,7 @@
 #include <Scene.h>
 #include <GameObjectFactory.h>
 #include <GfxSystem.h>
+#include <iostream>
 
 namespace Acidrain {
 
@@ -24,15 +25,10 @@ namespace Acidrain {
     }
 
     GameObject* Scene::createByName(string name) {
+        if (name == "enemy.bullet.hit") {
+            int i = 1;
+        }
         return objectFactory->createByName(name);
-//        if (name == "laser")
-//            return objectFactory->createLaser();
-//        if (name == "enemyLaser")
-//            return objectFactory->createEnemyLaser();
-//        else if (name == "explosion")
-//            return objectFactory->createExplosion();
-//        else
-//            return nullptr;
     }
 
     int Scene::countObjects() const {
@@ -40,7 +36,7 @@ namespace Acidrain {
     }
 
     void Scene::flagEntitiesOutOfVisibleArea() {
-        for (auto object : objects) {
+        for (auto& object : objects) {
             if (object->state.killIfOutsideOfVisibleArea && isObjectOutOfVisibleArea(object)) {
                 object->state.isDead = true;
                 object->state.deathReason = EntityDeathReason::OutOfVisibleArea;
@@ -51,9 +47,10 @@ namespace Acidrain {
     void Scene::removeDeadEntities() {
         auto i = begin(objects);
         while (i != end(objects)) {
-            if ((*i)->state.shouldRemove()) {
-                delete *i;
+            auto object = *i;
+            if (object->state.isDead && object->state.isToBeRemovedOnDeath) {
                 i = objects.erase(i);
+                delete object;
             } else {
                 ++i;
             }
@@ -151,6 +148,7 @@ namespace Acidrain {
         for (auto& collisionInfo : collisions) {
             GameObject* a = collisionInfo.from;
             GameObject* b = collisionInfo.to;
+
             if (!a->state.isDead && !b->state.isDead) {
                 a->inflictDamage(b->state.damageProvidedOnCollision);
                 b->inflictDamage(a->state.damageProvidedOnCollision);
@@ -159,6 +157,14 @@ namespace Acidrain {
     }
 
     void Scene::detectCollisionBetweenGameObjects(GameObject* a, GameObject* b) {
+//        // avoid player collisions in order to find out bug related to bullet hits
+//        if (a->state.type == EntityType::Ship && a->state.side == EntitySide::Friendly)
+//            return;
+//
+//        // avoid player collisions in order to find out bug related to bullet hits
+//        if (b->state.type == EntityType::Ship && b->state.side == EntitySide::Friendly)
+//            return;
+
         if (!a->state.isCollidable || !b->state.isCollidable) return;
         if (a->state.side == b->state.side) return;
         if (a->state.isDead || b->state.isDead) return;
@@ -178,5 +184,44 @@ namespace Acidrain {
                 gameObject->addTo(*spritePool);
 
         spritePool->draw(gpuProgram);
+    }
+
+    string typeName(EntityType type) {
+        switch (type) {
+            case EntityType::Ship: return "Ship";
+            case EntityType::Bullet: return "Bullet";
+            case EntityType::Explosion: return "Explosion";
+            default:
+                return "unknown";
+        }
+    }
+
+    string sideName(EntitySide side) {
+        switch (side) {
+            case EntitySide::Friendly: return "Friendly";
+            case EntitySide::Adverse: return "Adverse";
+            case EntitySide::Neutral: return "Neutral";
+            default:
+                return "unknown";
+        }
+    }
+
+    void dump(GameObject* object) {
+        std::ostream& out = std::cout;
+        out << "GameObject: {\n";
+        out << "\tid: " << object->getId() << "\n";
+        out << "\ttype: " << typeName(object->state.type) << "\n";
+        out << "\tside: " << sideName(object->state.side) << "\n";
+        out << "\tisDead: " << object->state.isDead << "\n";
+        out << "\tremoveOnDeath: " << object->state.isToBeRemovedOnDeath << "\n";
+        out << "\tposition: " << object->position.x << ", " << object->position.y << "\n";
+        out << "}";
+        out << std::endl;
+    }
+
+    void Scene::dumpEntites() {
+        std::cout << "===== Dumping game entities " << std::endl;
+        for (auto& gameObject : objects)
+            dump(gameObject);
     }
 }

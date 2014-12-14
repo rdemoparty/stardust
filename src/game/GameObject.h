@@ -67,6 +67,14 @@ namespace Acidrain {
 
         virtual ~GameObject();
 
+        long getId() const {
+            return id;
+        }
+
+        void setId(long id) {
+            GameObject::id = id;
+        }
+
         void fireWeapons(bool shouldFire);
 
         void setScene(Scene* scene);
@@ -92,6 +100,8 @@ namespace Acidrain {
         bool isAnimationFinished();
 
     protected:
+        long id;
+
         AttributeBag attrs;
         shared_ptr<ScriptedBrain> brain;
 

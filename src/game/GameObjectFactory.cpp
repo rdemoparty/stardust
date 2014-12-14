@@ -59,7 +59,7 @@ namespace Acidrain {
         recipe.animation = "bullet.hit";
         recipe.brain = "scripts/brain.enemy.explosion.lua";
         recipe.collidable = false;
-        recipe.killIfOutside = false;
+        recipe.killIfOutside = true;
         recipe.team = EntitySide::Neutral;
         recipe.type = EntityType::Explosion;
 
@@ -73,9 +73,9 @@ namespace Acidrain {
         recipe.brain = "scripts/brain.player.lua";
         recipe.collidable = true;
         recipe.damageProvidedOnCollision = 10000;
-        recipe.removeOnDeath = false;
+        recipe.removeOnDeath = true;
         recipe.killIfOutside = false;
-        recipe.maxLife = 200;
+        recipe.maxLife = 50;
         recipe.team = EntitySide::Friendly;
         recipe.type = EntityType::Ship;
 
@@ -95,7 +95,7 @@ namespace Acidrain {
         recipe.collidable = true;
         recipe.damageProvidedOnCollision = 10;
         recipe.removeOnDeath = true;
-        recipe.killIfOutside = false;
+        recipe.killIfOutside = true;
         recipe.maxLife = 100;
         recipe.team = EntitySide::Adverse;
         recipe.type = EntityType::Ship;
@@ -128,6 +128,8 @@ namespace Acidrain {
 
     GameObject* GameObjectFactory::cookGameObject(GameObjectRecipe& recipe) {
         GameObject* result = new GameObject();
+        result->setId(NEXT_ID++);
+
         if (!recipe.brain.empty())
             result->setBrain(cookBrain(recipe.brain));
 

@@ -91,3 +91,7 @@ function Scene.confineToPlayingArea(entity)
     return confineToPlayingArea(SCENE, entity:getPointer())
 end
 
+function Scene.dump()
+    dumpEntities(SCENE)
+end
+

@@ -46,6 +46,8 @@ namespace Acidrain {
 
         bool confineEntityInVisibleArea(GameObject* object);
 
+        void dumpEntites();
+
         int countObjects() const;
 
     private:

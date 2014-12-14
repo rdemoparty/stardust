@@ -36,6 +36,8 @@ namespace Acidrain {
 
         void setTransparencyMode(TransparencyMode mode);
 
+        void drawLine(const vec2& from, const vec2& to, const vec4& color);
+
         void drawCircle(const vec2& center, float radius, const vec4& color);
 
         void drawFilledRectangle(const vec2& topLeft, const vec2& bottomRight, const vec4& color);

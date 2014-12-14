@@ -198,4 +198,18 @@ namespace Acidrain {
         return height;
     }
 
+    void GfxSystem::drawLine(const vec2& from, const vec2& to, const vec4& color) {
+        glLineWidth(2);
+        glEnable(GL_LINE_SMOOTH);
+        glBegin(GL_LINES);
+        {
+            glColor4f(color.r, color.g, color.b, color.a);
+            glVertex2d(from.x, from.y);
+
+            glColor4f(color.r, color.g, color.b, color.a);
+            glVertex2d(to.x, to.y);
+        }
+        glEnd();
+
+    }
 } // namespace Acidrain

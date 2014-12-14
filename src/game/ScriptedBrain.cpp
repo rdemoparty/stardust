@@ -132,6 +132,11 @@ namespace Acidrain {
         return 0; // arguments pushed on stack
     }
 
+    static int tildaJustPressed(lua_State* L) {
+        lua_pushboolean(L, INPUT.isKeyJustPressed(SDL_SCANCODE_GRAVE));
+        return 1; // arguments pushed on stack
+    }
+
     static int fireJustPressed(lua_State* L) {
         lua_pushboolean(L, INPUT.isKeyJustPressed(SDL_SCANCODE_SPACE));
         return 1; // arguments pushed on stack
@@ -167,6 +172,12 @@ namespace Acidrain {
         GameObject* object = (GameObject*) lua_topointer(L, 2);
         lua_pushboolean(L, scene->confineEntityInVisibleArea(object));
         return 1; // arguments pushed on stack
+    }
+
+    static int dumpEntities(lua_State* L) {
+        Scene* scene = (Scene*) lua_topointer(L, 1);
+        scene->dumpEntites();
+        return 0; // arguments pushed on stack
     }
 
     // ----------------------------------------
@@ -215,6 +226,7 @@ namespace Acidrain {
         lua_register(L, "setFloat", setFloatAttribute);
         lua_register(L, "createEntity", createEntity);
         lua_register(L, "addEntity", addEntity);
+        lua_register(L, "tildaJustPressed", tildaJustPressed);
         lua_register(L, "fireJustPressed", fireJustPressed);
         lua_register(L, "fireJustReleased", fireJustReleased);
         lua_register(L, "upPressed", upPressed);
@@ -222,6 +234,7 @@ namespace Acidrain {
         lua_register(L, "leftPressed", leftPressed);
         lua_register(L, "rightPressed", rightPressed);
         lua_register(L, "confineToPlayingArea", confineToPlayingArea);
+        lua_register(L, "dumpEntities", dumpEntities);
     }
 
     void ScriptedBrain::injectScene(Scene* scene) {
