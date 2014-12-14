@@ -31,7 +31,12 @@ function run_project {
 			exit 1
 		fi
 
-		cd bin && optirun ./stardust.exe && cd ..
+		if hash optirun 2>/dev/null; then
+			cd bin && optirun ./stardust.exe && cd ..
+		else
+			cd bin && ./stardust.exe && cd ..
+		fi
+
 	else
 		if [ ! -f bin/stardust ]; then
 			echo -e "Error: bin/stardust file does not exist\n"
