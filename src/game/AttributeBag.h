@@ -18,7 +18,7 @@ namespace Acidrain {
         void setFloat(const char* const key, float value);
 
     private:
-        map<string, int> integerMap;
-        map<string, float> floatMap;
+        map<const char*, int> integerMap;
+        map<const char*, float> floatMap;
     };
 }

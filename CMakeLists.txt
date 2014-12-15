@@ -33,7 +33,7 @@ set(BIN_PATH ../bin)
 # 	endif (CMAKE_CL_64)
 # else(WIN32)
 	set(GAME_EXECUTABLE_NAME "stardust")
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -static-libstdc++ -static-libgcc")
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall")
 # endif(WIN32)
 
 # SDL setup
