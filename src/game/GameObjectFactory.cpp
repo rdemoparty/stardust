@@ -79,7 +79,7 @@ namespace Acidrain {
         recipe.team = EntitySide::Friendly;
         recipe.type = EntityType::Ship;
 
-        recipe.hull.push_back({16, {0, 0}});
+        recipe.hull.push_back({12, {0, 0}});
 
         recipe.weapons.push_back({"player.bullet", {-10, -32}, 10});
         recipe.weapons.push_back({"player.bullet", {12, -32}, 10});
@@ -100,7 +100,7 @@ namespace Acidrain {
         recipe.team = EntitySide::Adverse;
         recipe.type = EntityType::Ship;
 
-        recipe.hull.push_back({32, {0, 0}});
+        recipe.hull.push_back({28, {0, 0}});
 
         recipe.weapons.push_back({"enemy.bullet", {0, 32}, 2});
         return recipe;
