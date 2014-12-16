@@ -53,6 +53,19 @@ namespace Acidrain {
         return recipe;
     }
 
+    GameObjectRecipe beaconRecipe() {
+        GameObjectRecipe recipe;
+        recipe.name = "beacon";
+        recipe.animation = "beacon";
+        recipe.brain = "scripts/brain.beacon.lua";
+        recipe.collidable = false;
+        recipe.killIfOutside = false;
+        recipe.team = EntitySide::Neutral;
+        recipe.type = EntityType::Explosion;
+
+        return recipe;
+    }
+
     GameObjectRecipe bulletHitRecipe() {
         GameObjectRecipe recipe;
         recipe.name = "enemy.bullet.hit";
@@ -113,6 +126,7 @@ namespace Acidrain {
         addRecipe(explosionRecipe());
         addRecipe(bulletHitRecipe());
         addRecipe(playerRecipe());
+        addRecipe(beaconRecipe());
     }
 
     GameObjectFactory::~GameObjectFactory() {

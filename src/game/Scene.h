@@ -19,6 +19,8 @@ namespace Acidrain {
 
     class GpuProgram;
 
+    class Camera;
+
     struct CollisionInfo {
         GameObject* from;
         GameObject* to;
@@ -40,8 +42,6 @@ namespace Acidrain {
 
         GameObject* createByName(string name);
 
-        void shakeCamera(float amount);
-
         void update(float elapsedSeconds);
 
         void draw(shared_ptr<GpuProgram> gpuProgram);
@@ -51,6 +51,10 @@ namespace Acidrain {
         void dumpEntites();
 
         int countObjects() const;
+
+        void setCamera(shared_ptr<Camera> camera);
+
+        void shakeCamera(float amount);
 
     private:
 
@@ -70,8 +74,7 @@ namespace Acidrain {
 
         void drawObjectsOfType(EntityType type, shared_ptr<GpuProgram> gpuProgram);
 
-        float cameraShakeFactor;
-
+        shared_ptr<Camera> camera;
         vector<GameObject*> objects;
         vector<GameObject*> newlyCreatedObjects;
         shared_ptr<SpritePool> spritePool;

@@ -38,6 +38,10 @@ function onDeath(objectPointer, reason)
         local explosion = Scene.create("enemy.death.explosion")
         explosion:setPosition(killedEntity:getPosition())
         Scene.add(explosion)
+
+        local beacon = Scene.create("beacon")
+        beacon:setPosition(killedEntity:getPosition())
+        Scene.add(beacon)
     end
 end
 

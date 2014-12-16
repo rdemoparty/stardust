@@ -25,6 +25,8 @@ namespace Acidrain {
 
     class Scene;
 
+    class Camera;
+
     class Stardust : public EventListener {
     public:
         Stardust();
@@ -39,7 +41,7 @@ namespace Acidrain {
 
     private:
 
-        float shakeFactor = 10;
+        shared_ptr<Camera> camera;
 
         shared_ptr<GpuProgramConstantBundle> gpuProgramConstantBundle;
 

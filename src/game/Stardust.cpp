@@ -13,6 +13,7 @@
 #include <InputProvider.h>
 #include <GpuProgramConstants.h>
 #include <Scene.h>
+#include <Camera.h>
 
 namespace Acidrain {
 
@@ -46,12 +47,17 @@ namespace Acidrain {
         player->position = vec2(300, 700);
         scene->add(player);
 
-        gpuProgramConstantBundle = make_shared<GpuProgramConstantBundle>();
+        // create camera
+        camera = make_shared<Camera>();
+        scene->setCamera(camera);
 
         // initialize some gpuProgram constants
+        gpuProgramConstantBundle = make_shared<GpuProgramConstantBundle>();
+
         gpuProgramConstantBundle->add("orthoMatrix", GpuProgramConstant(glm::ortho(0.0f, 1024.0f, 768.0f, 0.0f, 0.0f, 1.0f)));
         int textureSamplerIndex = 0;
         gpuProgramConstantBundle->add("diffuseSampler", GpuProgramConstant(textureSamplerIndex));
+        gpuProgramConstantBundle->add("cameraShakeMatrix", GpuProgramConstant(camera->getShakeMatrix()));
 
         gpuProgram->addConstants(gpuProgramConstantBundle.get());
     }
@@ -75,13 +81,6 @@ namespace Acidrain {
         if (INPUT.isKeyDown(SDL_SCANCODE_ESCAPE))
             quitGame = true;
 
-        if (shakeFactor > 0) {
-            shakeFactor -= 10 * elapsedSeconds;
-            if (shakeFactor < 0) {
-                shakeFactor = 0;
-            }
-        }
-
         static float timeUntilNextSpawn = 0;
         timeUntilNextSpawn -= elapsedSeconds;
         if (timeUntilNextSpawn < 0) {
@@ -90,6 +89,9 @@ namespace Acidrain {
             scene->add(enemy);
             timeUntilNextSpawn = rand() % 3 + 1;
         }
+
+        camera->update(elapsedSeconds);
+        gpuProgramConstantBundle->add("cameraShakeMatrix", GpuProgramConstant(camera->getShakeMatrix()));
 
         scene->update(elapsedSeconds);
 
@@ -101,8 +103,8 @@ namespace Acidrain {
 
     void Stardust::render() {
         GFXSYS.clearScreen();
-        starfield->draw(gpuProgram);
 
+        starfield->draw(gpuProgram);
         scene->draw(gpuProgram);
 
         drawStats();

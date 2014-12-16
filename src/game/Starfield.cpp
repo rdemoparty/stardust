@@ -27,18 +27,18 @@ namespace Acidrain {
     }
 
     void Starfield::spawn(const std::shared_ptr<StarParticle>& particle) {
-        particle->speed = (float) (rnd.randomUnitDouble() * 3.0 + 1.0);
+        particle->speed = (float) (rnd.randomUnit() * 3.0 + 1.0);
         particle->direction = vec2(0.0f, 1.0f) * particle->speed;
 
         if (particle->firstSpawn) {
             particle->position = glm::vec2(
-                    rnd.randomUnitDouble() * terrainSize.x,
-                    rnd.randomUnitDouble() * terrainSize.y
+                    rnd.randomUnit() * terrainSize.x,
+                    rnd.randomUnit() * terrainSize.y
             );
             particle->firstSpawn = false;
         } else {
             particle->position = glm::vec2(
-                    rnd.randomUnitDouble() * terrainSize.x,
+                    rnd.randomUnit() * terrainSize.x,
                     -spriteHeight / 2.f
             );
         }
@@ -88,10 +88,6 @@ namespace Acidrain {
 
         shader->use();
         {
-            // TODO: HACK! make this better
-            mat4 cameraShakeMatrix(1);
-            shader->setMatrix4Uniform(&cameraShakeMatrix[0][0], "cameraShakeMatrix");
-
             GFXSYS.setTransparencyMode(TransparencyMode::Additive);
             flareTexture->useForUnit(0);
             vbo.draw();

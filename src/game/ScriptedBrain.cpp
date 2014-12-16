@@ -4,6 +4,7 @@
 #include <FileSystem.h>
 #include <Scene.h>
 #include <InputProvider.h>
+#include "Camera.h"
 
 namespace Acidrain {
 

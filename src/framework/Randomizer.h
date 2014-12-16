@@ -9,7 +9,15 @@ public:
 
     virtual ~Randomizer();
 
-    double randomUnitDouble();
+    /**
+    * @return [0..1]
+    */
+    double randomUnit();
+
+    /**
+    * @return [-1..1]
+    */
+    double randomSignedUnit();
 
 private:
     std::mt19937 rng;

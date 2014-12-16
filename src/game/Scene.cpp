@@ -3,7 +3,7 @@
 #include <GfxSystem.h>
 #include <iostream>
 #include <Randomizer.h>
-#include <glm/gtc/matrix_transform.hpp>
+#include <Camera.h>
 
 namespace Acidrain {
 
@@ -56,6 +56,15 @@ namespace Acidrain {
         }
     }
 
+    void Scene::setCamera(shared_ptr<Camera> camera) {
+        this->camera = camera;
+    }
+
+    void Scene::shakeCamera(float amount) {
+        if (camera)
+            camera->shake(amount);
+    }
+
     bool Scene::isObjectOutOfVisibleArea(GameObject* object) {
         const float SIZE_FACTOR_TO_ALLOW = 1.0f;
         const float objectHalfWidth = object->size.x / 2.0f;
@@ -78,13 +87,6 @@ namespace Acidrain {
 
 
     void Scene::update(float elapsedSeconds) {
-        // dampen camera shake factor
-        if (cameraShakeFactor > 0)  {
-            cameraShakeFactor -= 10.0 * elapsedSeconds;
-            if (cameraShakeFactor < 0) {
-                cameraShakeFactor = 0;
-            }
-        }
 
         // remove entities killed the previous frame
         removeDeadEntities();
@@ -102,23 +104,7 @@ namespace Acidrain {
         flagEntitiesOutOfVisibleArea();
     }
 
-    static Randomizer randomizer;
-
     void Scene::draw(shared_ptr<GpuProgram> gpuProgram) {
-        mat4 cameraShakeMatrix(1);
-        if (cameraShakeFactor > 0) {
-            vec3 shakeVector = vec3(
-                    2 * cameraShakeFactor * (randomizer.randomUnitDouble() - 0.5),
-                    2 * cameraShakeFactor * (randomizer.randomUnitDouble() - 0.5),
-                    0
-            );
-            cameraShakeMatrix = glm::translate(cameraShakeMatrix, shakeVector);
-        }
-
-        // TODO: perhaps find a better way of doing this
-        gpuProgram->use();
-        gpuProgram->setMatrix4Uniform(&cameraShakeMatrix[0][0], "cameraShakeMatrix");
-
         GFXSYS.setTransparencyMode(TransparencyMode::Special);
         drawObjectsOfType(EntityType::Ship, gpuProgram);
         drawObjectsOfType(EntityType::Bullet, gpuProgram);
@@ -246,9 +232,5 @@ namespace Acidrain {
         std::cout << "===== Dumping game entities " << std::endl;
         for (auto& gameObject : objects)
             dump(gameObject);
-    }
-
-    void Scene::shakeCamera(float amount) {
-        cameraShakeFactor = amount;
     }
 }
