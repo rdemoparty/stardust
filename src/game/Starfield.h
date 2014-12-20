@@ -19,6 +19,7 @@ namespace Acidrain {
 
     struct StarParticle {
         vec2 position;
+        vec2 previousPosition;
         vec2 direction;
         vec4 color;
 
@@ -37,7 +38,7 @@ namespace Acidrain {
 
         void update(float dt);
 
-        void draw(shared_ptr<GpuProgram> shader);
+        void draw(shared_ptr<GpuProgram> shader, float frameAlpha);
 
     private:
 

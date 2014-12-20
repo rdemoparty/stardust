@@ -2,22 +2,22 @@
 
 namespace Acidrain {
 
-    using namespace std;
+    using namespace std::chrono;
 
     Timer::Timer() {
-        startTime = chrono::system_clock::now();
+        startTime = high_resolution_clock::now();
         lastLapTime = startTime;
     }
 
     double Timer::secondsSinceStart() {
-        chrono::time_point<chrono::system_clock> currentTime = chrono::system_clock::now();
-        chrono::duration<double> elapsedSeconds = currentTime - startTime;
+        high_resolution_clock::time_point currentTime = high_resolution_clock::now();
+        duration<double> elapsedSeconds = currentTime - startTime;
         return elapsedSeconds.count();
     }
 
     float Timer::lap() {
-        chrono::time_point<chrono::system_clock> currentTime = chrono::system_clock::now();
-        chrono::duration<float> elapsedSeconds = currentTime - lastLapTime;
+        high_resolution_clock::time_point currentTime = high_resolution_clock::now();
+        duration<float> elapsedSeconds = currentTime - lastLapTime;
         lastLapTime = currentTime;
         return elapsedSeconds.count();
     }

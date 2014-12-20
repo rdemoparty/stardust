@@ -35,7 +35,7 @@ namespace Acidrain {
 
         void update(float elapsedSeconds);
 
-        void render();
+        void render(float alpha);
 
         bool shouldQuit();
 

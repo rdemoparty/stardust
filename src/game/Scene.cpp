@@ -67,19 +67,19 @@ namespace Acidrain {
 
     bool Scene::isObjectOutOfVisibleArea(GameObject* object) {
         const float SIZE_FACTOR_TO_ALLOW = 1.0f;
-        const float objectHalfWidth = object->size.x / 2.0f;
-        const float objectHalfHeight = object->size.y / 2.0f;
+        const float objectHalfWidth = object->currentState.size.x / 2.0f;
+        const float objectHalfHeight = object->currentState.size.y / 2.0f;
 
-        if ((object->position.y + objectHalfHeight) < -(object->size.y * SIZE_FACTOR_TO_ALLOW))
+        if ((object->currentState.position.y + objectHalfHeight) < -(object->currentState.size.y * SIZE_FACTOR_TO_ALLOW))
             return true;
 
-        if ((object->position.y - objectHalfHeight) > (object->size.y * SIZE_FACTOR_TO_ALLOW + visibleArea.y))
+        if ((object->currentState.position.y - objectHalfHeight) > (object->currentState.size.y * SIZE_FACTOR_TO_ALLOW + visibleArea.y))
             return true;
 
-        if ((object->position.x + objectHalfWidth) < -(object->size.x * SIZE_FACTOR_TO_ALLOW))
+        if ((object->currentState.position.x + objectHalfWidth) < -(object->currentState.size.x * SIZE_FACTOR_TO_ALLOW))
             return true;
 
-        if ((object->position.x - objectHalfWidth) > (object->size.y * SIZE_FACTOR_TO_ALLOW + visibleArea.x))
+        if ((object->currentState.position.x - objectHalfWidth) > (object->currentState.size.y * SIZE_FACTOR_TO_ALLOW + visibleArea.x))
             return true;
 
         return false;
@@ -87,7 +87,6 @@ namespace Acidrain {
 
 
     void Scene::update(float elapsedSeconds) {
-
         // remove entities killed the previous frame
         removeDeadEntities();
 
@@ -95,8 +94,8 @@ namespace Acidrain {
         addNewObjectsToScene();
 
         for (auto& gameObject : objects) {
-            gameObject->update(elapsedSeconds);
             gameObject->updateAnimation(elapsedSeconds);
+            gameObject->update(elapsedSeconds);
         }
 
         detectCollisions();
@@ -104,13 +103,13 @@ namespace Acidrain {
         flagEntitiesOutOfVisibleArea();
     }
 
-    void Scene::draw(shared_ptr<GpuProgram> gpuProgram) {
+    void Scene::draw(shared_ptr<GpuProgram> gpuProgram, float frameAlpha) {
         GFXSYS.setTransparencyMode(TransparencyMode::Special);
-        drawObjectsOfType(EntityType::Ship, gpuProgram);
-        drawObjectsOfType(EntityType::Bullet, gpuProgram);
+        drawObjectsOfType(EntityType::Ship, gpuProgram, frameAlpha);
+        drawObjectsOfType(EntityType::Bullet, gpuProgram, frameAlpha);
 
         GFXSYS.setTransparencyMode(TransparencyMode::Additive);
-        drawObjectsOfType(EntityType::Explosion, gpuProgram);
+        drawObjectsOfType(EntityType::Explosion, gpuProgram, frameAlpha);
 
 //        GFXSYS.setTransparencyMode(TransparencyMode::Transparent);
 //        for (auto& gameObject : objects)
@@ -120,23 +119,23 @@ namespace Acidrain {
     bool Scene::confineEntityInVisibleArea(GameObject* object) {
         bool hadToCorrect = false;
 
-        if (object->position.x < object->size.x / 2.0f) {
-            object->position.x = object->size.x / 2.0f;
+        if (object->currentState.position.x < object->currentState.size.x / 2.0f) {
+            object->currentState.position.x = object->currentState.size.x / 2.0f;
             hadToCorrect = true;
         }
 
-        if (object->position.x > (visibleArea.x - object->size.x / 2.0f)) {
-            object->position.x = visibleArea.x - object->size.x / 2.0f;
+        if (object->currentState.position.x > (visibleArea.x - object->currentState.size.x / 2.0f)) {
+            object->currentState.position.x = visibleArea.x - object->currentState.size.x / 2.0f;
             hadToCorrect = true;
         }
 
-        if (object->position.y < object->size.y / 2.0f) {
-            object->position.y = object->size.y / 2.0f;
+        if (object->currentState.position.y < object->currentState.size.y / 2.0f) {
+            object->currentState.position.y = object->currentState.size.y / 2.0f;
             hadToCorrect = true;
         }
 
-        if (object->position.y > (visibleArea.y - object->size.y / 2.0f)) {
-            object->position.y = visibleArea.y - object->size.y / 2.0f;
+        if (object->currentState.position.y > (visibleArea.y - object->currentState.size.y / 2.0f)) {
+            object->currentState.position.y = visibleArea.y - object->currentState.size.y / 2.0f;
             hadToCorrect = true;
         }
 
@@ -151,18 +150,6 @@ namespace Acidrain {
             for (auto j = i; j != objects.end(); j++)
                 if (i != j)
                     detectCollisionBetweenGameObjects(*i, *j);
-    }
-
-    void Scene::solveCollisions() {
-        for (auto& collisionInfo : collisions) {
-            GameObject* a = collisionInfo.from;
-            GameObject* b = collisionInfo.to;
-
-            if (!a->state.isDead && !b->state.isDead) {
-                a->inflictDamage(b->state.damageProvidedOnCollision);
-                b->inflictDamage(a->state.damageProvidedOnCollision);
-            }
-        }
     }
 
     void Scene::detectCollisionBetweenGameObjects(GameObject* a, GameObject* b) {
@@ -181,16 +168,30 @@ namespace Acidrain {
         if (a->state.type == EntityType::Bullet && b->state.type == EntityType::Bullet) return;
 
         if (a->collisionHull.collidesWith(b->collisionHull)) {
-            collisions.push_back(CollisionInfo(a, b, (a->position + b->position) / 2.0f));
+            collisions.push_back(CollisionInfo(a, b, (a->currentState.position + b->currentState.position) / 2.0f));
         }
     }
 
-    void Scene::drawObjectsOfType(EntityType type, shared_ptr<GpuProgram> gpuProgram) {
+    void Scene::solveCollisions() {
+        for (auto& collisionInfo : collisions) {
+            GameObject* a = collisionInfo.from;
+            GameObject* b = collisionInfo.to;
+
+            if (!a->state.isDead && !b->state.isDead) {
+                a->inflictDamage(b->state.damageProvidedOnCollision);
+                b->inflictDamage(a->state.damageProvidedOnCollision);
+            }
+        }
+    }
+
+    void Scene::drawObjectsOfType(EntityType type, shared_ptr<GpuProgram> gpuProgram, float frameAlpha) {
         spritePool->clear();
 
         for (auto& gameObject : objects)
-            if (gameObject->state.type == type)
+            if (gameObject->state.type == type) {
+                gameObject->setRenderStateAt(frameAlpha);
                 gameObject->addTo(*spritePool);
+            }
 
         spritePool->draw(gpuProgram);
     }
@@ -223,12 +224,12 @@ namespace Acidrain {
         out << "\tside: " << sideName(object->state.side) << "\n";
         out << "\tisDead: " << object->state.isDead << "\n";
         out << "\tremoveOnDeath: " << object->state.isToBeRemovedOnDeath << "\n";
-        out << "\tposition: " << object->position.x << ", " << object->position.y << "\n";
+        out << "\tposition: " << object->currentState.position.x << ", " << object->currentState.position.y << "\n";
         out << "}";
         out << std::endl;
     }
 
-    void Scene::dumpEntites() {
+    void Scene::dumpEntities() {
         std::cout << "===== Dumping game entities " << std::endl;
         for (auto& gameObject : objects)
             dump(gameObject);

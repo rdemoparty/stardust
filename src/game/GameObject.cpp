@@ -36,12 +36,12 @@ namespace Acidrain {
     }
 
     void GameObject::update(float elapsedSeconds) {
+        previousState = currentState;
         if (brain)
             brain->onUpdate(this, elapsedSeconds);
 
-        // update xform
-        Entity::update(elapsedSeconds);
         updateWeapons(elapsedSeconds);
+        collisionHull.transform(currentState.getXformMatrix());
     }
 
     void GameObject::updateAnimation(float elapsedSeconds) {
@@ -50,12 +50,12 @@ namespace Acidrain {
     }
 
     void GameObject::updateWeapons(float elapsedSeconds) {
+        const vec2& position = this->currentState.position;
+
         for (auto weapon : weapons) {
             if (weapon->update(elapsedSeconds)) {
-//                std::cout << "Creating a bullet with name " << weapon->getBulletType() << std::endl;
                 auto bullet = scene->createByName(weapon->getBulletType());
-//                std::cout << "Created pointer " << bullet << std::endl;
-                bullet->position = this->position + weapon->getMountingPoint();
+                bullet->currentState.position = position + weapon->getMountingPoint();
                 scene->add(bullet);
             }
         }

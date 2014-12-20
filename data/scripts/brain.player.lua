@@ -5,7 +5,7 @@
 function onSpawn(objectPointer)
     local o = Entity.from(objectPointer)
 
-	------ memleak settings    
+    ------ memleak settings    
     o:setFloat("mass", 6)
  
     o:setFloat("thrusterForce", 40000)
@@ -20,7 +20,7 @@ function onSpawn(objectPointer)
  
     o:setFloat("maxSpeed", 800)    
 
-	------ Vazde settings    
+    ------ Vazde settings    
     -- o:setFloat("mass", 10)
 
     -- o:setFloat("thrusterForce", 33000)
@@ -41,15 +41,15 @@ function calculateForces(thrusterForce)
     local forceY = 0
 
     if leftPressed() then
-    	forceX = -thrusterForce
+        forceX = -thrusterForce
     elseif rightPressed() then
-    	forceX = thrusterForce
+        forceX = thrusterForce
     end
 
     if upPressed() then
-    	forceY = -thrusterForce
+        forceY = -thrusterForce
     elseif downPressed() then
-    	forceY = thrusterForce
+        forceY = thrusterForce
     end
 
     return forceX, forceY
@@ -59,15 +59,14 @@ function onUpdate(objectPointer, elapsedSeconds)
     local o = Entity.from(objectPointer)
 
     if tildaJustPressed() then
-    	Scene.dump()
+        Scene.dump()
     end
 
     if fireJustPressed() then
-    	o:fire(true)
+        o:fire(true)
     elseif fireJustReleased() then
-    	o:fire(false)
+        o:fire(false)
     end
-
 
     -- calculate all forces acting upon the ship
     local thrusterForce = o:getFloat("thrusterForce")
@@ -121,4 +120,3 @@ end
 
 function onDeath(objectPointer, reason)
 end
-

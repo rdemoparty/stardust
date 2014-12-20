@@ -44,7 +44,7 @@ namespace Acidrain {
 
         // add game objects
         auto player = gameObjectFactory->createByName("player");
-        player->position = vec2(300, 700);
+        player->currentState.position = vec2(300, 700);
         scene->add(player);
 
         // create camera
@@ -85,7 +85,7 @@ namespace Acidrain {
         timeUntilNextSpawn -= elapsedSeconds;
         if (timeUntilNextSpawn < 0) {
             GameObject* enemy = gameObjectFactory->createByName("enemy");
-            enemy->position = vec2(rand() % 1024, -64);
+            enemy->currentState.position = vec2(rand() % 1024, -64);
             scene->add(enemy);
             timeUntilNextSpawn = rand() % 3 + 1;
         }
@@ -101,11 +101,11 @@ namespace Acidrain {
         INPUT.copyNewStateToOldState();
     }
 
-    void Stardust::render() {
+    void Stardust::render(float alpha) {
         GFXSYS.clearScreen();
 
-        starfield->draw(gpuProgram);
-        scene->draw(gpuProgram);
+        starfield->draw(gpuProgram, alpha);
+        scene->draw(gpuProgram, alpha);
 
         drawStats();
 

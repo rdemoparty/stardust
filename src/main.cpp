@@ -17,9 +17,21 @@ int main(int argc, char** argv) {
     Timer timer;
     Stardust game;
 
+    double dt = 1.0 / 30.0;
+    double accumulator = 0;
+
     while (!game.shouldQuit()) {
-        game.update(timer.lap());
-        game.render();
+        float frameTime = timer.lap();
+        if (frameTime > 0.25)
+            frameTime = 0.25;
+
+        accumulator += frameTime;
+        while (accumulator >= dt) {
+            game.update(dt);
+            accumulator -= dt;
+        }
+
+        game.render(accumulator / dt);
     }
 
     return 0;

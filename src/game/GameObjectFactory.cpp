@@ -149,7 +149,7 @@ namespace Acidrain {
 
         result->animation = ANIMREPO.newAnimation(recipe.animation);
         result->animation->start();
-        result->size = result->animation->getSprite().getSize();
+        result->currentState.size = result->animation->getSprite().getSize();
 
         result->state.isToBeRemovedOnDeath = recipe.removeOnDeath;
         result->state.killIfOutsideOfVisibleArea = recipe.killIfOutside;

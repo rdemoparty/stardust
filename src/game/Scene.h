@@ -4,7 +4,7 @@
 #include <string>
 #include <glm/vec2.hpp>
 #include <memory>
-#include "GameObject.h"
+#include <GameObject.h>
 
 namespace Acidrain {
 
@@ -44,11 +44,11 @@ namespace Acidrain {
 
         void update(float elapsedSeconds);
 
-        void draw(shared_ptr<GpuProgram> gpuProgram);
+        void draw(shared_ptr<GpuProgram> gpuProgram, float frameAlpha);
 
         bool confineEntityInVisibleArea(GameObject* object);
 
-        void dumpEntites();
+        void dumpEntities();
 
         int countObjects() const;
 
@@ -72,7 +72,7 @@ namespace Acidrain {
 
         void detectCollisionBetweenGameObjects(GameObject* a, GameObject* b);
 
-        void drawObjectsOfType(EntityType type, shared_ptr<GpuProgram> gpuProgram);
+        void drawObjectsOfType(EntityType type, shared_ptr<GpuProgram> gpuProgram, float frameAlpha);
 
         shared_ptr<Camera> camera;
         vector<GameObject*> objects;

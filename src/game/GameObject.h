@@ -83,7 +83,7 @@ namespace Acidrain {
 
         void addWeapon(Weapon* weapon);
 
-        virtual void update(float elapsedSeconds) override;
+        virtual void update(float elapsedSeconds);
 
         void updateAnimation(float elapsedSeconds);
 

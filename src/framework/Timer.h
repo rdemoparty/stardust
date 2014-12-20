@@ -14,8 +14,8 @@ namespace Acidrain {
         float lap();
 
     private:
-        std::chrono::time_point<std::chrono::system_clock> startTime;
-        std::chrono::time_point<std::chrono::system_clock> lastLapTime;
+        std::chrono::high_resolution_clock::time_point startTime;
+        std::chrono::high_resolution_clock::time_point lastLapTime;
     };
 
 } // namespace Acidrain

@@ -51,57 +51,57 @@ namespace Acidrain {
 
     static int getPosition(lua_State* L) {
         GameObject* object = (GameObject*) lua_topointer(L, 1);
-        lua_pushnumber(L, object->position.x);
-        lua_pushnumber(L, object->position.y);
+        lua_pushnumber(L, object->currentState.position.x);
+        lua_pushnumber(L, object->currentState.position.y);
         return 2; // arguments pushed on stack
     }
 
     static int setPosition(lua_State* L) {
         GameObject* object = (GameObject*) lua_topointer(L, 1);
-        object->position.x = (float) lua_tonumber(L, 2);
-        object->position.y = (float) lua_tonumber(L, 3);
+        object->currentState.position.x = (float) lua_tonumber(L, 2);
+        object->currentState.position.y = (float) lua_tonumber(L, 3);
         return 0; // arguments pushed on stack
     }
 
     static int getRotation(lua_State* L) {
         GameObject* object = (GameObject*) lua_topointer(L, 1);
-        lua_pushnumber(L, object->rotation);
+        lua_pushnumber(L, object->currentState.rotation);
         return 1; // arguments pushed on stack
     }
 
     static int setRotation(lua_State* L) {
         GameObject* object = (GameObject*) lua_topointer(L, 1);
-        object->rotation = (float) lua_tonumber(L, 2);
+        object->currentState.rotation = (float) lua_tonumber(L, 2);
         return 0; // arguments pushed on stack
     }
 
     static int getScale(lua_State* L) {
         GameObject* object = (GameObject*) lua_topointer(L, 1);
-        lua_pushnumber(L, object->scale.x);
+        lua_pushnumber(L, object->currentState.scale.x);
         return 1; // arguments pushed on stack
     }
 
     static int setScale(lua_State* L) {
         GameObject* object = (GameObject*) lua_topointer(L, 1);
-        object->scale = glm::vec2((float) lua_tonumber(L, 2));
+        object->currentState.scale = glm::vec2((float) lua_tonumber(L, 2));
         return 0; // arguments pushed on stack
     }
 
     static int getColor(lua_State* L) {
         GameObject* object = (GameObject*) lua_topointer(L, 1);
-        lua_pushnumber(L, object->color.r);
-        lua_pushnumber(L, object->color.g);
-        lua_pushnumber(L, object->color.b);
-        lua_pushnumber(L, object->color.a);
+        lua_pushnumber(L, object->currentState.color.r);
+        lua_pushnumber(L, object->currentState.color.g);
+        lua_pushnumber(L, object->currentState.color.b);
+        lua_pushnumber(L, object->currentState.color.a);
         return 4; // arguments pushed on stack
     }
 
     static int setColor(lua_State* L) {
         GameObject* object = (GameObject*) lua_topointer(L, 1);
-        object->color.r = (float) lua_tonumber(L, 2);
-        object->color.g = (float) lua_tonumber(L, 3);
-        object->color.b = (float) lua_tonumber(L, 4);
-        object->color.a = (float) lua_tonumber(L, 5);
+        object->currentState.color.r = (float) lua_tonumber(L, 2);
+        object->currentState.color.g = (float) lua_tonumber(L, 3);
+        object->currentState.color.b = (float) lua_tonumber(L, 4);
+        object->currentState.color.a = (float) lua_tonumber(L, 5);
         return 0; // arguments pushed on stack
     }
 
@@ -177,7 +177,7 @@ namespace Acidrain {
 
     static int dumpEntities(lua_State* L) {
         Scene* scene = (Scene*) lua_topointer(L, 1);
-        scene->dumpEntites();
+        scene->dumpEntities();
         return 0; // arguments pushed on stack
     }
 

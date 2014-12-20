@@ -13,37 +13,35 @@ namespace Acidrain {
     using namespace glm;
     using namespace std;
 
-    class Entity {
-    public:
+    struct PhysicalState {
         vec2 size = vec2(1);
-
         vec2 position = vec2(0);
         vec2 scale = vec2(1);
         float rotation = 0;
+        vec4 color = vec4(1);
 
-        mat4 localTransform;
-        mat4 worldTransform;
-
-        CollisionHull collisionHull;
-
-        Entity* parent;
-
-        virtual void update(float dt);
+        const mat4 getXformMatrix() const;
     };
+
+    PhysicalState interpolate(const PhysicalState& a, const PhysicalState& b, float alpha);
 
     class SpritePool;
 
-    class DrawableEntity : public Entity {
+    class DrawableEntity {
     public:
 
         void addTo(SpritePool& spritePool) const;
 
         vector<vec2> computeVertices() const;
 
-        virtual void update(float dt) override;
+        void setRenderStateAt(float alpha);
 
-//    private:
-        vec4 color = vec4(1);
+        PhysicalState previousState;
+        PhysicalState currentState;
+        PhysicalState renderState;
+
+        CollisionHull collisionHull;
+
         Sprite currentSprite;
     };
 

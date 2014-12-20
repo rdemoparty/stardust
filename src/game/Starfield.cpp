@@ -52,6 +52,7 @@ namespace Acidrain {
 
     void Starfield::update(float dt) {
         for (auto& particle : particles) {
+            particle->previousPosition = particle->position;
             particle->position += particle->direction * dt * 50.0f;
 
             if (isOutOfTerrain(particle))
@@ -75,10 +76,10 @@ namespace Acidrain {
             return false;
     }
 
-    void Starfield::draw(shared_ptr<GpuProgram> shader) {
+    void Starfield::draw(shared_ptr<GpuProgram> shader, float alpha) {
         vbo.empty();
         for (auto& particle : particles) {
-            particle->box.centerAround(particle->position);
+            particle->box.centerAround(mix(particle->previousPosition, particle->position, alpha));
             vbo.addQuad(
                     particle->box.computeVertices(),
                     textCoords.computeVertices(),
