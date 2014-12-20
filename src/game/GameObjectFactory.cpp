@@ -83,7 +83,8 @@ namespace Acidrain {
         GameObjectRecipe recipe;
         recipe.name = "player";
         recipe.animation = "player";
-        recipe.brain = "scripts/brain.player.lua";
+        recipe.brain = "scripts/brain.player.enter.stage.lua";
+//        recipe.brain = "scripts/brain.player.lua";
         recipe.collidable = true;
         recipe.damageProvidedOnCollision = 10000;
         recipe.removeOnDeath = true;
@@ -119,6 +120,37 @@ namespace Acidrain {
         return recipe;
     }
 
+    GameObjectRecipe platformTopRecipe() {
+        GameObjectRecipe recipe;
+        recipe.name = "platform_top";
+        recipe.animation = "platform_top";
+        recipe.collidable = false;
+        recipe.removeOnDeath = true;
+        recipe.killIfOutside = true;
+        recipe.team = EntitySide::Friendly;
+        recipe.type = EntityType::Scenery;
+        return recipe;
+    }
+
+    GameObjectRecipe platformBottomRecipe() {
+        GameObjectRecipe recipe;
+        recipe.name = "platform_bottom";
+        recipe.animation = "platform_bottom";
+        recipe.collidable = false;
+        recipe.removeOnDeath = true;
+        recipe.killIfOutside = true;
+        recipe.team = EntitySide::Friendly;
+        recipe.type = EntityType::Scenery;
+        return recipe;
+    }
+
+    GameObjectRecipe playerBrainRecipe() {
+        GameObjectRecipe recipe;
+        recipe.name = "__hack_for_player_brain";
+        recipe.brain = "scripts/brain.player.lua";
+        return recipe;
+    }
+
     GameObjectFactory::GameObjectFactory() {
         addRecipe(playerBulletRecipe());
         addRecipe(enemyRecipe());
@@ -127,6 +159,9 @@ namespace Acidrain {
         addRecipe(bulletHitRecipe());
         addRecipe(playerRecipe());
         addRecipe(beaconRecipe());
+        addRecipe(platformTopRecipe());
+        addRecipe(platformBottomRecipe());
+        addRecipe(playerBrainRecipe());
     }
 
     GameObjectFactory::~GameObjectFactory() {
@@ -187,5 +222,9 @@ namespace Acidrain {
 
     void GameObjectFactory::addRecipe(GameObjectRecipe recipe) {
         recipes[recipe.name] = recipe;
+    }
+
+    shared_ptr<ScriptedBrain> GameObjectFactory::getBrain(char const* const brainName) {
+        return cookBrain(brainName);
     }
 }

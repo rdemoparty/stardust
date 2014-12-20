@@ -41,6 +41,18 @@
       "texture": "sprites/player-stage1.png",
       "spriteWidth": 64,
       "spriteHeight": 64
+    },
+    {
+      "name": "platform_bottom",
+      "texture": "sprites/platform_bottom2.png",
+      "spriteWidth": 551,
+      "spriteHeight": 281
+    },
+    {
+      "name": "platform_top",
+      "texture": "sprites/platform_top2.png",
+      "spriteWidth": 551,
+      "spriteHeight": 281
     }
   ],
   "animations": [
@@ -63,6 +75,28 @@
       "frames": [
         {
           "spriteSheet": "player",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "name": "platform_top",
+      "frameTimeInMilliseconds": 200,
+      "loopType": "NONE",
+      "frames": [
+        {
+          "spriteSheet": "platform_top",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "name": "platform_bottom",
+      "frameTimeInMilliseconds": 200,
+      "loopType": "NONE",
+      "frames": [
+        {
+          "spriteSheet": "platform_bottom",
           "index": 0
         }
       ]

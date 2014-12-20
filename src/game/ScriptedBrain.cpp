@@ -187,6 +187,14 @@ namespace Acidrain {
         return 0; // arguments pushed on stack
     }
 
+    static int setBrain(lua_State* L) {
+        Scene* scene = (Scene*) lua_topointer(L, 1);
+        GameObject* object = (GameObject*) lua_topointer(L, 2);
+        const char* const brainName = lua_tostring(L, 3);
+        scene->setBrain(object, brainName);
+        return 0; // arguments pushed on stack
+    }
+
     // ----------------------------------------
     // ScriptedBrain implementation
     // ----------------------------------------
@@ -243,6 +251,7 @@ namespace Acidrain {
         lua_register(L, "confineToPlayingArea", confineToPlayingArea);
         lua_register(L, "dumpEntities", dumpEntities);
         lua_register(L, "shakeCamera", shakeCamera);
+        lua_register(L, "setBrain", setBrain);
     }
 
     void ScriptedBrain::injectScene(Scene* scene) {

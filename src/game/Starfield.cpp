@@ -38,10 +38,11 @@ namespace Acidrain {
             particle->firstSpawn = false;
         } else {
             particle->position = glm::vec2(
-                    rnd.randomUnit() * terrainSize.x,
+                    rnd.randomUnit() * terrainSize.x,0
                     -spriteHeight / 2.f
             );
         }
+        particle->previousPosition = particle->position;
         particle->color = vec4(
                 1,
                 1,

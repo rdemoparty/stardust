@@ -4,6 +4,7 @@
 #include <iostream>
 #include <Randomizer.h>
 #include <Camera.h>
+#include <algorithm>
 
 namespace Acidrain {
 
@@ -15,8 +16,9 @@ namespace Acidrain {
     Scene::~Scene() {
     }
 
-    void Scene::add(GameObject* object) {
+    void Scene::add(GameObject* object, int zOrder) {
         object->setScene(this);
+        object->state.zOrder = zOrder;
         newlyCreatedObjects.push_back(object);
         object->spawned();
     }
@@ -85,6 +87,21 @@ namespace Acidrain {
         return false;
     }
 
+    struct {
+        bool operator()(GameObject* a, GameObject* b) {
+            if (a->state.zOrder < b->state.zOrder)
+                return true;
+            else if (a->state.zOrder > b->state.zOrder)
+                return false;
+
+            // zOrders are equal. we care for type of entity then
+            // order is: scenery, ship, bullets, explosions
+            if (a->state.type < b->state.type)
+                return true;
+
+            return false;
+        }
+    } DrawComparator;
 
     void Scene::update(float elapsedSeconds) {
         // remove entities killed the previous frame
@@ -101,15 +118,43 @@ namespace Acidrain {
         detectCollisions();
         solveCollisions();
         flagEntitiesOutOfVisibleArea();
+
+        sort(objects.begin(), objects.end(), DrawComparator);
+    }
+
+    TransparencyMode transparencyModeByObjectType(EntityType type) {
+        if (type == EntityType::Explosion)
+            return TransparencyMode::Additive;
+        else
+            return TransparencyMode::Special;
     }
 
     void Scene::draw(shared_ptr<GpuProgram> gpuProgram, float frameAlpha) {
-        GFXSYS.setTransparencyMode(TransparencyMode::Special);
-        drawObjectsOfType(EntityType::Ship, gpuProgram, frameAlpha);
-        drawObjectsOfType(EntityType::Bullet, gpuProgram, frameAlpha);
+        TransparencyMode currentTransparencyMode = TransparencyMode::Opaque;
+        int currentZOrder = -9999999;
 
-        GFXSYS.setTransparencyMode(TransparencyMode::Additive);
-        drawObjectsOfType(EntityType::Explosion, gpuProgram, frameAlpha);
+        for (auto& gameObject : objects) {
+
+            TransparencyMode transparencyMode = transparencyModeByObjectType(gameObject->state.type);
+            bool transparencyModeChanged = transparencyMode != currentTransparencyMode;
+            bool zOrderChanged = gameObject->state.zOrder > currentZOrder;
+
+            if (transparencyModeChanged || zOrderChanged) {
+                GFXSYS.setTransparencyMode(currentTransparencyMode);
+                spritePool->draw(gpuProgram);
+                spritePool->clear();
+                currentTransparencyMode = transparencyMode;
+                currentZOrder = gameObject->state.zOrder;
+            }
+
+            gameObject->setRenderStateAt(frameAlpha);
+            gameObject->addTo(*spritePool);
+        }
+
+        // draw the last batch
+        GFXSYS.setTransparencyMode(currentTransparencyMode);
+        spritePool->draw(gpuProgram);
+        spritePool->clear();
 
 //        GFXSYS.setTransparencyMode(TransparencyMode::Transparent);
 //        for (auto& gameObject : objects)
@@ -142,7 +187,6 @@ namespace Acidrain {
         return hadToCorrect;
     }
 
-
     void Scene::detectCollisions() {
         collisions.clear();
 
@@ -153,14 +197,6 @@ namespace Acidrain {
     }
 
     void Scene::detectCollisionBetweenGameObjects(GameObject* a, GameObject* b) {
-//        // avoid player collisions in order to find out bug related to bullet hits
-//        if (a->state.type == EntityType::Ship && a->state.side == EntitySide::Friendly)
-//            return;
-//
-//        // avoid player collisions in order to find out bug related to bullet hits
-//        if (b->state.type == EntityType::Ship && b->state.side == EntitySide::Friendly)
-//            return;
-
         if (!a->state.isCollidable || !b->state.isCollidable) return;
         if (a->state.side == b->state.side) return;
         if (a->state.isDead || b->state.isDead) return;
@@ -184,23 +220,16 @@ namespace Acidrain {
         }
     }
 
-    void Scene::drawObjectsOfType(EntityType type, shared_ptr<GpuProgram> gpuProgram, float frameAlpha) {
-        spritePool->clear();
-
-        for (auto& gameObject : objects)
-            if (gameObject->state.type == type) {
-                gameObject->setRenderStateAt(frameAlpha);
-                gameObject->addTo(*spritePool);
-            }
-
-        spritePool->draw(gpuProgram);
-    }
-
     string typeName(EntityType type) {
         switch (type) {
-            case EntityType::Ship: return "Ship";
-            case EntityType::Bullet: return "Bullet";
-            case EntityType::Explosion: return "Explosion";
+            case EntityType::Ship:
+                return "Ship";
+            case EntityType::Bullet:
+                return "Bullet";
+            case EntityType::Explosion:
+                return "Explosion";
+            case EntityType::Scenery:
+                return "Scenery";
             default:
                 return "unknown";
         }
@@ -208,9 +237,12 @@ namespace Acidrain {
 
     string sideName(EntitySide side) {
         switch (side) {
-            case EntitySide::Friendly: return "Friendly";
-            case EntitySide::Adverse: return "Adverse";
-            case EntitySide::Neutral: return "Neutral";
+            case EntitySide::Friendly:
+                return "Friendly";
+            case EntitySide::Adverse:
+                return "Adverse";
+            case EntitySide::Neutral:
+                return "Neutral";
             default:
                 return "unknown";
         }
@@ -220,6 +252,7 @@ namespace Acidrain {
         std::ostream& out = std::cout;
         out << "GameObject: {\n";
         out << "\tid: " << object->getId() << "\n";
+        out << "\tzOrder: " << object->state.zOrder << "\n";
         out << "\ttype: " << typeName(object->state.type) << "\n";
         out << "\tside: " << sideName(object->state.side) << "\n";
         out << "\tisDead: " << object->state.isDead << "\n";
@@ -233,5 +266,18 @@ namespace Acidrain {
         std::cout << "===== Dumping game entities " << std::endl;
         for (auto& gameObject : objects)
             dump(gameObject);
+    }
+
+    void Scene::clear() {
+        objects.clear();
+        newlyCreatedObjects.clear();
+        collisions.clear();
+    }
+
+    void Scene::setBrain(GameObject* object, char const* const brainName) {
+        auto brain = objectFactory->getBrain(brainName);
+        object->setBrain(brain);
+        object->setScene(this);
+        brain->onSpawn(object);
     }
 }

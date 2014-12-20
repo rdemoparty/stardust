@@ -71,15 +71,20 @@ function onUpdate(objectPointer, elapsedSeconds)
     -- calculate all forces acting upon the ship
     local thrusterForce = o:getFloat("thrusterForce")
     local forceX, forceY = calculateForces(thrusterForce)
+    -- io.write("Force: ", forceX, ", ", forceY, "\n")
+
 
     -- figure out acceleration: a = F/m
     local mass = o:getFloat("mass")
     local accelX = forceX / mass
     local accelY = forceY / mass
+    -- io.write("Mass: ", mass, "\n")
+    -- io.write("Accel: ", accelX, ", ", accelY, "\n")
 
     -- update velocity
     local vx = o:getFloat("vx")
     local vy = o:getFloat("vy")
+    -- io.write("Old Velocity: ", vx, ", ", vy, "\n")
 
     vx = vx + accelX * elapsedSeconds
     vy = vy + accelY * elapsedSeconds
@@ -101,8 +106,12 @@ function onUpdate(objectPointer, elapsedSeconds)
     -- update position
     local x, y = o:getPosition()
 
+    -- io.write("Position before update: ", x, ", ", y, "\n")
+    -- io.write("New Velocity: ", vx, ", ", vy, "\n")
+
     x = x + vx * elapsedSeconds
     y = y + vy * elapsedSeconds
+    -- io.write("Position after update: ", x, ", ", y, "\n")
 
     -- persist position and velocity
     o:setPosition(x, y)

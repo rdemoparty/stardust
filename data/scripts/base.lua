@@ -73,6 +73,10 @@ function Entity:getInt(name)
     return getInt(self.pointer, name)
 end
 
+function Entity:setBrain(name)
+    setBrain(SCENE, self.pointer, name)
+end
+
 ---------------------------------------------------------------------
 -- The scene abstraction
 ---------------------------------------------------------------------

@@ -38,9 +38,11 @@ namespace Acidrain {
 
         ~Scene();
 
-        void add(GameObject* object);
+        void add(GameObject* object, int zOrder = 0);
 
         GameObject* createByName(string name);
+
+        void clear();
 
         void update(float elapsedSeconds);
 
@@ -55,6 +57,8 @@ namespace Acidrain {
         void setCamera(shared_ptr<Camera> camera);
 
         void shakeCamera(float amount);
+
+        void setBrain(GameObject* pObject, char const* const string);
 
     private:
 
@@ -72,8 +76,6 @@ namespace Acidrain {
 
         void detectCollisionBetweenGameObjects(GameObject* a, GameObject* b);
 
-        void drawObjectsOfType(EntityType type, shared_ptr<GpuProgram> gpuProgram, float frameAlpha);
-
         shared_ptr<Camera> camera;
         vector<GameObject*> objects;
         vector<GameObject*> newlyCreatedObjects;
@@ -83,5 +85,4 @@ namespace Acidrain {
 
         vector<CollisionInfo> collisions;
     };
-
 }

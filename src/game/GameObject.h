@@ -24,7 +24,8 @@ namespace Acidrain {
         Neutral
     };
 
-    enum class EntityType {
+    enum EntityType {
+        Scenery = 1,
         Ship,
         Bullet,
         Explosion
@@ -38,6 +39,7 @@ namespace Acidrain {
 
     struct EntityState {
         bool isCollidable;
+        int zOrder;
         float damageProvidedOnCollision;
         bool isToBeRemovedOnDeath;
         bool killIfOutsideOfVisibleArea;

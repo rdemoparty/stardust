@@ -47,6 +47,8 @@ namespace Acidrain {
 
         GameObject* createByName(const string& name);
 
+        shared_ptr <ScriptedBrain> getBrain(char const* const brainName);
+
     private:
 
         long NEXT_ID = 1;

@@ -9,23 +9,11 @@ namespace Acidrain {
 
     using namespace std;
 
-    class GameObject;
-
-    class GameObjectFactory;
-
-    class GpuProgram;
-
     class Font;
 
     class FpsCounter;
 
-    class Starfield;
-
-    class GpuProgramConstantBundle;
-
-    class Scene;
-
-    class Camera;
+    class Level;
 
     class Stardust : public EventListener {
     public:
@@ -40,23 +28,12 @@ namespace Acidrain {
         bool shouldQuit();
 
     private:
-
-        shared_ptr<Camera> camera;
-
-        shared_ptr<GpuProgramConstantBundle> gpuProgramConstantBundle;
-
-        shared_ptr<GpuProgram> gpuProgram;
-
-        shared_ptr<Scene> scene;
-
-        shared_ptr<GameObjectFactory> gameObjectFactory;
+        shared_ptr<Level> level;
 
         shared_ptr<FpsCounter> fpsCounter;
 
         shared_ptr<Font> font;
         shared_ptr<Font> fontSmall;
-
-        shared_ptr<Starfield> starfield;
 
         bool quitGame = false;
 
