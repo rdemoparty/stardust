@@ -124,6 +124,7 @@ namespace Acidrain {
         GameObjectRecipe recipe;
         recipe.name = "platform_top";
         recipe.animation = "platform_top";
+        recipe.brain = "scripts/brain.platform.lua";
         recipe.collidable = false;
         recipe.removeOnDeath = true;
         recipe.killIfOutside = true;
@@ -136,6 +137,7 @@ namespace Acidrain {
         GameObjectRecipe recipe;
         recipe.name = "platform_bottom";
         recipe.animation = "platform_bottom";
+        recipe.brain = "scripts/brain.platform.lua";
         recipe.collidable = false;
         recipe.removeOnDeath = true;
         recipe.killIfOutside = true;

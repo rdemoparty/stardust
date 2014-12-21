@@ -8,6 +8,7 @@ function usage {
 	echo -e "\t$0 build cross"
 	echo -e "\t$0 run"
 	echo -e "\t$0 run cross"
+	echo -e "\t$0 package"
 	echo -e ""
 }
 
@@ -47,6 +48,11 @@ function run_project {
 	fi
 }
 
+function package_project {
+	rm -rf stardust.zip
+	zip stardust.zip bin/*.exe bin/*.dll data/ -r	
+}
+
 function build_project {
 	CMAKE_EXTRA_ARGUMENTS=""
 
@@ -81,6 +87,9 @@ case $1 in
 		;;
 	run)
 		run_project $2
+		;;
+	package)
+		package_project $2
 		;;
 	*)
 		echo -e "Unknown option $1"
