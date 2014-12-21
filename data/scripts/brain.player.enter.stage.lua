@@ -32,12 +32,8 @@ function onUpdate(objectPointer, elapsedSeconds)
     -- update position
     local x, y = o:getPosition()
 
-    io.write("Position before update: ", x, ", ", y, "\n")
-
     x = x + vx * elapsedSeconds
     y = y + vy * elapsedSeconds
-
-    io.write("Position after update: ", x, ", ", y, "\n")
 
     -- persist position and velocity
     if y < 600 then

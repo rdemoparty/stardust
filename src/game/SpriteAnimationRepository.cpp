@@ -1,9 +1,9 @@
-#include "SpriteAnimationRepository.h"
+#include <SpriteAnimationRepository.h>
 #include <json11.hpp>
 #include <Animation.h>
 #include <FileSystem.h>
-#include <iostream>
 #include <GfxSystem.h>
+#include <easylogging++.h>
 
 namespace Acidrain {
 
@@ -29,12 +29,13 @@ namespace Acidrain {
     }
 
     void SpriteAnimationRepository::initialize(std::string filename) {
+        LOG(INFO) << "Loading sprite animation repository from " << filename;
         string animationContent = FILESYS.getFileContent(filename);
 
         string parseError;
         auto json = Json::parse(animationContent, parseError);
         if (!parseError.empty()) {
-            cout << "Error while parsing " << filename << endl;
+            LOG(FATAL) << "Error while parsing JSON content from " << filename << ". Error: " << parseError;
         } else {
             for (auto& k : json["spriteSheets"].array_items()) {
                 SpriteSheet* sheet = new SpriteSheet();
@@ -71,9 +72,9 @@ namespace Acidrain {
 
     Animation* SpriteAnimationRepository::newAnimation(std::string name) {
         AnimationData* animData = animationData[name];
-        if (animData == nullptr) {
-            cout << "Error: cannot retrieve animation data with name [" << name << "]" << endl;
-        }
+        if (animData == nullptr)
+            LOG(ERROR) << "No animation data with name " << name;
+
         return new Animation(animData);
     }
 }

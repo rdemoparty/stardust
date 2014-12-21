@@ -5,6 +5,7 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
 #include <FileSystem.h>
+#include <easylogging++.h>
 
 namespace Acidrain {
 
@@ -16,9 +17,10 @@ namespace Acidrain {
     void GfxSystem::init(const int desiredWidth, const int desiredHeight) {
         SDL_DisplayMode displayMode;
         if (SDL_GetCurrentDisplayMode(0, &displayMode) != 0) {
-            SDL_Log("SDL_GetCurrentDisplayMode failed: %s", SDL_GetError());
+            LOG(FATAL) << "SDL_GetCurrentDisplayMode failed: " << SDL_GetError();
             exit(1);
         }
+        LOG(INFO) << "Got current display mode of " << displayMode.w << "x" << displayMode.h;
 
         window = make_shared<Window>(displayMode.w, displayMode.h, WindowType::Fullscreen);
 
@@ -67,7 +69,7 @@ namespace Acidrain {
     shared_ptr<Texture> GfxSystem::loadTexture(const char* filename) {
         string content = FILESYS.getFileContent(filename);
         int w, h, comp;
-        unsigned char* image = stbi_load_from_memory((stbi_uc const*) content.c_str(), content.size(), &w, &h, &comp, STBI_rgb_alpha);
+        unsigned char* image = stbi_load_from_memory((stbi_uc const*) content.c_str(), (int) content.size(), &w, &h, &comp, STBI_rgb_alpha);
 
         // premultiply RGB with alpha
         for (int y = 0; y < h; y++)
@@ -77,10 +79,11 @@ namespace Acidrain {
                 image[(x + y * w) * 4 + 2] = (image[(x + y * w) * 4 + 2] * image[(x + y * w) * 4 + 3]) >> 8;
             }
 
-        std::cout << "Loading texture " << filename << " with size: " << w << "x" << h << std::endl;
+        LOG(INFO) << "Loading texture " << filename << " with size " << w << "x" << h;
 
         shared_ptr<Texture> result = make_shared<Texture>(w, h, image);
         stbi_image_free(image);
+        LOG(TRACE) << "Texture loaded ok.";
         return result;
     }
 

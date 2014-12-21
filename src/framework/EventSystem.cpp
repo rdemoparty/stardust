@@ -2,6 +2,7 @@
 #include <SDL.h>
 #include <assert.h>
 #include <algorithm>
+#include <easylogging++.h>
 
 namespace Acidrain {
 
@@ -19,6 +20,7 @@ namespace Acidrain {
     }
 
     void EventSystem::init() {
+        LOG(INFO) << "Initializing event system";
         SDL_Init(SDL_INIT_EVERYTHING);
     }
 

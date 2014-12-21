@@ -1,5 +1,6 @@
 #include <FileSystem.h>
 #include <fstream>
+#include <easylogging++.h>
 
 #ifdef _WIN32
 	#include <windows.h> // getmodulefilename
@@ -23,8 +24,6 @@
 
 #endif
 
-#include <iostream>
-
 namespace Acidrain {
 
     FileSystem& FileSystem::getInstance() {
@@ -33,12 +32,13 @@ namespace Acidrain {
     }
 
     void FileSystem::init(std::string root) {
+        LOG(INFO) << "Initializing file system with root dir " << root;
         rootDir = root;
     }
 
     std::string FileSystem::absolutePath(const char* relativePath) {
         std::string absolutePath = rootDir + "/" + relativePath;
-        std::cout << "Relative path [" << relativePath << "] expanded to [" << absolutePath << "]" << std::endl;
+        LOG(TRACE) << "relative path [" << relativePath << "] expanded to [" << absolutePath << "]";
         return absolutePath;
     }
 
@@ -94,12 +94,12 @@ namespace Acidrain {
         pid_t pid = getpid();
         snprintf(linkName, sizeof(linkName), "/proc/%d/exe", pid);
 
-        int ret = readlink(linkName, fullPath, sizeof(fullPath));
-//        if (-1 == ret)
-//            throw Exception("readlink() failed while trying to get exe path");
-//
-//        if (ret >= static_cast<int>(sizeof(fullPath)))
-//            throw Exception("readlink() needs more memory for fullPath");
+        ssize_t ret = readlink(linkName, fullPath, sizeof(fullPath));
+        if (-1 == ret)
+            LOG(FATAL) << "readlink() failed while trying to get exe path";
+
+        if (ret >= static_cast<int>(sizeof(fullPath)))
+            LOG(FATAL) << "readlink() needs more memory for fullPath";
 
         return std::string(fullPath, ret);
     }
@@ -134,10 +134,9 @@ namespace Acidrain {
             in.read(&contents[0], contents.size());
             in.close();
         } else {
-//        throw(errno);
+            LOG(ERROR) << "Failed reading content for file " << filename << ". Errno=" << errno;
         }
-        std::cout << "Loaded file [" << filename << "] with size " << contents.size() << std::endl;
-
+        LOG(TRACE) << "Loaded file " << filename << " with size " << contents.size();
         return contents;
     }
 
