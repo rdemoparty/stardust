@@ -1,3 +1,4 @@
+#include <easylogging++.h>
 #include <GameObjectFactory.h>
 #include <Animation.h>
 #include <SpriteAnimationRepository.h>
@@ -223,6 +224,7 @@ namespace Acidrain {
     }
 
     void GameObjectFactory::addRecipe(GameObjectRecipe recipe) {
+        LOG(INFO) << "Registering entity recipe \"" << recipe.name << "\"";
         recipes[recipe.name] = recipe;
     }
 

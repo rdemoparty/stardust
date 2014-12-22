@@ -25,10 +25,14 @@ namespace Acidrain {
 
         void onUpdate(GameObject* gameObject, float elapsedSeconds);
 
+        void onDamage(GameObject* gameObject, float damage, GameObject* damageInflicter);
+
         void onDeath(GameObject* gameObject);
 
     private:
         lua_State* L;
+
+        std::string brainName;
 
         void initializeLuaContext(string& brainFilename);
 

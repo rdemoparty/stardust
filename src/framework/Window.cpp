@@ -32,7 +32,6 @@ namespace Acidrain {
         // SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);
         // SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 2);
 
-
         Uint32 windowFlags = SDL_WINDOW_OPENGL;
         if (type == WindowType::Fullscreen)
             windowFlags |= SDL_WINDOW_FULLSCREEN;
@@ -53,7 +52,7 @@ namespace Acidrain {
         }
 #endif
 
-        SDL_GL_SetSwapInterval(0);
+        SDL_GL_SetSwapInterval(1);
     }
 
     Window::~Window() {

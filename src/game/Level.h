@@ -18,6 +18,8 @@ namespace Acidrain {
 
     class Starfield;
 
+    class LevelScript;
+
     class Level {
     public:
 
@@ -41,6 +43,8 @@ namespace Acidrain {
         shared_ptr<Camera> camera;
 
         shared_ptr<Scene> scene;
+
+        shared_ptr<LevelScript> levelScript;
 
         shared_ptr<GameObjectFactory> gameObjectFactory;
 

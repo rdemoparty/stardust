@@ -6,6 +6,7 @@ set(HEADERS
    ${CMAKE_CURRENT_SOURCE_DIR}/GameObject.h
    ${CMAKE_CURRENT_SOURCE_DIR}/GameObjectFactory.h
    ${CMAKE_CURRENT_SOURCE_DIR}/Level.h
+   ${CMAKE_CURRENT_SOURCE_DIR}/LevelScript.h
    ${CMAKE_CURRENT_SOURCE_DIR}/Scene.h
    ${CMAKE_CURRENT_SOURCE_DIR}/ScriptedBrain.h
    ${CMAKE_CURRENT_SOURCE_DIR}/SpriteAnimationRepository.h
@@ -22,6 +23,7 @@ set(SOURCE
    ${CMAKE_CURRENT_SOURCE_DIR}/GameObject.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/GameObjectFactory.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/Level.cpp
+   ${CMAKE_CURRENT_SOURCE_DIR}/LevelScript.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/Scene.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/ScriptedBrain.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/SpriteAnimationRepository.cpp

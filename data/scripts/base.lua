@@ -25,6 +25,10 @@ function Entity:isAnimationFinished()
     return isAnimationFinished(self.pointer)
 end
 
+function Entity:getId()
+    return getId(self.pointer)
+end
+
 function Entity:getPosition()
     return getPosition(self.pointer)
 end
@@ -101,5 +105,32 @@ end
 
 function Scene.dump()
     dumpEntities(SCENE)
+end
+
+-- quintic easing
+
+function easeIn(time, startValue, changeInValue, duration)
+    t = time / duration
+    return changeInValue * t * t * t * t * t + startValue 
+end
+
+function easeOut(time, startValue, changeInValue, duration)
+    t = time / duration - 1
+    return changeInValue * (t*t*t*t*t + 1) + startValue 
+end
+
+
+
+-- default brain implementations. feel free to override
+function onSpawn(objectPointer)
+end
+
+function onUpdate(objectPointer, elapsedSeconds)
+end
+
+function onDamage(objectPointer, amount, inflicterPointer)
+end
+
+function onDeath(objectPointer, reason)
 end
 

@@ -89,7 +89,7 @@ namespace Acidrain {
 
         void updateAnimation(float elapsedSeconds);
 
-        void inflictDamage(float amount);
+        void inflictDamage(float amount, GameObject* inflicter);
 
         void kill(EntityDeathReason deathReason);
 

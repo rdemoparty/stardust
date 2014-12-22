@@ -1,10 +1,10 @@
+#include <easylogging++.h>
 #include <ScriptedBrain.h>
 #include <GameObject.h>
-#include <iostream>
 #include <FileSystem.h>
 #include <Scene.h>
 #include <InputProvider.h>
-#include "Camera.h"
+#include <Camera.h>
 
 namespace Acidrain {
 
@@ -54,6 +54,12 @@ namespace Acidrain {
         lua_pushnumber(L, object->currentState.position.x);
         lua_pushnumber(L, object->currentState.position.y);
         return 2; // arguments pushed on stack
+    }
+
+    static int getId(lua_State* L) {
+        GameObject* object = (GameObject*) lua_topointer(L, 1);
+        lua_pushnumber(L, object->getId());
+        return 1; // arguments pushed on stack
     }
 
     static int setPosition(lua_State* L) {
@@ -183,7 +189,7 @@ namespace Acidrain {
 
     static int shakeCamera(lua_State* L) {
         Scene* scene = (Scene*) lua_topointer(L, 1);
-        scene->shakeCamera((float)lua_tonumber(L, 2));
+        scene->shakeCamera((float) lua_tonumber(L, 2));
         return 0; // arguments pushed on stack
     }
 
@@ -199,7 +205,7 @@ namespace Acidrain {
     // ScriptedBrain implementation
     // ----------------------------------------
 
-    ScriptedBrain::ScriptedBrain(std::string brainFilename) {
+    ScriptedBrain::ScriptedBrain(std::string brainFilename) : brainName(brainFilename) {
         initializeLuaContext(brainFilename);
         registerExports();
     }
@@ -227,6 +233,7 @@ namespace Acidrain {
         lua_register(L, "fireWeapons", fireWeapons);
         lua_register(L, "kill", kill);
         lua_register(L, "isAnimationFinished", isAnimationFinished);
+        lua_register(L, "getId", getId);
         lua_register(L, "getPosition", getPosition);
         lua_register(L, "setPosition", setPosition);
         lua_register(L, "getRotation", getRotation);
@@ -271,9 +278,8 @@ namespace Acidrain {
 
         int numberOfArguments = 1;
         int numberOfResults = 0;
-        if (lua_pcall(L, numberOfArguments, numberOfResults, 0) != 0) {
-            cerr << "Error running `" << functionName << "`: " << lua_tostring(L, -1) << endl;
-        }
+        if (lua_pcall(L, numberOfArguments, numberOfResults, 0) != 0)
+            LOG(ERROR) << "Failed to run " << brainName << "#onSpawn. Error: " << lua_tostring(L, -1);
     }
 
     void ScriptedBrain::onDeath(GameObject* gameObject) {
@@ -283,9 +289,8 @@ namespace Acidrain {
 
         int numberOfArguments = 2;
         int numberOfResults = 0;
-        if (lua_pcall(L, numberOfArguments, numberOfResults, 0) != 0) {
-            std::cerr << "Error running `onDeath`: " << lua_tostring(L, -1) << std::endl;
-        }
+        if (lua_pcall(L, numberOfArguments, numberOfResults, 0) != 0)
+            LOG(ERROR) << "Failed to run " << brainName << "#onDeath. Error: " << lua_tostring(L, -1);
     }
 
     void ScriptedBrain::onUpdate(GameObject* gameObject, float elapsedSeconds) {
@@ -295,8 +300,19 @@ namespace Acidrain {
 
         int numberOfArguments = 2;
         int numberOfResults = 0;
-        if (lua_pcall(L, numberOfArguments, numberOfResults, 0) != 0) {
-            std::cerr << "Error running `onUpdate`: " << lua_tostring(L, -1) << std::endl;
-        }
+        if (lua_pcall(L, numberOfArguments, numberOfResults, 0) != 0)
+            LOG(ERROR) << "Failed to run " << brainName << "#onUpdate. Error: " << lua_tostring(L, -1);
+    }
+
+    void ScriptedBrain::onDamage(GameObject* gameObject, float damage, GameObject* damageInflicter) {
+        lua_getglobal(L, "onDamage");
+        lua_pushlightuserdata(L, gameObject);
+        lua_pushnumber(L, damage);
+        lua_pushlightuserdata(L, damageInflicter);
+
+        int numberOfArguments = 3;
+        int numberOfResults = 0;
+        if (lua_pcall(L, numberOfArguments, numberOfResults, 0) != 0)
+            LOG(ERROR) << "Failed to run " << brainName << "#onDamage. Error: " << lua_tostring(L, -1);
     }
 }

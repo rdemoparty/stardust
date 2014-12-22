@@ -214,8 +214,8 @@ namespace Acidrain {
             GameObject* b = collisionInfo.to;
 
             if (!a->state.isDead && !b->state.isDead) {
-                a->inflictDamage(b->state.damageProvidedOnCollision);
-                b->inflictDamage(a->state.damageProvidedOnCollision);
+                a->inflictDamage(b->state.damageProvidedOnCollision, b);
+                b->inflictDamage(a->state.damageProvidedOnCollision, a);
             }
         }
     }

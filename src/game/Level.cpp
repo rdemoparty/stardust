@@ -6,6 +6,7 @@
 #include <Starfield.h>
 #include <FileSystem.h>
 #include <glm/gtc/matrix_transform.hpp>
+#include <LevelScript.h>
 
 namespace Acidrain {
 
@@ -35,6 +36,8 @@ namespace Acidrain {
         gpuProgramConstantBundle->add("cameraShakeMatrix", GpuProgramConstant(camera->getShakeMatrix()));
 
         gpuProgram->addConstants(gpuProgramConstantBundle.get());
+
+        levelScript = make_shared<LevelScript>(scene.get());
     }
 
     Level::~Level() {
@@ -42,6 +45,7 @@ namespace Acidrain {
 
     void Level::start() {
         scene->clear();
+        levelScript->reset();
 
         // add game objects
         vec2 platformPosition = vec2(1024/2, 700);
@@ -60,20 +64,11 @@ namespace Acidrain {
     }
 
     void Level::update(float elapsedSeconds) {
-        static float timeUntilNextSpawn = 0;
-        timeUntilNextSpawn -= elapsedSeconds;
-        if (timeUntilNextSpawn < 0) {
-            GameObject* enemy = gameObjectFactory->createByName("enemy");
-            enemy->currentState.position = vec2(rand() % 1024, -64);
-            scene->add(enemy);
-            timeUntilNextSpawn = rand() % 3 + 1;
-        }
-
         camera->update(elapsedSeconds);
         gpuProgramConstantBundle->add("cameraShakeMatrix", GpuProgramConstant(camera->getShakeMatrix()));
 
+        levelScript->update(elapsedSeconds);
         scene->update(elapsedSeconds);
-
         starfield->update(elapsedSeconds);
     }
 

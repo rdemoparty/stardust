@@ -71,7 +71,7 @@ namespace Acidrain {
         int w, h, comp;
         unsigned char* image = stbi_load_from_memory((stbi_uc const*) content.c_str(), (int) content.size(), &w, &h, &comp, STBI_rgb_alpha);
 
-        // premultiply RGB with alpha
+        // pre-multiply RGB with alpha
         for (int y = 0; y < h; y++)
             for (int x = 0; x < w; x++) {
                 image[(x + y * w) * 4 + 0] = (image[(x + y * w) * 4 + 0] * image[(x + y * w) * 4 + 3]) >> 8;
@@ -79,7 +79,7 @@ namespace Acidrain {
                 image[(x + y * w) * 4 + 2] = (image[(x + y * w) * 4 + 2] * image[(x + y * w) * 4 + 3]) >> 8;
             }
 
-        LOG(INFO) << "Loading texture " << filename << " with size " << w << "x" << h;
+        LOG(INFO) << "Loading texture \"" << filename << "\" (" << w << "x" << h << ")";
 
         shared_ptr<Texture> result = make_shared<Texture>(w, h, image);
         stbi_image_free(image);

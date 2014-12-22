@@ -1,9 +1,9 @@
+#include <easylogging++.h>
 #include <SpriteAnimationRepository.h>
 #include <json11.hpp>
 #include <Animation.h>
 #include <FileSystem.h>
 #include <GfxSystem.h>
-#include <easylogging++.h>
 
 namespace Acidrain {
 
