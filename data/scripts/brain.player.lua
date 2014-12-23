@@ -8,7 +8,7 @@ function onSpawn(objectPointer)
     ------ memleak settings    
     o:setFloat("mass", 6)
  
-    o:setFloat("thrusterForce", 40000)
+    o:setFloat("thrusterForce", 640000)
  
     o:setFloat("vx", 0)
     o:setFloat("vy", 0)
@@ -16,9 +16,9 @@ function onSpawn(objectPointer)
     o:setFloat("ax", 0)
     o:setFloat("ay", 0)
  
-    o:setFloat("friction", 0.80)
+    o:setFloat("friction", 0.5)
  
-    o:setFloat("maxSpeed", 800)    
+    o:setFloat("maxSpeed", 1000)    
 
     ------ Vazde settings    
     -- o:setFloat("mass", 10)
@@ -100,8 +100,8 @@ function onUpdate(objectPointer, elapsedSeconds)
 
     -- apply friction
     local friction = o:getFloat("friction")
-    vx = vx * friction
-    vy = vy * friction
+    vx = vx * (1.0 - friction)
+    vy = vy * (1.0 - friction)
 
     -- update position
     local x, y = o:getPosition()

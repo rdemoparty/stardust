@@ -7,6 +7,12 @@
       "spriteHeight": 64
     },
     {
+      "name": "missile",
+      "texture": "sprites/missile.png",
+      "spriteWidth": 16,
+      "spriteHeight": 32
+    },
+    {
       "name": "explosion",
       "texture": "sprites/explosion3.png",
       "spriteWidth": 128,
@@ -110,6 +116,18 @@
           "spriteSheet": "explosion",
           "index": 0,
           "indexTo": 31
+        }
+      ]
+    },
+    {
+      "name": "missile",
+      "frameTimeInMilliseconds": 20,
+      "loopType": "FORWARD",
+      "frames": [
+        {
+          "spriteSheet": "missile",
+          "index": 0,
+          "indexTo": 7
         }
       ]
     },

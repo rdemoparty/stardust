@@ -1,0 +1,172 @@
+{
+	"recipes": [
+		{
+			"name": "player.bullet",
+			"animation": "laser.red",
+			"brain": "scripts/brain.player.bullet.lua",
+			"collidable": true,
+			"damageProvidedOnCollision": 10,
+			"removeOnDeath": true,
+			"killIfOutside": true,
+			"maxLife": 1,
+			"team": "Friendly",
+			"type": "Bullet",
+			"hull": [
+				{
+					"radius": 4,
+					"x": 0,
+					"y": -10
+				},
+				{
+					"radius": 4,
+					"x": 0,
+					"y": 10
+				}
+			]
+		},
+		{
+			"name": "enemy.bullet",
+			"animation": "laser.blue",
+			"brain": "scripts/brain.enemy.bullet.lua",
+			"collidable": true,
+			"damageProvidedOnCollision": 1,
+			"removeOnDeath": true,
+			"killIfOutside": true,
+			"maxLife": 1,
+			"team": "Adverse",
+			"type": "Bullet",
+			"hull": [
+				{
+					"radius": 4,
+					"x": 0,
+					"y": -10
+				},
+				{
+					"radius": 4,
+					"x": 0,
+					"y": 10
+				}
+			]
+		},
+		{
+			"name": "enemy.death.explosion",
+			"animation": "explosion",
+			"brain": "scripts/brain.enemy.explosion.lua",
+			"collidable": false,
+			"removeOnDeath": false,
+			"killIfOutside": false,
+			"team": "Neutral",
+			"type": "Explosion"
+		},
+		{
+			"name": "beacon",
+			"animation": "beacon",
+			"brain": "scripts/brain.beacon.lua",
+			"collidable": false,
+			"killIfOutside": false,
+			"team": "Neutral",
+			"type": "Explosion"
+		},
+		{
+			"name": "enemy.bullet.hit",
+			"animation": "bullet.hit",
+			"brain": "scripts/brain.enemy.explosion.lua",
+			"collidable": false,
+			"killIfOutside": true,
+			"team": "Neutral",
+			"type": "Explosion"
+		},
+		{
+			"name": "player",
+			"animation": "player",
+			"brain": "scripts/brain.player.enter.stage.lua",
+			"collidable": true,
+			"damageProvidedOnCollision": 10000,
+			"removeOnDeath": true,
+			"killIfOutside": false,
+			"maxLife": 50,
+			"team": "Friendly",
+			"type": "Ship",
+			"hull": [
+				{
+					"radius": 12
+				}
+			],
+			"weapons": [
+				{
+					"bulletName": "player.bullet",
+					"x": -10,
+					"y": -32,
+					"shotsPerSecond": 10
+				},
+				{
+					"bulletName": "player.bullet",
+					"x": 12,
+					"y": -32,
+					"shotsPerSecond": 10
+				}
+			]
+		},
+		{
+			"name": "platform_top",
+			"animation": "platform_top",
+			"brain": "scripts/brain.platform.lua",
+			"collidable": false,
+			"removeOnDeath": true,
+			"killIfOutside": true,
+			"team": "Friendly",
+			"type": "Scenery"
+		},
+		{
+			"name": "platform_bottom",
+			"animation": "platform_bottom",
+			"brain": "scripts/brain.platform.lua",
+			"collidable": false,
+			"removeOnDeath": true,
+			"killIfOutside": true,
+			"team": "Friendly",
+			"type": "Scenery"
+		},
+		{
+			"name": "missile",
+			"animation": "missile",
+			"brain": "scripts/brain.bonus.lua",
+			"collidable": true,
+			"maxLife": 1,
+			"removeOnDeath": true,
+			"killIfOutside": true,
+			"team": "Friendly",
+			"type": "Bonus",
+			"hull": [
+				{
+					"radius": 8
+				}
+			]
+		},
+		{
+			"name": "enemy",
+			"animation": "enemy2",
+			"brain": "scripts/brain.enemy.lua",
+			"collidable": true,
+			"damageProvidedOnCollision": 10,
+			"removeOnDeath": true,
+			"killIfOutside": true,
+			"maxLife": 100,
+			"team": "Adverse",
+			"type": "Ship",
+			"hull": [
+				{
+					"radius": 28
+				}
+			],
+			"weapons": [
+				{
+					"bulletName": "enemy.bullet",
+					"x": 0,
+					"y": 32,
+					"shotsPerSecond": 2
+				}
+			]
+		}
+	]
+}

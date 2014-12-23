@@ -24,7 +24,7 @@ int main(int argc, char** argv) {
     Timer timer;
     Stardust game;
 
-    double dt = 1.0 / 30.0;
+    double dt = 1.0 / 20.0;
     double accumulator = 0;
 
     LOG(INFO) << "Starting up application at logical resolution " <<

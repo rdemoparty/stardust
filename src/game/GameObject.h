@@ -18,8 +18,8 @@ namespace Acidrain {
 
     class ScriptedBrain;
 
-    enum class EntitySide {
-        Friendly,
+    enum EntitySide {
+        Friendly = 1,
         Adverse,
         Neutral
     };
@@ -28,7 +28,8 @@ namespace Acidrain {
         Scenery = 1,
         Ship,
         Bullet,
-        Explosion
+        Explosion,
+        Bonus
     };
 
     enum EntityDeathReason {

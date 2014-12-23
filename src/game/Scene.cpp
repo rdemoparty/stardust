@@ -11,6 +11,23 @@ namespace Acidrain {
     Scene::Scene(GameObjectFactory* objFactory, const vec2& visibleAreaSize)
             : objectFactory(objFactory), visibleArea(visibleAreaSize) {
         spritePool = make_shared<SpritePool>();
+
+        collisionMatrix.registerCollidables(
+                CollidableDiscriminator(EntityType::Bullet, EntitySide::Friendly),
+                CollidableDiscriminator(EntityType::Ship, EntitySide::Adverse)
+        );
+        collisionMatrix.registerCollidables(
+                CollidableDiscriminator(EntityType::Bullet, EntitySide::Adverse),
+                CollidableDiscriminator(EntityType::Ship, EntitySide::Friendly)
+        );
+        collisionMatrix.registerCollidables(
+                CollidableDiscriminator(EntityType::Ship, EntitySide::Adverse),
+                CollidableDiscriminator(EntityType::Ship, EntitySide::Friendly)
+        );
+        collisionMatrix.registerCollidables(
+                CollidableDiscriminator(EntityType::Bonus, EntitySide::Friendly),
+                CollidableDiscriminator(EntityType::Ship, EntitySide::Friendly)
+        );
     }
 
     Scene::~Scene() {
@@ -198,14 +215,18 @@ namespace Acidrain {
 
     void Scene::detectCollisionBetweenGameObjects(GameObject* a, GameObject* b) {
         if (!a->state.isCollidable || !b->state.isCollidable) return;
-        if (a->state.side == b->state.side) return;
         if (a->state.isDead || b->state.isDead) return;
-        // no bullet-to-bullet collision
-        if (a->state.type == EntityType::Bullet && b->state.type == EntityType::Bullet) return;
 
-        if (a->collisionHull.collidesWith(b->collisionHull)) {
-            collisions.push_back(CollisionInfo(a, b, (a->currentState.position + b->currentState.position) / 2.0f));
-        }
+        CollidableDiscriminator d1 = CollidableDiscriminator(a->state.type, a->state.side);
+        CollidableDiscriminator d2 = CollidableDiscriminator(b->state.type, b->state.side);
+        if (!collisionMatrix.areCollidable(d1, d2))
+            return;
+
+        if (a->collisionHull.collidesWith(b->collisionHull))
+            collisions.push_back(
+                    CollisionInfo(
+                            a, b,
+                            (a->currentState.position + b->currentState.position) / 2.0f));
     }
 
     void Scene::solveCollisions() {

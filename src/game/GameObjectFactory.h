@@ -45,6 +45,8 @@ namespace Acidrain {
 
         ~GameObjectFactory();
 
+        void initialize(string repository);
+
         GameObject* createByName(const string& name);
 
         shared_ptr <ScriptedBrain> getBrain(char const* const brainName);

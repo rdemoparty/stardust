@@ -31,6 +31,31 @@ namespace Acidrain {
         }
     };
 
+    struct CollidableDiscriminator {
+        CollidableDiscriminator(EntityType type, EntitySide side) {
+            id = side * 10 + type;
+        }
+        int id;
+    };
+
+    class CollisionMatrix {
+    public:
+
+        void registerCollidables(const CollidableDiscriminator& from, const CollidableDiscriminator& to) {
+            matrix[from.id][to.id] = true;
+            matrix[to.id][from.id] = true;
+        }
+
+        inline bool areCollidable(const CollidableDiscriminator& from, const CollidableDiscriminator& to) const {
+            return matrix[from.id][to.id];
+        }
+
+    private:
+        const static int SIZE = 40;
+        bool matrix[SIZE][SIZE];
+    };
+
+
     class Scene {
     public:
 
@@ -76,6 +101,7 @@ namespace Acidrain {
 
         void detectCollisionBetweenGameObjects(GameObject* a, GameObject* b);
 
+        CollisionMatrix collisionMatrix;
         shared_ptr<Camera> camera;
         vector<GameObject*> objects;
         vector<GameObject*> newlyCreatedObjects;

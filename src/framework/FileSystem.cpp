@@ -134,7 +134,7 @@ namespace Acidrain {
             in.read(&contents[0], contents.size());
             in.close();
         } else {
-            LOG(ERROR) << "Failed reading content for file " << filename << ". Errno=" << errno;
+            LOG(FATAL) << "Failed reading content for file " << filename << ". Errno=" << errno;
         }
         LOG(TRACE) << "Loaded file " << filename << " with size " << contents.size();
         return contents;

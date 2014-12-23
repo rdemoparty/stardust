@@ -2,169 +2,20 @@
 #include <GameObjectFactory.h>
 #include <Animation.h>
 #include <SpriteAnimationRepository.h>
+#include <FileSystem.h>
+#include <json11.hpp>
+#include <stdexcept>
 
 namespace Acidrain {
 
-    GameObjectRecipe playerBulletRecipe() {
-        GameObjectRecipe recipe;
-        recipe.name = "player.bullet";
-        recipe.animation = "laser.red";
-        recipe.brain = "scripts/brain.player.bullet.lua";
-        recipe.collidable = true;
-        recipe.damageProvidedOnCollision = 10;
-        recipe.removeOnDeath = true;
-        recipe.killIfOutside = true;
-        recipe.maxLife = 1;
-        recipe.team = EntitySide::Friendly;
-        recipe.type = EntityType::Bullet;
-        recipe.hull.push_back({4, {0, -10}});
-        recipe.hull.push_back({4, {0, 10}});
+    using namespace json11;
 
-        return recipe;
-    }
-
-    GameObjectRecipe enemyBulletRecipe() {
-        GameObjectRecipe recipe;
-        recipe.name = "enemy.bullet";
-        recipe.animation = "laser.blue";
-        recipe.brain = "scripts/brain.enemy.bullet.lua";
-        recipe.collidable = true;
-        recipe.damageProvidedOnCollision = 1;
-        recipe.removeOnDeath = true;
-        recipe.killIfOutside = true;
-        recipe.maxLife = 1;
-        recipe.team = EntitySide::Adverse;
-        recipe.type = EntityType::Bullet;
-        recipe.hull.push_back({4, {0, -10}});
-        recipe.hull.push_back({4, {0, 10}});
-
-        return recipe;
-    }
-
-    GameObjectRecipe explosionRecipe() {
-        GameObjectRecipe recipe;
-        recipe.name = "enemy.death.explosion";
-        recipe.animation = "explosion";
-        recipe.brain = "scripts/brain.enemy.explosion.lua";
-        recipe.collidable = false;
-        recipe.killIfOutside = false;
-        recipe.team = EntitySide::Neutral;
-        recipe.type = EntityType::Explosion;
-
-        return recipe;
-    }
-
-    GameObjectRecipe beaconRecipe() {
-        GameObjectRecipe recipe;
-        recipe.name = "beacon";
-        recipe.animation = "beacon";
-        recipe.brain = "scripts/brain.beacon.lua";
-        recipe.collidable = false;
-        recipe.killIfOutside = false;
-        recipe.team = EntitySide::Neutral;
-        recipe.type = EntityType::Explosion;
-
-        return recipe;
-    }
-
-    GameObjectRecipe bulletHitRecipe() {
-        GameObjectRecipe recipe;
-        recipe.name = "enemy.bullet.hit";
-        recipe.animation = "bullet.hit";
-        recipe.brain = "scripts/brain.enemy.explosion.lua";
-        recipe.collidable = false;
-        recipe.killIfOutside = true;
-        recipe.team = EntitySide::Neutral;
-        recipe.type = EntityType::Explosion;
-
-        return recipe;
-    }
-
-    GameObjectRecipe playerRecipe() {
-        GameObjectRecipe recipe;
-        recipe.name = "player";
-        recipe.animation = "player";
-        recipe.brain = "scripts/brain.player.enter.stage.lua";
-//        recipe.brain = "scripts/brain.player.lua";
-        recipe.collidable = true;
-        recipe.damageProvidedOnCollision = 10000;
-        recipe.removeOnDeath = true;
-        recipe.killIfOutside = false;
-        recipe.maxLife = 50;
-        recipe.team = EntitySide::Friendly;
-        recipe.type = EntityType::Ship;
-
-        recipe.hull.push_back({12, {0, 0}});
-
-        recipe.weapons.push_back({"player.bullet", {-10, -32}, 10});
-        recipe.weapons.push_back({"player.bullet", {12, -32}, 10});
-
-        return recipe;
-    }
-
-    GameObjectRecipe enemyRecipe() {
-        GameObjectRecipe recipe;
-        recipe.name = "enemy";
-        recipe.animation = "enemy2";
-        recipe.brain = "scripts/brain.enemy.lua";
-        recipe.collidable = true;
-        recipe.damageProvidedOnCollision = 10;
-        recipe.removeOnDeath = true;
-        recipe.killIfOutside = true;
-        recipe.maxLife = 100;
-        recipe.team = EntitySide::Adverse;
-        recipe.type = EntityType::Ship;
-
-        recipe.hull.push_back({28, {0, 0}});
-
-        recipe.weapons.push_back({"enemy.bullet", {0, 32}, 2});
-        return recipe;
-    }
-
-    GameObjectRecipe platformTopRecipe() {
-        GameObjectRecipe recipe;
-        recipe.name = "platform_top";
-        recipe.animation = "platform_top";
-        recipe.brain = "scripts/brain.platform.lua";
-        recipe.collidable = false;
-        recipe.removeOnDeath = true;
-        recipe.killIfOutside = true;
-        recipe.team = EntitySide::Friendly;
-        recipe.type = EntityType::Scenery;
-        return recipe;
-    }
-
-    GameObjectRecipe platformBottomRecipe() {
-        GameObjectRecipe recipe;
-        recipe.name = "platform_bottom";
-        recipe.animation = "platform_bottom";
-        recipe.brain = "scripts/brain.platform.lua";
-        recipe.collidable = false;
-        recipe.removeOnDeath = true;
-        recipe.killIfOutside = true;
-        recipe.team = EntitySide::Friendly;
-        recipe.type = EntityType::Scenery;
-        return recipe;
-    }
-
-    GameObjectRecipe playerBrainRecipe() {
-        GameObjectRecipe recipe;
-        recipe.name = "__hack_for_player_brain";
-        recipe.brain = "scripts/brain.player.lua";
-        return recipe;
+    bool icompare(const string& a, const string& b) {
+        return a == b;
     }
 
     GameObjectFactory::GameObjectFactory() {
-        addRecipe(playerBulletRecipe());
-        addRecipe(enemyRecipe());
-        addRecipe(enemyBulletRecipe());
-        addRecipe(explosionRecipe());
-        addRecipe(bulletHitRecipe());
-        addRecipe(playerRecipe());
-        addRecipe(beaconRecipe());
-        addRecipe(platformTopRecipe());
-        addRecipe(platformBottomRecipe());
-        addRecipe(playerBrainRecipe());
+        initialize("recipes.json");
     }
 
     GameObjectFactory::~GameObjectFactory() {
@@ -174,11 +25,14 @@ namespace Acidrain {
         GameObject* result = nullptr;
         if (recipes.find(name) != recipes.end()) {
             result = cookGameObject(recipes[name]);
+        } else {
+            LOG(ERROR) << "Wanting to create object of type \"" << name << "\" but not such a recipe registered";
         }
         return result;
     }
 
     GameObject* GameObjectFactory::cookGameObject(GameObjectRecipe& recipe) {
+        LOG(TRACE) << "Cooking game object of type " << recipe.name;
         GameObject* result = new GameObject();
         result->setId(NEXT_ID++);
 
@@ -231,4 +85,122 @@ namespace Acidrain {
     shared_ptr<ScriptedBrain> GameObjectFactory::getBrain(char const* const brainName) {
         return cookBrain(brainName);
     }
-}
+
+    EntitySide entitySideFromString(const string& param) {
+        if (icompare(param, "Friendly"))
+            return EntitySide::Friendly;
+        else if (icompare(param, "Adverse"))
+            return EntitySide::Adverse;
+        else if (icompare(param, "Neutral"))
+            return EntitySide::Neutral;
+        else {
+            LOG(FATAL) << "Unknown entity side " << param;
+            throw runtime_error("Unknown entity side " + param);
+        }
+    }
+
+    EntityType entityTypeFromString(const string& value) {
+        if (icompare(value, "Scenery"))
+            return EntityType::Scenery;
+        else if (icompare(value, "Ship"))
+            return EntityType::Ship;
+        else if (icompare(value, "Bullet"))
+            return EntityType::Bullet;
+        else if (icompare(value, "Explosion"))
+            return EntityType::Explosion;
+        else if (icompare(value, "Bonus"))
+            return EntityType::Bonus;
+        else {
+            LOG(FATAL) << "Unknown entity type " << value;
+            throw runtime_error("Unknown entity type " + value);
+        }
+    }
+
+    WeaponRecipe readWeapon(const Json& element) {
+        WeaponRecipe result;
+        for (auto& e : element.object_items()) {
+            const string& param = e.first;
+            if (icompare(param, "bulletName"))
+                result.bulletName = e.second.string_value();
+            else if (icompare(param, "x"))
+                result.mountingPoint.x = (float) e.second.number_value();
+            else if (icompare(param, "y"))
+                result.mountingPoint.y = (float) e.second.number_value();
+            else if (icompare(param, "shotsPerSecond"))
+                result.shotsPerSecond = e.second.int_value();
+            else {
+                LOG(WARNING) << "Unknown weapon recipe attribute " << param;
+            }
+        }
+        return result;
+    }
+
+    CollisionHullRecipe readCollisionHull(const Json& element) {
+        CollisionHullRecipe result;
+        for (auto& e : element.object_items()) {
+            const string& param = e.first;
+            if (icompare(param, "radius"))
+                result.radius = (float) e.second.number_value();
+            else if (icompare(param, "x"))
+                result.center.x = (float) e.second.number_value();
+            else if (icompare(param, "y"))
+                result.center.y = (float) e.second.number_value();
+            else {
+                LOG(WARNING) << "Unknown collision hull recipe attribute " << param;
+            }
+        }
+        return result;
+    }
+
+    GameObjectRecipe readGameObjectRecipe(const Json& element) {
+        GameObjectRecipe result = {};
+
+        for (auto& e : element.object_items()) {
+            const string& param = e.first;
+            if (icompare(param, "name"))
+                result.name = e.second.string_value();
+            else if (icompare(param, "animation"))
+                result.animation = e.second.string_value();
+            else if (icompare(param, "brain"))
+                result.brain = e.second.string_value();
+            else if (icompare(param, "collidable"))
+                result.collidable = e.second.bool_value();
+            else if (icompare(param, "damageProvidedOnCollision"))
+                result.damageProvidedOnCollision = (float) e.second.number_value();
+            else if (icompare(param, "removeOnDeath"))
+                result.removeOnDeath = e.second.bool_value();
+            else if (icompare(param, "killIfOutside"))
+                result.killIfOutside = e.second.bool_value();
+            else if (icompare(param, "maxLife"))
+                result.maxLife = (float) e.second.number_value();
+            else if (icompare(param, "team"))
+                result.team = entitySideFromString(e.second.string_value());
+            else if (icompare(param, "type"))
+                result.type = entityTypeFromString(e.second.string_value());
+            else if (icompare(param, "hull"))
+                for (auto& k : e.second.array_items())
+                    result.hull.push_back(readCollisionHull(k));
+            else if (icompare(param, "weapons"))
+                for (auto& k : e.second.array_items())
+                    result.weapons.push_back(readWeapon(k));
+            else {
+                LOG(WARNING) << "Unknown game object recipe attribute " << param;
+            }
+        }
+
+        return result;
+    }
+
+    void GameObjectFactory::initialize(string filename) {
+        LOG(INFO) << "Loading game objects repository from " << filename;
+        string content = FILESYS.getFileContent(filename);
+
+        string parseError;
+        auto json = Json::parse(content, parseError);
+        if (parseError.empty())
+            for (auto& k : json["recipes"].array_items())
+                addRecipe(readGameObjectRecipe(k));
+        else
+            LOG(FATAL) << "Error while parsing JSON content from " << filename << ". Error: " << parseError;
+    }
+} // namespace Acidrain

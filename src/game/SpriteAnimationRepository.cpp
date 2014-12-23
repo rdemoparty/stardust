@@ -4,6 +4,7 @@
 #include <Animation.h>
 #include <FileSystem.h>
 #include <GfxSystem.h>
+#include <stdexcept>
 
 namespace Acidrain {
 
@@ -53,6 +54,9 @@ namespace Acidrain {
 
                 for (auto& f : k["frames"].array_items()) {
                     string spriteSheetName = f["spriteSheet"].string_value();
+                    if (spriteSheets.find(spriteSheetName) == spriteSheets.end())
+                        LOG(FATAL) << "Animation " << k["name"].string_value() << " refers to unexistent spritesheet \"" << spriteSheetName << "\"";
+
                     int index = f["index"].int_value();
                     int indexTo = f["indexTo"].int_value();
 
@@ -71,10 +75,11 @@ namespace Acidrain {
     }
 
     Animation* SpriteAnimationRepository::newAnimation(std::string name) {
-        AnimationData* animData = animationData[name];
-        if (animData == nullptr)
+        if (animationData.find(name) == animationData.end()) {
             LOG(ERROR) << "No animation data with name " << name;
-
-        return new Animation(animData);
+            throw runtime_error("Cannot find animation data with name " + name);
+        } else {
+            return new Animation(animationData[name]);
+        }
     }
 }
