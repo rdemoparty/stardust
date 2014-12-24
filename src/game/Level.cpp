@@ -7,6 +7,7 @@
 #include <FileSystem.h>
 #include <glm/gtc/matrix_transform.hpp>
 #include <LevelScript.h>
+#include <GfxSystem.h>
 
 namespace Acidrain {
 
@@ -43,15 +44,18 @@ namespace Acidrain {
     Level::~Level() {
     }
 
+    static const int PLAYER_OBJECT_ID = -1;
+
     void Level::start() {
         scene->clear();
         levelScript->reset();
 
         // add game objects
-        vec2 platformPosition = vec2(1024/2, 700);
+        vec2 platformPosition = vec2(1024 / 2, 700);
 
         auto player = gameObjectFactory->createByName("player");
-        player->currentState.position = vec2(1024/2, 800);
+        player->setId(PLAYER_OBJECT_ID);
+        player->currentState.position = vec2(1024 / 2, 800);
         scene->add(player);
 
         auto platformTop = gameObjectFactory->createByName("platform_top");
@@ -75,6 +79,29 @@ namespace Acidrain {
     void Level::render(float frameAlpha) {
         starfield->draw(gpuProgram, frameAlpha);
         scene->draw(gpuProgram, frameAlpha);
+
+        drawPlayerLife();
+    }
+
+    void Level::drawPlayerLife() {
+        GameObject* player = scene->getById(PLAYER_OBJECT_ID);
+        if (player != nullptr) {
+            float lifePercent = player->state.life / player->state.maxLife;
+            float lifeBarWidth = 200;
+            float lifeBarHeight = 14;
+            float x = 800;
+            float y = 80;
+            GFXSYS.setTransparencyMode(TransparencyMode::Additive);
+            GFXSYS.drawFilledRectangle(
+                    vec2(x, y),
+                    vec2(x + lifeBarWidth, y + lifeBarHeight),
+                    vec4(1, 1, 1, 0.2f));
+            GFXSYS.drawFilledRectangle(
+                    vec2(x + 3, y + 3),
+                    vec2(x + (lifeBarWidth - 3)* lifePercent, y + lifeBarHeight - 3),
+                    mix(vec4(0, 1, 0, 0.6), vec4(1, 0, 0, 0.6), (1.0 - lifePercent)));
+//            vec4(1, 1, 1, 0.5f));
+        }
     }
 
     bool Level::isFinished() const {

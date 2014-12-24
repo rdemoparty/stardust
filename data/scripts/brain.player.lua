@@ -18,7 +18,7 @@ function onSpawn(objectPointer)
  
     o:setFloat("friction", 0.5)
  
-    o:setFloat("maxSpeed", 1000)    
+    o:setFloat("maxSpeed", 600)    
 
     ------ Vazde settings    
     -- o:setFloat("mass", 10)
@@ -86,8 +86,10 @@ function onUpdate(objectPointer, elapsedSeconds)
     local vy = o:getFloat("vy")
     -- io.write("Old Velocity: ", vx, ", ", vy, "\n")
 
-    vx = vx + accelX * elapsedSeconds
-    vy = vy + accelY * elapsedSeconds
+    -- vx = vx + accelX * elapsedSeconds
+    -- vy = vy + accelY * elapsedSeconds
+    vx = forceX
+    vy = forceY
 
     -- cap velocity to a max value
     local currentSpeed = math.sqrt(vx*vx + vy*vy)
@@ -99,9 +101,9 @@ function onUpdate(objectPointer, elapsedSeconds)
     end
 
     -- apply friction
-    local friction = o:getFloat("friction")
-    vx = vx * (1.0 - friction)
-    vy = vy * (1.0 - friction)
+    -- local friction = o:getFloat("friction")
+    -- vx = vx * (1.0 - friction)
+    -- vy = vy * (1.0 - friction)
 
     -- update position
     local x, y = o:getPosition()

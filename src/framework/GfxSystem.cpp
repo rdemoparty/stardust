@@ -59,7 +59,7 @@ namespace Acidrain {
         glLoadIdentity();
 
         // trick for exact pixelization
-        glTranslatef(0.375, 0.375, 0);
+//        glTranslatef(0.375, 0.375, 0);
     }
 
     shared_ptr<Texture> GfxSystem::loadTexture(const string& filename) {

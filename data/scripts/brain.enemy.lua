@@ -71,9 +71,13 @@ function onDeath(objectPointer, reason)
         beacon:setPosition(killedEntity:getPosition())
         Scene.add(beacon)
 
-        local bonus = Scene.create("missile")
-        bonus:setPosition(killedEntity:getPosition())
-        Scene.add(bonus)
+        if math.random(10) > 7 then
+            local bonusType = 1
+            local bonus = Scene.create("powerup" .. bonusType)
+            bonus:setInt("bonusType", bonusType)
+            bonus:setPosition(killedEntity:getPosition())
+            Scene.add(bonus)
+        end
     end
 end
 

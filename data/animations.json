@@ -13,6 +13,12 @@
       "spriteHeight": 32
     },
     {
+      "name": "powerup",
+      "texture": "sprites/powerup.png",
+      "spriteWidth": 64,
+      "spriteHeight": 64
+    },
+    {
       "name": "explosion",
       "texture": "sprites/explosion3.png",
       "spriteWidth": 128,
@@ -128,6 +134,102 @@
           "spriteSheet": "missile",
           "index": 0,
           "indexTo": 7
+        }
+      ]
+    },
+    {
+      "name": "powerup1",
+      "frameTimeInMilliseconds": 100,
+      "loopType": "FORWARD",
+      "frames": [
+        {
+          "spriteSheet": "powerup",
+          "index": 0,
+          "indexTo": 7
+        }
+      ]
+    },
+    {
+      "name": "powerup2",
+      "frameTimeInMilliseconds": 100,
+      "loopType": "FORWARD",
+      "frames": [
+        {
+          "spriteSheet": "powerup",
+          "index": 8,
+          "indexTo": 15
+        }
+      ]
+    },
+    {
+      "name": "powerup3",
+      "frameTimeInMilliseconds": 100,
+      "loopType": "FORWARD",
+      "frames": [
+        {
+          "spriteSheet": "powerup",
+          "index": 16,
+          "indexTo": 23
+        }
+      ]
+    },
+    {
+      "name": "powerup4",
+      "frameTimeInMilliseconds": 100,
+      "loopType": "FORWARD",
+      "frames": [
+        {
+          "spriteSheet": "powerup",
+          "index": 24,
+          "indexTo": 31
+        }
+      ]
+    },
+    {
+      "name": "powerup5",
+      "frameTimeInMilliseconds": 100,
+      "loopType": "FORWARD",
+      "frames": [
+        {
+          "spriteSheet": "powerup",
+          "index": 32,
+          "indexTo": 39
+        }
+      ]
+    },
+    {
+      "name": "powerup6",
+      "frameTimeInMilliseconds": 100,
+      "loopType": "FORWARD",
+      "frames": [
+        {
+          "spriteSheet": "powerup",
+          "index": 40,
+          "indexTo": 47
+        }
+      ]
+    },
+    {
+      "name": "powerup7",
+      "frameTimeInMilliseconds": 100,
+      "loopType": "FORWARD",
+      "frames": [
+        {
+          "spriteSheet": "powerup",
+          "index": 48,
+          "indexTo": 55
+        }
+      ]
+    },
+    {
+      "name": "powerup8",
+      "frameTimeInMilliseconds": 100,
+      "loopType": "FORWARD",
+      "frames": [
+        {
+          "spriteSheet": "powerup",
+          "index": 56,
+          "indexTo": 63
         }
       ]
     },

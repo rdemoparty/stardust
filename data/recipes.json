@@ -139,7 +139,135 @@
 			"type": "Bonus",
 			"hull": [
 				{
-					"radius": 8
+					"radius": 16
+				}
+			]
+		},
+		{
+			"name": "powerup1",
+			"animation": "powerup1",
+			"brain": "scripts/brain.bonus.lua",
+			"collidable": true,
+			"maxLife": 1,
+			"removeOnDeath": true,
+			"killIfOutside": true,
+			"team": "Friendly",
+			"type": "Bonus",
+			"hull": [
+				{
+					"radius": 32
+				}
+			]
+		},
+		{
+			"name": "powerup2",
+			"animation": "powerup2",
+			"brain": "scripts/brain.bonus.lua",
+			"collidable": true,
+			"maxLife": 1,
+			"removeOnDeath": true,
+			"killIfOutside": true,
+			"team": "Friendly",
+			"type": "Bonus",
+			"hull": [
+				{
+					"radius": 32
+				}
+			]
+		},
+		{
+			"name": "powerup3",
+			"animation": "powerup3",
+			"brain": "scripts/brain.bonus.lua",
+			"collidable": true,
+			"maxLife": 1,
+			"removeOnDeath": true,
+			"killIfOutside": true,
+			"team": "Friendly",
+			"type": "Bonus",
+			"hull": [
+				{
+					"radius": 32
+				}
+			]
+		},
+		{
+			"name": "powerup4",
+			"animation": "powerup4",
+			"brain": "scripts/brain.bonus.lua",
+			"collidable": true,
+			"maxLife": 1,
+			"removeOnDeath": true,
+			"killIfOutside": true,
+			"team": "Friendly",
+			"type": "Bonus",
+			"hull": [
+				{
+					"radius": 32
+				}
+			]
+		},
+		{
+			"name": "powerup5",
+			"animation": "powerup5",
+			"brain": "scripts/brain.bonus.lua",
+			"collidable": true,
+			"maxLife": 1,
+			"removeOnDeath": true,
+			"killIfOutside": true,
+			"team": "Friendly",
+			"type": "Bonus",
+			"hull": [
+				{
+					"radius": 32
+				}
+			]
+		},
+		{
+			"name": "powerup6",
+			"animation": "powerup6",
+			"brain": "scripts/brain.bonus.lua",
+			"collidable": true,
+			"maxLife": 1,
+			"removeOnDeath": true,
+			"killIfOutside": true,
+			"team": "Friendly",
+			"type": "Bonus",
+			"hull": [
+				{
+					"radius": 32
+				}
+			]
+		},
+		{
+			"name": "powerup7",
+			"animation": "powerup7",
+			"brain": "scripts/brain.bonus.lua",
+			"collidable": true,
+			"maxLife": 1,
+			"removeOnDeath": true,
+			"killIfOutside": true,
+			"team": "Friendly",
+			"type": "Bonus",
+			"hull": [
+				{
+					"radius": 32
+				}
+			]
+		},
+		{
+			"name": "powerup8",
+			"animation": "powerup8",
+			"brain": "scripts/brain.bonus.lua",
+			"collidable": true,
+			"maxLife": 1,
+			"removeOnDeath": true,
+			"killIfOutside": true,
+			"team": "Friendly",
+			"type": "Bonus",
+			"hull": [
+				{
+					"radius": 32
 				}
 			]
 		},

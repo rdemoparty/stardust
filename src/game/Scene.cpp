@@ -301,4 +301,12 @@ namespace Acidrain {
         object->setScene(this);
         brain->onSpawn(object);
     }
+
+    GameObject* Scene::getById(long id) {
+        for (auto& o : objects)
+            if (o->getId() == id)
+                return o;
+        
+        return nullptr;
+    }
 }

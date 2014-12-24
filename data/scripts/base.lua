@@ -45,6 +45,22 @@ function Entity:getRotation()
     return getRotation(self.pointer)
 end
 
+function Entity:getLife()
+    return getLife(self.pointer)
+end
+
+function Entity:setLife(value)
+    setLife(self.pointer, value)
+end
+
+function Entity:getMaxLife()
+    return getMaxLife(self.pointer)
+end
+
+function Entity:setMaxLife(value)
+    setMaxLife(self.pointer, value)
+end
+
 function Entity:setColor(r, g, b, a)
     setColor(self.pointer, r, g, b, a)
 end

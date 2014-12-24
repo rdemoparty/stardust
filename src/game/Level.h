@@ -49,5 +49,7 @@ namespace Acidrain {
         shared_ptr<GameObjectFactory> gameObjectFactory;
 
         shared_ptr<Starfield> starfield;
+
+        void drawPlayerLife();
     };
 }

@@ -93,6 +93,30 @@ namespace Acidrain {
         return 0; // arguments pushed on stack
     }
 
+    static int getLife(lua_State* L) {
+        GameObject* object = (GameObject*) lua_topointer(L, 1);
+        lua_pushnumber(L, object->state.life);
+        return 1; // arguments pushed on stack
+    }
+
+    static int setLife(lua_State* L) {
+        GameObject* object = (GameObject*) lua_topointer(L, 1);
+        object->state.life = (float) lua_tonumber(L, 2);
+        return 0; // arguments pushed on stack
+    }
+
+    static int getMaxLife(lua_State* L) {
+        GameObject* object = (GameObject*) lua_topointer(L, 1);
+        lua_pushnumber(L, object->state.maxLife);
+        return 1; // arguments pushed on stack
+    }
+
+    static int setMaxLife(lua_State* L) {
+        GameObject* object = (GameObject*) lua_topointer(L, 1);
+        object->state.maxLife = (float) lua_tonumber(L, 2);
+        return 0; // arguments pushed on stack
+    }
+
     static int getColor(lua_State* L) {
         GameObject* object = (GameObject*) lua_topointer(L, 1);
         lua_pushnumber(L, object->currentState.color.r);
@@ -240,6 +264,10 @@ namespace Acidrain {
         lua_register(L, "setRotation", setRotation);
         lua_register(L, "getScale", getScale);
         lua_register(L, "setScale", setScale);
+        lua_register(L, "getLife", getLife);
+        lua_register(L, "setLife", setLife);
+        lua_register(L, "getMaxLife", getMaxLife);
+        lua_register(L, "setMaxLife", setMaxLife);
         lua_register(L, "getColor", getColor);
         lua_register(L, "setColor", setColor);
         lua_register(L, "getInt", getIntAttribute);

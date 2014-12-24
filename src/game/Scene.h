@@ -67,6 +67,8 @@ namespace Acidrain {
 
         GameObject* createByName(string name);
 
+        GameObject* getById(long id);
+
         void clear();
 
         void update(float elapsedSeconds);
