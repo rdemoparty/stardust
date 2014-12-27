@@ -13,6 +13,8 @@ namespace Acidrain {
 
     using namespace glm;
 
+    static const int PLAYER_OBJECT_ID = -1;
+
     Level::Level() {
         gpuProgram = make_shared<GpuProgram>(
                 FILESYS.getFileContent("shaders/normal.vs"),
@@ -43,8 +45,6 @@ namespace Acidrain {
 
     Level::~Level() {
     }
-
-    static const int PLAYER_OBJECT_ID = -1;
 
     void Level::start() {
         scene->clear();

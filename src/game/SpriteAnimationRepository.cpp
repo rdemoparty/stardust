@@ -41,7 +41,10 @@ namespace Acidrain {
             for (auto& k : json["spriteSheets"].array_items()) {
                 SpriteSheet* sheet = new SpriteSheet();
                 sheet->texture = GFXSYS.loadTexture(k["texture"].string_value());
-                sheet->autoAdd(k["spriteWidth"].int_value(), k["spriteHeight"].int_value());
+                sheet->autoAdd(
+                        k["spriteWidth"].int_value(),
+                        k["spriteHeight"].int_value()
+                );
                 spriteSheets[k["name"].string_value()] = sheet;
             }
 

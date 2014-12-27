@@ -6,6 +6,7 @@
 #include <map>
 #include <string>
 #include <Entity.h>
+#include <SDL_video.h>
 
 #define GFXSYS Acidrain::GfxSystem::getInstance()
 
@@ -63,6 +64,8 @@ namespace Acidrain {
         int width, height;
         int offsetX, offsetY;
         vec3 clearScreenColor = vec3(0);
+
+        SDL_DisplayMode establishDisplayMode();
     };
 } // namespace Acidrain
 

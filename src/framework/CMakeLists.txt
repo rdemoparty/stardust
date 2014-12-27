@@ -2,6 +2,7 @@ set(HEADERS
    ${HEADERS}
    ${CMAKE_CURRENT_SOURCE_DIR}/Animation.h
    ${CMAKE_CURRENT_SOURCE_DIR}/Box.h
+   ${CMAKE_CURRENT_SOURCE_DIR}/CommandLineParser.h
    ${CMAKE_CURRENT_SOURCE_DIR}/Collisions.h
    ${CMAKE_CURRENT_SOURCE_DIR}/EventSystem.h
    ${CMAKE_CURRENT_SOURCE_DIR}/FileSystem.h
@@ -29,6 +30,7 @@ set(SOURCE
    ${SOURCE}
    ${CMAKE_CURRENT_SOURCE_DIR}/Animation.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/Box.cpp
+   ${CMAKE_CURRENT_SOURCE_DIR}/CommandLineParser.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/Collisions.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/EventSystem.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/FileSystem.cpp

@@ -2,10 +2,13 @@
 #include <GLheaders.h>
 #include <Window.h>
 #include <iostream>
+
 #define STB_IMAGE_IMPLEMENTATION
+
 #include <stb_image.h>
 #include <FileSystem.h>
 #include <easylogging++.h>
+#include <CommandLineParser.h>
 
 namespace Acidrain {
 
@@ -15,14 +18,16 @@ namespace Acidrain {
     }
 
     void GfxSystem::init(const int desiredWidth, const int desiredHeight) {
-        SDL_DisplayMode displayMode;
-        if (SDL_GetCurrentDisplayMode(0, &displayMode) != 0) {
-            LOG(FATAL) << "SDL_GetCurrentDisplayMode failed: " << SDL_GetError();
-            exit(1);
-        }
-        LOG(INFO) << "Got current display mode of " << displayMode.w << "x" << displayMode.h;
+        SDL_DisplayMode displayMode = establishDisplayMode();
 
-        window = make_shared<Window>(displayMode.w, displayMode.h, WindowType::Fullscreen);
+        window = make_shared<Window>(
+                displayMode.w,
+                displayMode.h,
+                FLAG_AS_BOOLEAN("vsync"),
+                FLAG_AS_BOOLEAN("fullscreen") ?
+                        WindowType::Fullscreen :
+                        WindowType::Windowed
+        );
 
         const int windowWidth = window->width();
         const int windowHeight = window->height();
@@ -60,6 +65,23 @@ namespace Acidrain {
 
         // trick for exact pixelization
 //        glTranslatef(0.375, 0.375, 0);
+    }
+
+    SDL_DisplayMode GfxSystem::establishDisplayMode() {
+        SDL_DisplayMode displayMode;
+        displayMode.w = FLAG_AS_INTEGER("width");
+        displayMode.h = FLAG_AS_INTEGER("height");
+
+        if (displayMode.w == -1 || displayMode.h == -1) {
+            LOG(INFO) << "Window size not specified. Proceeding with autodetection";
+
+            if (SDL_GetCurrentDisplayMode(0, &displayMode) != 0)
+                LOG(FATAL) << "SDL_GetCurrentDisplayMode failed: " << SDL_GetError();
+
+            LOG(INFO) << "Got current display mode of " << displayMode.w << "x" << displayMode.h;
+        }
+
+        return displayMode;
     }
 
     shared_ptr<Texture> GfxSystem::loadTexture(const string& filename) {

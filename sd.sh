@@ -31,11 +31,11 @@ function run_project {
 			echo -e "Error: bin/stardust.exe file does not exist\n"
 			exit 1
 		fi
-
+		shift 1
 		if hash optirun 2>/dev/null; then
-			cd bin && optirun ./stardust.exe && cd ..
+			cd bin && optirun ./stardust.exe $@ && cd ..
 		else
-			cd bin && ./stardust.exe && cd ..
+			cd bin && ./stardust.exe $@ && cd ..
 		fi
 
 	else
@@ -43,8 +43,7 @@ function run_project {
 			echo -e "Error: bin/stardust file does not exist\n"
 			exit 1
 		fi
-
-		cd bin && ./stardust && cd ..
+		cd bin && ./stardust $* && cd ..
 	fi
 }
 
@@ -86,7 +85,9 @@ case $1 in
 		build_project $2
 		;;
 	run)
-		run_project $2
+		RUN_OPTION=$2
+		shift 2
+		run_project $RUN_OPTION $@
 		;;
 	package)
 		package_project $2

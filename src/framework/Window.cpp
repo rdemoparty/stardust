@@ -4,13 +4,14 @@
 
 #include <Window.h>
 #include <GLheaders.h>
-//#include <SDL2/SDL_opengl.h>
-#include <iostream>
+#include <easylogging++.h>
 
 namespace Acidrain {
 
-    Window::Window(int w, int h, WindowType t)
+    Window::Window(int w, int h, bool vsyncEnabled, WindowType t)
             : width_(w), height_(h), type(t) {
+
+        LOG(INFO) << "Attempting to create window of " << w << "x" << h << ". Vsync enabled: " << vsyncEnabled;
 
         // Setup OpenGL version. on OSX this has the effect of not drawing anything with them shaders. Need to investigate further
 #ifndef __APPLE__
@@ -45,14 +46,14 @@ namespace Acidrain {
         glContext = SDL_GL_CreateContext(displayWindow);
 
 #ifndef __APPLE__
+        LOG(TRACE) << "Initializing glew";
         GLenum err = glewInit();
         if (GLEW_OK != err) {
-            std::cerr << "Error " << glewGetErrorString(err) << std::endl;
-            exit(1);
+            LOG(FATAL) << "Failed to initialize glew. Reason: " << glewGetErrorString(err);
         }
 #endif
 
-        SDL_GL_SetSwapInterval(1);
+        SDL_GL_SetSwapInterval(vsyncEnabled ? 1 : 0);
     }
 
     Window::~Window() {

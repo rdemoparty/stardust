@@ -11,7 +11,7 @@ namespace Acidrain {
 
     class Window {
     public:
-        Window(int width, int height, WindowType type);
+        Window(int width, int height, bool vsyncEnabled, WindowType type);
 
         virtual ~Window();
 
