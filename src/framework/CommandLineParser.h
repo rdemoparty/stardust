@@ -4,14 +4,13 @@
 #include <string>
 #include <sstream>
 
-#define FLAG_ADD_INTEGER(argument,description,defaultValue) Acidrain::CommandLineParser::instance().addInteger(argument, description, defaultValue)
-#define FLAG_ADD_BOOLEAN(argument,description,defaultValue) Acidrain::CommandLineParser::instance().addBool(argument, description, defaultValue)
-#define FLAG_ADD_STRING(argument,description,defaultValue) Acidrain::CommandLineParser::instance().addString(argument, description, defaultValue)
-#define FLAGS_PARSE(argc,argv) Acidrain::CommandLineParser::instance().parse(argc, argv)
+#define DEFINE_int(argument, shortArg, description, defaultValue) int FLAG_##argument = defaultValue; Acidrain::CommandLineOptionRegistrarInteger FLAG_REGISTRAR_##argument(#argument "," #shortArg, description, defaultValue, FLAG_##argument);
+#define DEFINE_bool(argument, shortArg, description, defaultValue)  bool FLAG_##argument = defaultValue; Acidrain::CommandLineOptionRegistrarBool FLAG_REGISTRAR_##argument(#argument "," #shortArg, description, defaultValue, FLAG_##argument);
+#define DEFINE_string(argument, shortArg, description, defaultValue)  ::std::string FLAG_##argument = defaultValue; Acidrain::CommandLineOptionRegistrarString FLAG_REGISTRAR_##argument(#argument "," #shortArg, description, defaultValue, FLAG_##argument);
 
-#define FLAG_AS_STRING(name) Acidrain::CommandLineParser::instance().paramAsString(name)
-#define FLAG_AS_BOOLEAN(name) Acidrain::CommandLineParser::instance().paramAsBool(name)
-#define FLAG_AS_INTEGER(name) Acidrain::CommandLineParser::instance().paramAsInt(name)
+#define DECLARE_int(argument) extern int FLAG_##argument;
+#define DECLARE_bool(argument) extern bool FLAG_##argument;
+#define DECLARE_string(argument) extern string FLAG_##argument;
 
 namespace Acidrain {
 
@@ -48,6 +47,7 @@ namespace Acidrain {
         bool isSpecified = false;
         CommandLineOptionValue value;
         CommandLineOptionType type;
+        void* valueHolder;
     };
 
     class CommandLineParser {
@@ -55,18 +55,15 @@ namespace Acidrain {
 
         static CommandLineParser& instance();
 
-        CommandLineParser& addString(string argumentNames, string description, string defaultValue = "");
+        CommandLineParser& addString(string argumentNames, string description, string defaultValue, void* valueHolder);
 
-        CommandLineParser& addBool(string argumentNames, string description, bool defaultValue = false);
+        CommandLineParser& addBool(string argumentNames, string description, bool defaultValue, void* valueHolder);
 
-        CommandLineParser& addInteger(string argumentNames, string description, int defaultValue = 0);
-
-//    bool hasDefined(string argumentName);
-//    int get(string argumentName);
-//    string get(string argumentName);
-//    bool get(string argumentName);
+        CommandLineParser& addInteger(string argumentNames, string description, int defaultValue, void* valueHolder);
 
         CommandLineParser& parse(int argc, char** argv);
+
+        void usage();
 
         CommandLineParser& dump();
 
@@ -81,10 +78,33 @@ namespace Acidrain {
 
         CommandLineOption* optionByArgument(char const* name);
 
-        CommandLineOption* optionByLongName(char const * name);
+        CommandLineOption* optionByLongName(char const* name);
 
-        CommandLineOption* optionByShortName(char const * name);
+        CommandLineOption* optionByShortName(char const* name);
 
         CommandLineOption* optionByName(string name);
+    };
+
+    void ParseCommandLineFlags(int argc, char** argv);
+
+    class CommandLineOptionRegistrarInteger {
+    public:
+        CommandLineOptionRegistrarInteger(string argumentNames, string description, int defaultValue, int& valueHolder) {
+            CommandLineParser::instance().addInteger(argumentNames, description, defaultValue, &valueHolder);
+        }
+    };
+
+    class CommandLineOptionRegistrarString {
+    public:
+        CommandLineOptionRegistrarString(string argumentNames, string description, string defaultValue, string& valueHolder) {
+            CommandLineParser::instance().addString(argumentNames, description, defaultValue, &valueHolder);
+        }
+    };
+
+    class CommandLineOptionRegistrarBool {
+    public:
+        CommandLineOptionRegistrarBool(string argumentNames, string description, bool defaultValue, bool& valueHolder) {
+            CommandLineParser::instance().addBool(argumentNames, description, defaultValue, &valueHolder);
+        }
     };
 }

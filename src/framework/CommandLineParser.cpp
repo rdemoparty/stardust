@@ -16,6 +16,10 @@ namespace Acidrain {
         return result;
     }
 
+    void ParseCommandLineFlags(int argc, char** argv) {
+        CommandLineParser::instance().parse(argc, argv);
+    }
+
     const string get(const CommandLineOptionValue& value, const CommandLineOptionType& type) {
         stringstream ss;
         switch (type) {
@@ -26,7 +30,7 @@ namespace Acidrain {
                 ss << value.intValue;
                 break;
             case CommandLineOptionType::BOOLEAN:
-                ss << value.boolValue;
+                ss << std::boolalpha << value.boolValue;
                 break;
             default:
                 ss << "[unknown command line option type " << (int) type << "]";
@@ -48,12 +52,13 @@ namespace Acidrain {
     }
 
 
-    CommandLineParser& CommandLineParser::addString(string argumentNames, string description, string defaultValue) {
+    CommandLineParser& CommandLineParser::addString(string argumentNames, string description, string defaultValue, void* valueHolder) {
         CommandLineOption option;
         option.description = description;
         option.defaultValue = CommandLineOptionValue(defaultValue);
         option.value = CommandLineOptionValue(defaultValue);
         option.type = CommandLineOptionType::STRING;
+        option.valueHolder = valueHolder;
 
         vector<string> components = split(argumentNames, ',');
         option.longOption = components.at(0);
@@ -64,12 +69,13 @@ namespace Acidrain {
         return *this;
     }
 
-    CommandLineParser& CommandLineParser::addInteger(string argumentNames, string description, int defaultValue) {
+    CommandLineParser& CommandLineParser::addInteger(string argumentNames, string description, int defaultValue, void* valueHolder) {
         CommandLineOption option;
         option.description = description;
         option.defaultValue = CommandLineOptionValue(defaultValue);
         option.value = CommandLineOptionValue(defaultValue);
         option.type = CommandLineOptionType::INTEGER;
+        option.valueHolder = valueHolder;
 
         vector<string> components = split(argumentNames, ',');
         option.longOption = components.at(0);
@@ -80,12 +86,13 @@ namespace Acidrain {
         return *this;
     }
 
-    CommandLineParser& CommandLineParser::addBool(string argumentNames, string description, bool defaultValue) {
+    CommandLineParser& CommandLineParser::addBool(string argumentNames, string description, bool defaultValue, void* valueHolder) {
         CommandLineOption option;
         option.description = description;
         option.defaultValue = CommandLineOptionValue(defaultValue);
         option.value = CommandLineOptionValue(defaultValue);
         option.type = CommandLineOptionType::BOOLEAN;
+        option.valueHolder = valueHolder;
 
         vector<string> components = split(argumentNames, ',');
         option.longOption = components.at(0);
@@ -100,33 +107,40 @@ namespace Acidrain {
         CommandLineOption* currentOption = nullptr;
         int i = 1;
         while (i < argc) {
+            if (!strcmp(argv[i], "--help") || !strcmp(argv[i], "-h"))
+                usage();
+
+            currentOption = optionByArgument(argv[i]);
             if (currentOption == nullptr) {
-                currentOption = optionByArgument(argv[i]);
-                if (currentOption == nullptr) {
-                    // see if we have positional attributes
-                } else {
-                    switch (currentOption->type) {
-                        case BOOLEAN:
-                            currentOption->value.boolValue = true;
-                            currentOption->isSpecified = true;
-                            break;
-                        case STRING:
-                            if ((i + 1) >= argc)
-                                throw new runtime_error("Missing value for argument " + currentOption->longOption);
+                // see if we have positional attributes
+            } else {
+                bool* boolValueHolder = (bool*) currentOption->valueHolder;
+                string* stringValueHolder = (string*) currentOption->valueHolder;
+                int* intValueHolder = (int*) currentOption->valueHolder;
+                switch (currentOption->type) {
+                    case BOOLEAN:
+                        currentOption->value.boolValue = true;
+                        currentOption->isSpecified = true;
+                        *boolValueHolder = currentOption->value.boolValue;
+                        break;
+                    case STRING:
+                        if ((i + 1) >= argc)
+                            throw new runtime_error("Missing value for argument " + currentOption->longOption);
 
-                            currentOption->value.stringValue = argv[++i];
-                            currentOption->isSpecified = true;
-                            break;
-                        case INTEGER:
-                            if ((i + 1) >= argc)
-                                throw new runtime_error("Missing value for argument " + currentOption->longOption);
+                        currentOption->value.stringValue = argv[++i];
+                        currentOption->isSpecified = true;
+                        *stringValueHolder = currentOption->value.stringValue;
+                        break;
+                    case INTEGER:
+                        if ((i + 1) >= argc)
+                            throw new runtime_error("Missing value for argument " + currentOption->longOption);
 
-                            currentOption->value.intValue = atoi(argv[++i]);
-                            currentOption->isSpecified = true;
-                            break;
-                    }
-                    currentOption = nullptr;
+                        currentOption->value.intValue = atoi(argv[++i]);
+                        currentOption->isSpecified = true;
+                        *intValueHolder = currentOption->value.intValue;
+                        break;
                 }
+                currentOption = nullptr;
             }
             i++;
         }
@@ -204,5 +218,21 @@ namespace Acidrain {
         static CommandLineParser instance;
         return instance;
     }
-}
 
+    void CommandLineParser::usage() {
+        std::cout << "Usage: stardust [OPTION]...\n" << std::endl;
+
+        unsigned long maxLongOptionLength = 0;
+        for (auto& o : options)
+            if (o.longOption.length() > maxLongOptionLength)
+                maxLongOptionLength = o.longOption.length();
+
+        for (auto& o : options) {
+            std::cout << "  -" << o.shortOption << ", --" << o.longOption;
+            std::cout << std::string(maxLongOptionLength - o.longOption.length(), ' ');
+            std::cout << "   " << o.description << ". Defaults to " << get(o.defaultValue, o.type) <<  std::endl;
+        }
+        std::cout << std::endl;
+        exit(1);
+    }
+}

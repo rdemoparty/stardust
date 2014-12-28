@@ -10,28 +10,22 @@ _INITIALIZE_EASYLOGGINGPP
 
 using namespace Acidrain;
 
-el::Level fromString(string levelName);
+DEFINE_string(log_level, l, "The log level", "debug")
+DEFINE_string(data_dir, d, "Data dir relative to cwd", "../data")
+
+void configureLogging();
 
 int main(int argc, char** argv) {
     try {
-        FLAG_ADD_INTEGER("width,w", "The physical window width", -1);
-        FLAG_ADD_INTEGER("height,h", "The physical window height", -1);
-        FLAG_ADD_BOOLEAN("fullscreen,f", "Whether the window is fullscreen or not", false);
-        FLAG_ADD_BOOLEAN("vsync,v", "Whether vsync is enabled or not", false);
-        FLAG_ADD_STRING("log-level,l", "The log level", "debug");
-
-        FLAGS_PARSE(argc, argv);
-
-        el::Loggers::addFlag(el::LoggingFlag::HierarchicalLogging);
-        el::Loggers::addFlag(el::LoggingFlag::ColoredTerminalOutput);
-        el::Loggers::setLoggingLevel(fromString(FLAG_AS_STRING("log-level")));
+        ParseCommandLineFlags(argc, argv);
+        configureLogging();
 
         const int GAME_LOGICAL_RESOLUTION_X = 1024;
         const int GAME_LOGICAL_RESOLUTION_Y = 768;
 
         EVENTSYS.init();
         GFXSYS.init(GAME_LOGICAL_RESOLUTION_X, GAME_LOGICAL_RESOLUTION_Y);
-        FILESYS.init("../data");
+        FILESYS.init(FLAG_data_dir);
 
         Timer timer;
         Stardust game;
@@ -50,11 +44,11 @@ int main(int argc, char** argv) {
 
             accumulator += frameTime;
             while (accumulator >= dt) {
-                game.update(dt);
+                game.update((float) dt);
                 accumulator -= dt;
             }
 
-            game.render(accumulator / dt);
+            game.render((float) (accumulator / dt));
         }
     } catch (std::exception* e) {
         LOG(FATAL) << e->what();
@@ -79,4 +73,10 @@ el::Level fromString(string levelName) {
         return el::Level::Fatal;
     else
         return el::Level::Info;
+}
+
+void configureLogging() {
+    el::Loggers::addFlag(el::LoggingFlag::HierarchicalLogging);
+    el::Loggers::addFlag(el::LoggingFlag::ColoredTerminalOutput);
+    el::Loggers::setLoggingLevel(fromString(FLAG_log_level));
 }

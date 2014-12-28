@@ -10,6 +10,11 @@
 #include <easylogging++.h>
 #include <CommandLineParser.h>
 
+DEFINE_int(width, w, "The physical window width", -1)
+DEFINE_int(height, h, "The physical window height", -1)
+DEFINE_bool(fullscreen, f, "Whether the window is fullscreen or not", false)
+DEFINE_bool(vsync, v, "Whether vsync is enabled or not", false)
+
 namespace Acidrain {
 
     GfxSystem& GfxSystem::getInstance() {
@@ -23,8 +28,8 @@ namespace Acidrain {
         window = make_shared<Window>(
                 displayMode.w,
                 displayMode.h,
-                FLAG_AS_BOOLEAN("vsync"),
-                FLAG_AS_BOOLEAN("fullscreen") ?
+                FLAG_vsync,
+                FLAG_fullscreen ?
                         WindowType::Fullscreen :
                         WindowType::Windowed
         );
@@ -69,8 +74,8 @@ namespace Acidrain {
 
     SDL_DisplayMode GfxSystem::establishDisplayMode() {
         SDL_DisplayMode displayMode;
-        displayMode.w = FLAG_AS_INTEGER("width");
-        displayMode.h = FLAG_AS_INTEGER("height");
+        displayMode.w = FLAG_width;
+        displayMode.h = FLAG_height;
 
         if (displayMode.w == -1 || displayMode.h == -1) {
             LOG(INFO) << "Window size not specified. Proceeding with autodetection";
