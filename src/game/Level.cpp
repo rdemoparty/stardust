@@ -8,6 +8,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <LevelScript.h>
 #include <GfxSystem.h>
+#include <AudioSystem.h>
 
 namespace Acidrain {
 
@@ -41,6 +42,10 @@ namespace Acidrain {
         gpuProgram->addConstants(gpuProgramConstantBundle.get());
 
         levelScript = make_shared<LevelScript>(scene.get());
+
+        // load background song
+        song = AUDIOSYS.loadSong("main.ogg");
+        song->play(-1);
     }
 
     Level::~Level() {
@@ -106,5 +111,9 @@ namespace Acidrain {
 
     bool Level::isFinished() const {
         return false;
+    }
+
+    int Level::objectsCount() const {
+        return scene->countObjects();
     }
 }

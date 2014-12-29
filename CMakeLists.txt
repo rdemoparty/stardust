@@ -40,8 +40,9 @@ set(BIN_PATH ../bin)
 find_package(SDL2 REQUIRED)
 include_directories(${SDL2_INCLUDE_DIR})
 
-#find_package(SDL2_mixer REQUIRED)
-#include_directories(${SDL2_MIXER_INCLUDE_DIRS})
+# SDL mixer setup
+find_package(SDL2_mixer REQUIRED)
+include_directories(${SDL2_MIXER_INCLUDE_DIRS})
 
 # GL setup
 find_package(OpenGL REQUIRED)
@@ -62,11 +63,9 @@ include_directories("src/game")
 add_subdirectory(src)
 
 add_executable(stardust src/main.cpp ${SOURCE})
-#target_link_libraries(stardust ${SDL2_LIBRARY} ${SDL2_MIXER_LIBRARIES} ${SDL2_MAIN_LIBRARY} ${OPENGL_LIBRARIES})
-target_link_libraries(stardust ${SDL2_LIBRARY} ${SDL2_MAIN_LIBRARY} ${OPENGL_LIBRARIES})
+target_link_libraries(stardust ${SDL2_LIBRARY} ${SDL2_MAIN_LIBRARY} ${SDL2_MIXER_LIBRARIES} ${OPENGL_LIBRARIES})
 
 # set_target_properties(stardust PROPERTIES OUTPUT_NAME ${GAME_EXECUTABLE_NAME})
-
 set_target_properties(stardust PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${BIN_PATH})
 set_target_properties(stardust PROPERTIES RUNTIME_OUTPUT_DIRECTORY_DEBUG ${BIN_PATH})
 set_target_properties(stardust PROPERTIES RUNTIME_OUTPUT_DIRECTORY_RELEASE ${BIN_PATH})

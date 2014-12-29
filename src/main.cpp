@@ -2,6 +2,7 @@
 #include <Stardust.h>
 #include <FileSystem.h>
 #include <GfxSystem.h>
+#include <AudioSystem.h>
 #include <easylogging++.h>
 #include <game/Level.h>
 #include <CommandLineParser.h>
@@ -24,8 +25,9 @@ int main(int argc, char** argv) {
         const int GAME_LOGICAL_RESOLUTION_Y = 768;
 
         EVENTSYS.init();
-        GFXSYS.init(GAME_LOGICAL_RESOLUTION_X, GAME_LOGICAL_RESOLUTION_Y);
         FILESYS.init(FLAG_data_dir);
+        AUDIOSYS.init();
+        GFXSYS.init(GAME_LOGICAL_RESOLUTION_X, GAME_LOGICAL_RESOLUTION_Y);
 
         Timer timer;
         Stardust game;

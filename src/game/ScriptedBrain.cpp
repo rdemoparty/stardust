@@ -5,6 +5,7 @@
 #include <Scene.h>
 #include <InputProvider.h>
 #include <Camera.h>
+#include <AudioSystem.h>
 
 namespace Acidrain {
 
@@ -225,6 +226,13 @@ namespace Acidrain {
         return 0; // arguments pushed on stack
     }
 
+    static int playSound(lua_State* L) {
+        const char* const soundPath = lua_tostring(L, 1);
+        int channel = (int) lua_tointeger(L, 2);
+        AUDIOSYS.loadSound(soundPath)->play(channel, 0);
+        return 0; // arguments pushed on stack
+    }
+
     // ----------------------------------------
     // ScriptedBrain implementation
     // ----------------------------------------
@@ -287,6 +295,7 @@ namespace Acidrain {
         lua_register(L, "dumpEntities", dumpEntities);
         lua_register(L, "shakeCamera", shakeCamera);
         lua_register(L, "setBrain", setBrain);
+        lua_register(L, "playSound", playSound);
     }
 
     void ScriptedBrain::injectScene(Scene* scene) {

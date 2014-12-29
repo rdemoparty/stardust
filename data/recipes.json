@@ -53,8 +53,8 @@
 			"animation": "explosion",
 			"brain": "scripts/brain.enemy.explosion.lua",
 			"collidable": false,
-			"removeOnDeath": false,
-			"killIfOutside": false,
+			"removeOnDeath": true,
+			"killIfOutside": true,
 			"team": "Neutral",
 			"type": "Explosion"
 		},
@@ -63,6 +63,7 @@
 			"animation": "beacon",
 			"brain": "scripts/brain.beacon.lua",
 			"collidable": false,
+			"removeOnDeath": true,
 			"killIfOutside": false,
 			"team": "Neutral",
 			"type": "Explosion"
@@ -73,6 +74,7 @@
 			"brain": "scripts/brain.enemy.explosion.lua",
 			"collidable": false,
 			"killIfOutside": true,
+			"removeOnDeath": true,
 			"team": "Neutral",
 			"type": "Explosion"
 		},

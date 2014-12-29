@@ -20,6 +20,8 @@ namespace Acidrain {
 
     class LevelScript;
 
+    class Song;
+
     class Level {
     public:
 
@@ -35,6 +37,8 @@ namespace Acidrain {
 
         bool isFinished() const;
 
+        int objectsCount() const;
+
     private:
         shared_ptr<GpuProgramConstantBundle> gpuProgramConstantBundle;
 
@@ -49,6 +53,8 @@ namespace Acidrain {
         shared_ptr<GameObjectFactory> gameObjectFactory;
 
         shared_ptr<Starfield> starfield;
+
+        shared_ptr<Song> song;
 
         void drawPlayerLife();
     };

@@ -22,6 +22,8 @@ function onDeath(objectPointer, reason)
         local explosion = Scene.create("enemy.bullet.hit")
         explosion:setPosition(killedEntity:getPosition())
         Scene.add(explosion)
+
+        playSound("sounds/bullet_hit.ogg", -1)
     end
 end
 
