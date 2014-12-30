@@ -110,7 +110,11 @@ namespace Acidrain {
             if (!strcmp(argv[i], "--help") || !strcmp(argv[i], "-h"))
                 usage();
 
-            currentOption = optionByArgument(argv[i]);
+            string argument = string(argv[i]);
+            vector<string> argumentParts = split(argument, '=');
+
+
+            currentOption = optionByArgument(argumentParts.at(0).c_str());
             if (currentOption == nullptr) {
                 // see if we have positional attributes
             } else {
@@ -119,23 +123,35 @@ namespace Acidrain {
                 int* intValueHolder = (int*) currentOption->valueHolder;
                 switch (currentOption->type) {
                     case BOOLEAN:
-                        currentOption->value.boolValue = true;
+                        if (argumentParts.size() > 1) {
+                            currentOption->value.boolValue = argumentParts.at(1) == "true" || argumentParts.at(1) == "1";
+                        } else {
+                            currentOption->value.boolValue = true;
+                        }
                         currentOption->isSpecified = true;
                         *boolValueHolder = currentOption->value.boolValue;
                         break;
                     case STRING:
-                        if ((i + 1) >= argc)
-                            throw new runtime_error("Missing value for argument " + currentOption->longOption);
+                        if (argumentParts.size() > 1) {
+                            currentOption->value.stringValue = argumentParts.at(1);
+                        } else {
+                            if ((i + 1) >= argc)
+                                throw new runtime_error("Missing value for argument " + currentOption->longOption);
 
-                        currentOption->value.stringValue = argv[++i];
+                            currentOption->value.stringValue = argv[++i];
+                        }
                         currentOption->isSpecified = true;
                         *stringValueHolder = currentOption->value.stringValue;
                         break;
                     case INTEGER:
-                        if ((i + 1) >= argc)
-                            throw new runtime_error("Missing value for argument " + currentOption->longOption);
+                        if (argumentParts.size() > 1) {
+                            currentOption->value.intValue = atoi(argumentParts.at(1).c_str());
+                        } else {
+                            if ((i + 1) >= argc)
+                                throw new runtime_error("Missing value for argument " + currentOption->longOption);
 
-                        currentOption->value.intValue = atoi(argv[++i]);
+                            currentOption->value.intValue = atoi(argv[++i]);
+                        }
                         currentOption->isSpecified = true;
                         *intValueHolder = currentOption->value.intValue;
                         break;

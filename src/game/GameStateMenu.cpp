@@ -115,11 +115,11 @@ namespace Acidrain {
                 float t = menuTime / MENU_INTRO_TIME;
                 for (int i = 0; i < MENU_OPTION_COUNT; i++) {
                     menuOptionPosXOld[i] = menuOptionPosX[i];
-                    menuOptionPosX[i] = (1.0f - easeOutCubic(t)) * 1000.0f + 10;
+                    menuOptionPosX[i] = (1.0f - easeOutCubic(t)) * 1000.0f + 100;
                 }
             } else {
                 for (int i = 0; i < MENU_OPTION_COUNT; i++) {
-                    menuOptionPosXOld[i] = menuOptionPosX[i] = 10;
+                    menuOptionPosXOld[i] = menuOptionPosX[i] = 100;
                 }
             }
         }
