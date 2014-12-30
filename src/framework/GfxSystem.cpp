@@ -12,7 +12,7 @@
 
 DEFINE_int(width, w, "The physical window width", -1)
 DEFINE_int(height, h, "The physical window height", -1)
-DEFINE_bool(fullscreen, f, "Whether the window is fullscreen or not", false)
+DEFINE_bool(fullscreen, f, "Whether the window is fullscreen or not", true)
 DEFINE_bool(vsync, v, "Whether vsync is enabled or not", false)
 
 namespace Acidrain {

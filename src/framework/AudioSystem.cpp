@@ -29,6 +29,12 @@ namespace Acidrain {
         lastError = Mix_GetError();
         if (result == -1)
             LOG(ERROR) << "Failed to open SDL mixer audio. Error: " << lastError;
+
+        Mix_AllocateChannels(32);
+
+        int allocatedChannels = Mix_AllocateChannels(-1);
+        LOG(INFO) << "Allocated channels: " << allocatedChannels;
+
     }
 
     shared_ptr<Song> AudioSystem::loadSong(const char* filename) {
@@ -75,5 +81,9 @@ namespace Acidrain {
             sounds[filename] = make_shared<Sound>(handle);
         }
         return sounds.at(filename);
+    }
+
+    void Song::stop() {
+        Mix_FadeOutMusic(100);
     }
 }

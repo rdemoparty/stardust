@@ -45,7 +45,6 @@ namespace Acidrain {
 
         // load background song
         song = AUDIOSYS.loadSong("main.ogg");
-        song->play(-1);
     }
 
     Level::~Level() {
@@ -70,6 +69,8 @@ namespace Acidrain {
         auto platformBottom = gameObjectFactory->createByName("platform_bottom");
         platformBottom->currentState.position = platformPosition;
         scene->add(platformBottom, -1);
+
+        song->play(-1);
     }
 
     void Level::update(float elapsedSeconds) {

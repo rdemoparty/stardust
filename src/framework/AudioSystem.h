@@ -34,6 +34,8 @@ namespace Acidrain {
 
         void play(int loops = -1);
 
+        void stop();
+
     private:
         Mix_Music* handle;
     };

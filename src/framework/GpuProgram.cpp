@@ -48,7 +48,10 @@ namespace Acidrain {
         glAttachShader(programId, shaderIds[1]);
         glLinkProgram(programId);
 
-        glUseProgram(programId);
+//        glUseProgram(programId);
+        // Be nice to others and do not let this
+        // gpu program be set as default unless we really mean it
+        glUseProgram(0);
     }
 
     GpuProgram::~GpuProgram() {

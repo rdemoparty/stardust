@@ -65,7 +65,7 @@ function onDeath(objectPointer, reason)
     if reason == DeathReason.Killed then
 
         playSound("sounds/fire_explosion.ogg", -1)
-        
+
         local explosion = Scene.create("enemy.death.explosion")
         explosion:setPosition(killedEntity:getPosition())
         Scene.add(explosion)

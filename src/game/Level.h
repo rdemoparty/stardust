@@ -39,7 +39,7 @@ namespace Acidrain {
 
         int objectsCount() const;
 
-    private:
+//    private:
         shared_ptr<GpuProgramConstantBundle> gpuProgramConstantBundle;
 
         shared_ptr<GpuProgram> gpuProgram;

@@ -4,6 +4,7 @@
 #include <memory>
 #include <map>
 #include <string>
+#include <GameState.h>
 
 namespace Acidrain {
 
@@ -27,17 +28,17 @@ namespace Acidrain {
 
         bool shouldQuit();
 
-    private:
+        shared_ptr<GameStateMachine<Stardust>> fsm;
         shared_ptr<Level> level;
-
+        bool quitGame = false;
         shared_ptr<FpsCounter> fpsCounter;
 
-        shared_ptr<Font> font;
-        shared_ptr<Font> fontSmall;
-
-        bool quitGame = false;
-
         void drawStats();
+
+    private:
+
+        shared_ptr<Font> titleFont;
+        shared_ptr<Font> fontSmall;
 
         virtual void onEvent(SDL_Event const& param);
     };

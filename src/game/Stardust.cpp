@@ -7,6 +7,7 @@
 #include <Font.h>
 #include <InputProvider.h>
 #include <Level.h>
+#include <GameStateIntro.h>
 
 namespace Acidrain {
 
@@ -14,20 +15,20 @@ namespace Acidrain {
     using namespace glm;
 
     Stardust::Stardust() {
+        fsm = make_shared<GameStateMachine<Stardust>>(this);
+        fsm->changeState(&GameStateIntro::instance());
+
         ANIMREPO.initialize("animations.json");
 
         // TODO Adrian: figure out a better name for the event system. It is too generic. Events of?
         EVENTSYS.addListener(this, SDL_QUIT);
 
-        font = make_shared<Font>("fonts/Impact.ttf", 70.0f);
+        titleFont = make_shared<Font>("fonts/Neo Sans Pro Bold.ttf", 90.0f);
         fontSmall = make_shared<Font>("fonts/Impact.ttf", 20.0f);
 
         fpsCounter = make_shared<FpsCounter>();
 
         level = make_shared<Level>();
-        level->start();
-
-        GFXSYS.setClearColor(vec3(0.1f, 0.0f, 0.1f));
     }
 
     Stardust::~Stardust() {
@@ -45,24 +46,12 @@ namespace Acidrain {
 
     void Stardust::update(float elapsedSeconds) {
         EVENTSYS.update();
-
-        if (INPUT.isKeyDown(SDL_SCANCODE_ESCAPE))
-            quitGame = true;
-
-        level->update(elapsedSeconds);
-        fpsCounter->update(elapsedSeconds);
-
+        fsm->update(elapsedSeconds);
         INPUT.copyNewStateToOldState();
     }
 
     void Stardust::render(float alpha) {
-        GFXSYS.clearScreen();
-        level->render(alpha);
-
-        drawStats();
-
-        fpsCounter->addFrame();
-        GFXSYS.show();
+        fsm->render(alpha);
     }
 
     void Stardust::drawStats() {
