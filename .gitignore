@@ -28,7 +28,8 @@
 *.app
 .idea
 build
-bin/*
+bin/stardust
+bin/stardust.exe
 *.trace
 *.mp4
 
