@@ -23,7 +23,7 @@ function onDeath(objectPointer, reason)
         explosion:setPosition(killedEntity:getPosition())
         Scene.add(explosion)
 
-        playSound("sounds/bullet_hit.ogg", -1)
+        playSound("sounds/bullet_hit.ogg", "EXPLOSIONS")
     end
 end
 

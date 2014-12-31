@@ -52,6 +52,7 @@ int main(int argc, char** argv) {
 
             game.render((float) (accumulator / dt));
         }
+        LOG(INFO) << "Application finished. Exiting main()";
     } catch (std::exception* e) {
         LOG(FATAL) << e->what();
     }

@@ -42,9 +42,6 @@ namespace Acidrain {
         gpuProgram->addConstants(gpuProgramConstantBundle.get());
 
         levelScript = make_shared<LevelScript>(scene.get());
-
-        // load background song
-        song = AUDIOSYS.loadSong("main.ogg");
     }
 
     Level::~Level() {
@@ -70,7 +67,7 @@ namespace Acidrain {
         platformBottom->currentState.position = platformPosition;
         scene->add(platformBottom, -1);
 
-        song->play(-1);
+        AUDIOSYS.playMusic("main.ogg");
     }
 
     void Level::update(float elapsedSeconds) {

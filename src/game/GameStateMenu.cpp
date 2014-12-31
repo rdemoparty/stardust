@@ -40,22 +40,13 @@ namespace Acidrain {
 
     static vec4 SELECTED_OPTION_COLOR = vec4(1, 0, 0, 0.8f);
 
-    shared_ptr<Sound> menuOptionChangeSound;
-    shared_ptr<Sound> menuOptionRejectedSound;
-    shared_ptr<Sound> menuOptionAcceptedSound;
+    const char* SOUND_OPTION_REJECTED = "sounds/menu/option-rejected.ogg";
+    const char* SOUND_OPTION_ACCEPTED = "sounds/menu/option-accepted.ogg";
+    const char* SOUND_OPTION_CHANGE = "sounds/menu/option-changed.ogg";
 
     void GameStateMenu::onEnter(Stardust* game) {
         if (!menuFont)
             menuFont = make_shared<Font>("fonts/Neo Sans Pro Bold.ttf", 40.0f);
-
-        if (!menuOptionChangeSound)
-            menuOptionChangeSound = AUDIOSYS.loadSound("sounds/menu/option-changed.ogg");
-
-        if (!menuOptionRejectedSound)
-            menuOptionRejectedSound = AUDIOSYS.loadSound("sounds/menu/option-rejected.ogg");
-
-        if (!menuOptionAcceptedSound)
-            menuOptionAcceptedSound = AUDIOSYS.loadSound("sounds/menu/option-accepted.ogg");
 
         GFXSYS.setClearColor(vec3(0, 0, 0));
 
@@ -63,9 +54,13 @@ namespace Acidrain {
             menuOptionPosX[i] = menuOptionPosXOld[i] = 1100.0f;
         }
         menuTime = 0;
+
+        AUDIOSYS.playMusic("menu3.ogg");
+//        menuMusic->play(9999, 2000);
     }
 
     void GameStateMenu::onExit(Stardust* game) {
+        AUDIOSYS.stopSounds({"UI"});
     }
 
     static const float SECONDS_UNTIL_FIRST_REPEAT = 0.3f;
@@ -102,7 +97,7 @@ namespace Acidrain {
             selectedIndex = selectedIndex % MENU_OPTION_COUNT;
             if (selectedIndex < 0)
                 selectedIndex += MENU_OPTION_COUNT;
-            menuOptionChangeSound->play(-1, 0);
+            AUDIOSYS.playSound(SOUND_OPTION_CHANGE, AudioGroup::byName("UI"));
         }
 
         if (INPUT.isKeyJustPressed(SDL_SCANCODE_RETURN)) {
@@ -143,18 +138,15 @@ namespace Acidrain {
     void GameStateMenu::handleMenuSelection(Stardust* game, int selectedIndex) {
         switch (selectedIndex) {
             case 0:
-                menuOptionAcceptedSound->play(-1, 0);
+                AUDIOSYS.playSound(SOUND_OPTION_ACCEPTED, AudioGroup::byName("UI"));
                 game->fsm->changeState(&GameStatePlayLevel::instance());
                 break;
             case 6:
-                menuOptionAcceptedSound->play(31, 0);
-                while (Mix_Playing(31)) {
-                    // do nothing
-                }
+                AUDIOSYS.playSound(SOUND_OPTION_ACCEPTED, AudioGroup::byName("UI"));
                 game->quitGame = true;
                 break;
             default:
-                menuOptionRejectedSound->play(-1, 0);
+                AUDIOSYS.playSound(SOUND_OPTION_REJECTED, AudioGroup::byName("UI"));
                 break;
         }
     }

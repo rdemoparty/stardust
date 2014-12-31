@@ -11,6 +11,8 @@ namespace Acidrain {
 
         static FileSystem& getInstance();
 
+        ~FileSystem();
+
         void init(std::string rootDir);
 
         std::string absolutePath(const char* relativePath);

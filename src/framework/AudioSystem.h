@@ -1,8 +1,9 @@
 #pragma once
 
-#include <SDL_mixer.h>
 #include <memory>
 #include <map>
+#include <vector>
+#include <SDL_mixer.h>
 
 #define AUDIOSYS Acidrain::AudioSystem::getInstance()
 
@@ -10,35 +11,34 @@ namespace Acidrain {
 
     using namespace std;
 
-    class Sound {
+    class AudioGroup {
     public:
+        AudioGroup(string name, int channels);
 
-        Sound(Mix_Chunk* h) : handle(h) {
-        }
+        int getId() const;
 
-        ~Sound();
+        const string& getName() const;
 
-        void play(int channel, int loops = 0);
+        int getChannels() const;
+
+        // static helpers
+
+        static const AudioGroup* byName(string name);
+
+        static int numberOfGroups();
+
+        static const AudioGroup* at(int index);
+
+        static int channelsNeeded();
 
     private:
-        Mix_Chunk* handle;
+        int id;
+        string name;
+        int channels;
+        static map<string, AudioGroup*> groups;
+        static int NEXT_ID;
     };
 
-    class Song {
-    public:
-
-        Song(Mix_Music* h) : handle(h) {
-        }
-
-        ~Song();
-
-        void play(int loops = -1);
-
-        void stop();
-
-    private:
-        Mix_Music* handle;
-    };
 
     class AudioSystem {
     public:
@@ -49,13 +49,33 @@ namespace Acidrain {
 
         void init(int sampleRate = 22050, int bufferSize = 1024);
 
-        shared_ptr<Song> loadSong(const char* filename);
+        void playMusic(const char* URI);
 
-        shared_ptr<Sound> loadSound(const char* filename);
+        void playSound(const char* URI, const AudioGroup* group);
+
+        void playSound(const char* URI, const char* groupName);
+
+        void stopSounds(vector<string> groups);
+
+        void stopMusic();
+
+        /**
+        * value between 0 and 128
+        */
+        void setMusicVolume(int value);
+
+        void musicFinishCallback();
 
     private:
-        map<const char*, shared_ptr<Song>> songs;
-        map<const char*, shared_ptr<Sound>> sounds;
+        Mix_Music* loadSong(const char* URI);
+
+        Mix_Chunk* loadSound(const char* URI);
+
+        Mix_Music* currentMusic;
+        Mix_Music* nextMusic;
+
+        map<const char*, Mix_Chunk*> sounds;
+        map<const char*, Mix_Music*> songs;
     };
 
 } // namespace Acidrain

@@ -20,7 +20,7 @@ namespace Acidrain {
     }
 
     void GameStatePlayLevel::onExit(Stardust* game) {
-        game->level->song->stop();
+        AUDIOSYS.stopSounds({"PLAYER", "EXPLOSIONS"});
     }
 
     void GameStatePlayLevel::update(Stardust* game, float elapsedSeconds) {

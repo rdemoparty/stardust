@@ -9,6 +9,7 @@ function onSpawn(objectPointer)
     local x, y = o:getPosition()
     o:setFloat("y", y)
     o:setScale(0.65)
+
 end
 
 function onUpdate(objectPointer, elapsedSeconds)
@@ -34,6 +35,12 @@ end
 function onDamage(objectPointer, amount, inflicterPointer)
     local o = Entity.from(objectPointer)
     local player = Entity.from(inflicterPointer)
+
+    if math.random(10) > 5 then
+        playSong("menu3.ogg")
+    else
+        playSong("main.ogg")
+    end
 
     local playerLife = player:getLife() + 10
     if playerLife > player:getMaxLife() then

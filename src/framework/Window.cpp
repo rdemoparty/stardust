@@ -1,7 +1,6 @@
 #ifdef __APPLE__
     #define NO_SDL_GLEXT
 #endif
-
 #include <Window.h>
 #include <GLheaders.h>
 #include <easylogging++.h>
@@ -57,10 +56,10 @@ namespace Acidrain {
     }
 
     Window::~Window() {
+        LOG(INFO) << "Destroying window and restoring video mode";
         // restore our video mode
         SDL_GL_DeleteContext(glContext);
         SDL_DestroyWindow(displayWindow);
-        SDL_Quit();
     }
 
     void Window::present() {

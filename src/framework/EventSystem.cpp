@@ -15,8 +15,10 @@ namespace Acidrain {
     }
 
     EventSystem::~EventSystem() {
-        for (auto it : listeners)
-            delete it.second;
+        LOG(INFO) << "Shutting down event system and quitting SDL";
+        SDL_Quit();
+//        for (auto it : listeners)
+//            delete it.second;
     }
 
     void EventSystem::init() {

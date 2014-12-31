@@ -1,5 +1,5 @@
-#include "InputProvider.h"
-#include <iostream>
+#include <easylogging++.h>
+#include <InputProvider.h>
 
 namespace Acidrain {
 
@@ -9,6 +9,7 @@ namespace Acidrain {
     }
 
     InputProvider::InputProvider() {
+        LOG(INFO) << "Initializing input provider";
         if (SDL_WasInit(SDL_INIT_JOYSTICK) == 0)
             SDL_InitSubSystem(SDL_INIT_JOYSTICK);
 
@@ -28,6 +29,7 @@ namespace Acidrain {
     }
 
     InputProvider::~InputProvider() {
+        LOG(INFO) << "Shutting down input provider";
         for (auto joystick : joysticks)
             SDL_JoystickClose(joystick);
     }
@@ -93,7 +95,6 @@ namespace Acidrain {
             case SDL_JOYAXISMOTION:
                 if (event.jaxis.which == 0) {
                     if (event.jaxis.axis == 0) {
-                        std::cout << "event.jaxis.value: " << event.jaxis.value << std::endl;
                         if (event.jaxis.value > 20000)
                             joystickState.x_axis = 1;
                         else if (event.jaxis.value < (-20000))

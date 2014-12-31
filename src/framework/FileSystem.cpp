@@ -79,7 +79,7 @@ namespace Acidrain {
 	}
 
 	std::string FileSystem::getExeDir(std::string fullPath) {
-        int n = fullPath.rfind('\\');
+        size_t n = fullPath.rfind('\\');
         if (n == fullPath.npos) return "";
 
         fullPath.erase(n, fullPath.length() - n + 1);
@@ -141,4 +141,7 @@ namespace Acidrain {
     }
 
 
+    FileSystem::~FileSystem() {
+        LOG(INFO) << "Shutting down file system";
+    }
 } // namespace Acidrain

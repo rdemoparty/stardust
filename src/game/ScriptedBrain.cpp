@@ -227,9 +227,15 @@ namespace Acidrain {
     }
 
     static int playSound(lua_State* L) {
-        const char* const soundPath = lua_tostring(L, 1);
-        int channel = (int) lua_tointeger(L, 2);
-        AUDIOSYS.loadSound(soundPath)->play(channel, 0);
+        const char* const URI = lua_tostring(L, 1);
+        const char* const AUDIO_GROUP = lua_tostring(L, 2);
+        AUDIOSYS.playSound(URI, AUDIO_GROUP);
+        return 0; // arguments pushed on stack
+    }
+
+    static int playSong(lua_State* L) {
+        const char* const uri = lua_tostring(L, 1);
+        AUDIOSYS.playMusic(uri);
         return 0; // arguments pushed on stack
     }
 
@@ -296,6 +302,7 @@ namespace Acidrain {
         lua_register(L, "shakeCamera", shakeCamera);
         lua_register(L, "setBrain", setBrain);
         lua_register(L, "playSound", playSound);
+        lua_register(L, "playSong", playSong);
     }
 
     void ScriptedBrain::injectScene(Scene* scene) {

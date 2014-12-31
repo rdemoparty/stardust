@@ -23,6 +23,7 @@ namespace Acidrain {
     }
 
     void GfxSystem::init(const int desiredWidth, const int desiredHeight) {
+        LOG(INFO) << "Initializing graphics system";
         SDL_DisplayMode displayMode = establishDisplayMode();
 
         window = make_shared<Window>(
@@ -241,5 +242,9 @@ namespace Acidrain {
         }
         glEnd();
 
+    }
+
+    GfxSystem::~GfxSystem() {
+        LOG(INFO) << "Shutting down graphics system";
     }
 } // namespace Acidrain

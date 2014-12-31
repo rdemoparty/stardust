@@ -1,9 +1,54 @@
 #include <AudioSystem.h>
-#include <SDL_mixer.h>
 #include <easylogging++.h>
 #include <FileSystem.h>
 
 namespace Acidrain {
+
+    int AudioGroup::NEXT_ID = 0;
+    map<string, AudioGroup*> AudioGroup::groups;
+
+    AudioGroup::AudioGroup(string name, int channels) {
+        this->id = NEXT_ID++;
+        this->channels = channels;
+        this->name = name;
+        groups[name] = this;
+    }
+
+    int AudioGroup::getId() const {
+        return id;
+    }
+
+    const string& AudioGroup::getName() const {
+        return name;
+    }
+
+    int AudioGroup::getChannels() const {
+        return channels;
+    }
+
+    const AudioGroup* AudioGroup::byName(string name) {
+        return groups[name];
+    }
+
+    int AudioGroup::numberOfGroups() {
+        return (int) groups.size();
+    }
+
+    const AudioGroup* AudioGroup::at(int index) {
+        int i = 0;
+        for (auto& kv : groups)
+            if (i++ == index)
+                return kv.second;
+
+        return nullptr;
+    }
+
+    int AudioGroup::channelsNeeded() {
+        int result = 0;
+        for (auto& kv : groups)
+            result += kv.second->getChannels();
+        return result;
+    }
 
     AudioSystem& AudioSystem::getInstance() {
         static AudioSystem instance;
@@ -11,8 +56,17 @@ namespace Acidrain {
     }
 
     AudioSystem::~AudioSystem() {
+        LOG(INFO) << "Shutting down audio system";
+        Mix_HookMusicFinished(nullptr);
         Mix_CloseAudio();
-        Mix_Quit();
+        while (Mix_Init(0))
+            Mix_Quit();
+        LOG(INFO) << "Audio system shut down";
+    }
+
+    static void musicFinishedCallback() {
+        LOG(TRACE) << "Static callback for music finish triggered";
+        AUDIOSYS.musicFinishCallback();
     }
 
     void AudioSystem::init(int sampleRate, int bufferSize) {
@@ -30,60 +84,119 @@ namespace Acidrain {
         if (result == -1)
             LOG(ERROR) << "Failed to open SDL mixer audio. Error: " << lastError;
 
-        Mix_AllocateChannels(32);
+        new AudioGroup("UI", 2);
+        new AudioGroup("EXPLOSIONS", 4);
+        new AudioGroup("PLAYER", 6);
 
+        Mix_AllocateChannels(AudioGroup::channelsNeeded());
         int allocatedChannels = Mix_AllocateChannels(-1);
         LOG(INFO) << "Allocated channels: " << allocatedChannels;
 
-    }
+        // create channel groups
+        int channelStart = 0;
+        for (int i = 0; i < AudioGroup::numberOfGroups(); i++) {
+            const AudioGroup* group = AudioGroup::at(i);
+            if (group == nullptr)
+                LOG(FATAL) << "Audio group for index " << i << " is null";
 
-    shared_ptr<Song> AudioSystem::loadSong(const char* filename) {
-        if (songs.find(filename) == songs.end()) {
-            LOG(INFO) << "Loading song \"" << filename << "\"";
+            int lastChannel = channelStart + group->getChannels() - 1;
+            int taggedChannels = Mix_GroupChannels(channelStart, lastChannel, group->getId());
+            LOG(INFO) << "Added " << taggedChannels << " channels to group " << group->getName();
 
-            Mix_Music* handle = Mix_LoadMUS(FILESYS.absolutePath(filename).c_str());
-            if (handle == nullptr)
-                LOG(FATAL) << "Failed to load music file " << filename << ". Reason: " << Mix_GetError();
-
-            songs[filename] = make_shared<Song>(handle);
+            channelStart = lastChannel + 1;
         }
-        return songs.at(filename);
+
+        Mix_HookMusicFinished(musicFinishedCallback);
     }
 
-    void Song::play(int loops) {
-        if (Mix_PlayMusic(handle, loops) == -1)
-            LOG(ERROR) << "Failed to play song. Error: " << Mix_GetError();
-    }
+    Mix_Music* AudioSystem::loadSong(const char* URI) {
+        if (songs.find(URI) == songs.end()) {
+            LOG(INFO) << "Loading song \"" << URI << "\"";
 
-    Song::~Song() {
-        if (handle != nullptr)
-            Mix_FreeMusic(handle);
-    }
-
-    Sound::~Sound() {
-        if (handle != nullptr)
-            Mix_FreeChunk(handle);
-    }
-
-    void Sound::play(int channel, int loops) {
-        if (Mix_PlayChannel(channel, handle, loops) < 0)
-            LOG(ERROR) << "Failed to play sound. Error: " << Mix_GetError();
-    }
-
-    shared_ptr<Sound> AudioSystem::loadSound(const char* filename) {
-        if (sounds.find(filename) == sounds.end()) {
-            LOG(INFO) << "Loading sound \"" << filename << "\"";
-
-            Mix_Chunk* handle = Mix_LoadWAV(FILESYS.absolutePath(filename).c_str());
+            Mix_Music* handle = Mix_LoadMUS(FILESYS.absolutePath(URI).c_str());
             if (handle == nullptr)
-                LOG(FATAL) << "Failed to load sound file " << filename << ". Reason: " << Mix_GetError();
+                LOG(FATAL) << "Failed to load music file " << URI << ". Reason: " << Mix_GetError();
 
-            sounds[filename] = make_shared<Sound>(handle);
+            songs[URI] = handle;
         }
-        return sounds.at(filename);
+        return songs.at(URI);
     }
 
-    void Song::stop() {
-        Mix_FadeOutMusic(100);
+    Mix_Chunk* AudioSystem::loadSound(const char* URI) {
+        if (sounds.find(URI) == sounds.end()) {
+            LOG(INFO) << "Loading sound \"" << URI << "\"";
+
+            Mix_Chunk* handle = Mix_LoadWAV(FILESYS.absolutePath(URI).c_str());
+            if (handle == nullptr)
+                LOG(FATAL) << "Failed to load sound file " << URI << ". Reason: " << Mix_GetError();
+
+            sounds[URI] = handle;
+        }
+        return sounds.at(URI);
+    }
+
+    void AudioSystem::playMusic(const char* uri) {
+        Mix_Music* song = loadSong(uri);
+        if (currentMusic && Mix_PlayingMusic()) {
+            // Don't restart if we are already playing the same song
+            if (currentMusic == song)
+                return;
+
+            nextMusic = song;
+            Mix_FadeOutMusic(500);
+        } else {
+            currentMusic = song;
+            Mix_FadeInMusic(currentMusic, 9999, 500);
+        }
+    }
+
+    void AudioSystem::stopMusic() {
+        nextMusic = nullptr;
+        if (currentMusic && Mix_PlayingMusic()) {
+            Mix_FadeOutMusic(500);
+        }
+    }
+
+    void AudioSystem::musicFinishCallback() {
+        if (nextMusic) {
+            currentMusic = nextMusic;
+            nextMusic = nullptr;
+            Mix_FadeInMusic(currentMusic, 9999, 500);
+        }
+    }
+
+    void AudioSystem::playSound(const char* URI, const AudioGroup* group) {
+        if (group == nullptr) {
+            LOG(ERROR) << "Wanting to play sound on null group";
+            return;
+        }
+
+        Mix_Chunk* sound = loadSound(URI);
+        int channelToPlayOn = Mix_GroupAvailable(group->getId());
+        LOG(TRACE) << "Mix_GroupAvailable for group id " << group->getId() << " returned " << channelToPlayOn;
+        if (channelToPlayOn == -1) {
+            channelToPlayOn = Mix_GroupOldest(group->getId());
+            LOG(TRACE) << "Found oldest channel for group with id " << group->getId() << " as channel " << channelToPlayOn;
+        }
+
+        if (channelToPlayOn == -1) {
+            LOG(ERROR) << "Failed to play sound " << URI << " on group " << group->getName() << ". No channel available.";
+            return;
+        }
+
+        if (Mix_PlayChannel(channelToPlayOn, sound, 0) < 0)
+            LOG(ERROR) << "Failed to play sound " << URI << " on group " << group->getName() << ". Error: " << Mix_GetError();
+    }
+
+    void AudioSystem::playSound(const char* URI, const char* groupName) {
+        playSound(URI, AudioGroup::byName(groupName));
+    }
+
+    void AudioSystem::stopSounds(vector<string> groups) {
+        for (auto& groupName : groups) {
+            const AudioGroup* group = AudioGroup::byName(groupName);
+            if (group != nullptr)
+                Mix_FadeOutGroup(group->getId(), 100);
+        }
     }
 }

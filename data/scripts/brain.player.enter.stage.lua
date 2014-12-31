@@ -4,6 +4,7 @@
 
 function onSpawn(objectPointer)
     local o = Entity.from(objectPointer)
+    playSound("sounds/rain/enemy_ships_detected_ahead.ogg", "PLAYER")
 end
 
 function onUpdate(objectPointer, elapsedSeconds)

@@ -29,6 +29,8 @@ namespace Acidrain {
 
         static GfxSystem& getInstance();
 
+        ~GfxSystem();
+
         void init(const int desiredWidth, const int desiredHeight);
 
         shared_ptr<Texture> loadTexture(const char* filename);

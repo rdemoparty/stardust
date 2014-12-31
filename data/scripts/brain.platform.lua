@@ -9,7 +9,6 @@ function onSpawn(objectPointer)
     o:setFloat("maxSpeed", 400)    
     o:setFloat("elapsedSeconds", 0)
     o:setFloat("secondsBeforeRetract", 0.01)
-    playSound("sounds/rain/enemy_ships_detected_ahead.ogg", -1)
 end
 
 function onUpdate(objectPointer, elapsedSeconds)

@@ -20,8 +20,6 @@ namespace Acidrain {
 
     class LevelScript;
 
-    class Song;
-
     class Level {
     public:
 
@@ -53,8 +51,6 @@ namespace Acidrain {
         shared_ptr<GameObjectFactory> gameObjectFactory;
 
         shared_ptr<Starfield> starfield;
-
-        shared_ptr<Song> song;
 
         void drawPlayerLife();
     };
