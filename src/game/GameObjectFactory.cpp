@@ -63,7 +63,10 @@ namespace Acidrain {
     }
 
     Weapon* GameObjectFactory::cookWeapon(WeaponRecipe recipe) {
-        return new Weapon(recipe.bulletName, recipe.shotsPerSecond, recipe.mountingPoint);
+        Weapon* result = new Weapon(recipe.shotsPerSecond, recipe.soundWhenFired);
+        for (auto& emitterRecipe : recipe.emitters)
+            result->addEmitter({emitterRecipe.bulletName, emitterRecipe.mountingPoint});
+        return result;
     }
 
     Circle GameObjectFactory::cookHullPart(CollisionHullRecipe recipe) {
@@ -116,18 +119,37 @@ namespace Acidrain {
         }
     }
 
-    WeaponRecipe readWeapon(const Json& element) {
-        WeaponRecipe result;
+    WeaponEmitterRecipe readWeaponEmitter(const Json& element) {
+        WeaponEmitterRecipe result;
         for (auto& e : element.object_items()) {
             const string& param = e.first;
             if (icompare(param, "bulletName"))
                 result.bulletName = e.second.string_value();
-            else if (icompare(param, "x"))
+            else if (icompare(param, "x")) {
                 result.mountingPoint.x = (float) e.second.number_value();
-            else if (icompare(param, "y"))
+            } else if (icompare(param, "y")) {
                 result.mountingPoint.y = (float) e.second.number_value();
-            else if (icompare(param, "shotsPerSecond"))
+            } else {
+                LOG(WARNING) << "Unknown weapon recipe attribute " << param;
+            }
+        }
+        return result;
+    }
+
+
+    WeaponRecipe readWeapon(const Json& element) {
+        WeaponRecipe result;
+        for (auto& e : element.object_items()) {
+            const string& param = e.first;
+            if (icompare(param, "shotsPerSecond"))
                 result.shotsPerSecond = e.second.int_value();
+            else if (icompare(param, "soundWhenFired")) {
+                result.soundWhenFired = e.second.string_value();
+            }
+            else if (icompare(param, "emitters")) {
+                for (auto& k : e.second.array_items())
+                    result.emitters.push_back(readWeaponEmitter(k));
+            }
             else {
                 LOG(WARNING) << "Unknown weapon recipe attribute " << param;
             }

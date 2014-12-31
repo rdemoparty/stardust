@@ -17,10 +17,15 @@ namespace Acidrain {
         vec2 center;
     };
 
-    struct WeaponRecipe {
+    struct WeaponEmitterRecipe {
         string bulletName;
         vec2 mountingPoint;
+    };
+
+    struct WeaponRecipe {
         int shotsPerSecond;
+        string soundWhenFired;
+        vector<WeaponEmitterRecipe> emitters;
     };
 
     struct GameObjectRecipe {

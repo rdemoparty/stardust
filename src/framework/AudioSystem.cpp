@@ -87,6 +87,7 @@ namespace Acidrain {
         new AudioGroup("UI", 2);
         new AudioGroup("EXPLOSIONS", 4);
         new AudioGroup("PLAYER", 6);
+        new AudioGroup("PLAYER_WEAPONS", 1);
 
         Mix_AllocateChannels(AudioGroup::channelsNeeded());
         int allocatedChannels = Mix_AllocateChannels(-1);

@@ -3,6 +3,7 @@
 #include <SpriteAnimationRepository.h>
 #include <Weapon.h>
 #include <Scene.h>
+#include <AudioSystem.h>
 
 namespace Acidrain {
 
@@ -54,9 +55,16 @@ namespace Acidrain {
 
         for (auto weapon : weapons) {
             if (weapon->update(elapsedSeconds)) {
-                auto bullet = scene->createByName(weapon->getBulletType());
-                bullet->currentState.position = position + weapon->getMountingPoint();
-                scene->add(bullet);
+
+                const vector<WeaponEmitter>& bulletEmitters = weapon->getEmitters();
+                for (auto& emitter : bulletEmitters) {
+                    auto bullet = scene->createByName(emitter.bulletType);
+                    bullet->currentState.position = position + emitter.mountingPoint;
+                    scene->add(bullet);
+                }
+
+                if (!weapon->getFireSound().empty())
+                    AUDIOSYS.playSound(weapon->getFireSound().c_str(), "PLAYER_WEAPONS");
             }
         }
     }

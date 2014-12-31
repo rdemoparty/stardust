@@ -96,16 +96,20 @@
 			],
 			"weapons": [
 				{
-					"bulletName": "player.bullet",
-					"x": -10,
-					"y": -32,
-					"shotsPerSecond": 10
-				},
-				{
-					"bulletName": "player.bullet",
-					"x": 12,
-					"y": -32,
-					"shotsPerSecond": 10
+					"shotsPerSecond": 10,
+					"soundWhenFired": "sounds/gun2.ogg",
+					"emitters": [
+						{
+							"bulletName": "player.bullet",
+							"x": -10,
+							"y": -32
+						},
+						{
+							"bulletName": "player.bullet",
+							"x": 12,
+							"y": -32
+						}
+					]
 				}
 			]
 		},
@@ -291,10 +295,14 @@
 			],
 			"weapons": [
 				{
-					"bulletName": "enemy.bullet",
-					"x": 0,
-					"y": 32,
-					"shotsPerSecond": 2
+					"shotsPerSecond": 2,
+					"emitters": [
+						{
+							"bulletName": "enemy.bullet",
+							"x": 0,
+							"y": 32
+						}
+					]
 				}
 			]
 		}
