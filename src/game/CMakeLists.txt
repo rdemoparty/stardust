@@ -6,6 +6,7 @@ set(HEADERS
    ${CMAKE_CURRENT_SOURCE_DIR}/GameObject.h
    ${CMAKE_CURRENT_SOURCE_DIR}/GameObjectFactory.h
    ${CMAKE_CURRENT_SOURCE_DIR}/GameState.h
+   ${CMAKE_CURRENT_SOURCE_DIR}/GameStateEditor.h
    ${CMAKE_CURRENT_SOURCE_DIR}/GameStateIntro.h
    ${CMAKE_CURRENT_SOURCE_DIR}/GameStateMenu.h
    ${CMAKE_CURRENT_SOURCE_DIR}/GameStatePlayLevel.h
@@ -27,6 +28,7 @@ set(SOURCE
    ${CMAKE_CURRENT_SOURCE_DIR}/GameObject.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/GameObjectFactory.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/GameStateIntro.cpp
+   ${CMAKE_CURRENT_SOURCE_DIR}/GameStateEditor.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/GameStateMenu.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/GameStatePlayLevel.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/Level.cpp

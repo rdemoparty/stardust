@@ -1,6 +1,7 @@
 #include <FileSystem.h>
 #include <fstream>
 #include <easylogging++.h>
+#include <algorithm>
 
 #ifdef _WIN32
 	#include <windows.h> // getmodulefilename
@@ -21,10 +22,14 @@
 
 #include <sys/types.h>
 #include <unistd.h>
+#include <dirent.h>
 
 #endif
 
+
 namespace Acidrain {
+
+    DEFINE_string(data_dir, d, "Data dir relative to cwd", "../data")
 
     FileSystem& FileSystem::getInstance() {
         static FileSystem instance;
@@ -143,5 +148,47 @@ namespace Acidrain {
 
     FileSystem::~FileSystem() {
         LOG(INFO) << "Shutting down file system";
+    }
+
+    vector<FileInfo> FileSystem::filesInDirectory(string directoryURI) {
+        vector<FileInfo> result;
+
+        DIR* dir = opendir(absolutePath(directoryURI).c_str());
+        if (dir != nullptr) {
+            struct dirent* entry;
+            while ((entry = readdir(dir)) != nullptr) {
+                FileInfo info;
+                info.filename = entry->d_name;
+                info.uri = (directoryURI.empty() ? "" : directoryURI + "/") + info.filename;
+                info.isDirectory = entry->d_type == DT_DIR;
+                result.push_back(info);
+            }
+            closedir(dir);
+        }
+
+        return result;
+    }
+
+    vector<FileInfo> FileSystem::filesInDirectoryRecursive(string directoryURI, vector<FileInfo> filesSoFar) {
+        vector<FileInfo> result = filesSoFar;
+
+        vector<FileInfo> filesInThisDir = filesInDirectory(directoryURI);
+        for (auto& f : filesInThisDir) {
+            if (f.filename == "." || f.filename == "..") {
+                continue;
+            } else {
+                result.push_back(f);
+                if (f.isDirectory) {
+                    string subdir = directoryURI.empty() ?
+                            f.filename :
+                            directoryURI + "/" + f.filename;
+                    vector<FileInfo> files = filesInDirectoryRecursive(subdir, filesSoFar);
+                    copy(files.begin(), files.end(), back_inserter(result));
+                }
+            }
+        }
+
+        return result;
+
     }
 } // namespace Acidrain

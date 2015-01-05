@@ -1,0 +1,615 @@
+<!-- pookie! -->
+<html>
+	<head>
+
+	<title>Backfire Editor</title>
+
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+
+	<link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css">
+	<script src="//code.jquery.com/ui/1.11.2/jquery-ui.js"></script>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/jquery-mousewheel/3.1.12/jquery.mousewheel.min.js"></script>
+	<script src="editor.js"></script>
+
+	<script language="javascript">
+
+	var spritesheets = {};
+	var animations = {};
+	var textures = {};
+	var offsetX = 0;
+	var offsetY = 0;
+	var canvas = null;
+	var context = null;
+	var dragStartX = 0;
+	var dragStartY = 0;
+	var dragX = 0;
+	var dragY = 0;
+	var isDragging = false;
+	var scale = 1;
+
+	function spriteSheetByName(name) {
+		console.log("getting spritesheet by name " + name);
+		for (var i in spritesheets)
+			if (spritesheets[i].name == name)
+				return spritesheets[i];
+
+		return null;
+	}
+
+	var frameIndex = 0;
+
+	function drawCheckerBoard(context) {
+		window.performance.mark('checker-board-start');
+
+		var blockWidth = 10;
+		var blockHeight = 10;
+		var colors = [
+			'rgba(255, 255, 255, 1)', 
+			'rgba(127, 127, 127, 1)'
+		];
+		var colorIndex =  0;
+
+		context.fillStyle = colors[0];
+		context.fillRect(0, 0, context.canvas.width, context.canvas.height);
+
+		// prepare for drawing only every other color rect
+		context.fillStyle = colors[1];
+
+		var y = 0;
+		var row = 0;
+		while (y < context.canvas.height) {
+			var x = 0;
+			colorIndex = row % 2;
+			while (x < context.canvas.width) {
+				if (colorIndex == 1)
+					context.fillRect(x, y, blockWidth, blockHeight);
+
+				x += blockWidth;
+				colorIndex++;
+				colorIndex = colorIndex % 2;
+			}
+			y += blockHeight;
+			row++;
+		}
+		window.performance.mark('checker-board-end');
+	}
+
+	function drawCheckerBoard2(context) {
+		window.performance.mark('checker-board-start');
+
+		var blockWidth = 750;
+		var blockHeight = 449;
+
+		var y = 0;
+		var row = 0;
+		while (y < context.canvas.height) {
+			var x = 0;
+			while (x < context.canvas.width) {
+				context.drawImage(textures['grid.png'], x, y);
+				x += blockWidth;
+			}
+			y += blockHeight;
+		}
+		window.performance.mark('checker-board-end');
+	}
+
+	var draw = {};
+
+	function showAnimation(anim) {
+		draw.type = 'spritesheet';
+		draw.spritesheet = spriteSheetByName(anim.frames[0].spriteSheet);
+		console.log("drawing spritesheet");
+		console.log(draw.spritesheet);
+	}
+
+	function drawSpriteSheetGrid() {
+		context.strokeStyle = 'rgba(255, 255, 255, 0.6)';
+		context.lineWidth = '1';
+		var y = 0;
+		while (y < textures[draw.spritesheet.texture].height) {
+			var x = 0;
+			while (x < textures[draw.spritesheet.texture].width) {
+				x += draw.spritesheet.spriteWidth;
+
+				if (x < textures[draw.spritesheet.texture].width) {
+					context.moveTo(x, 0);
+					context.lineTo(x, textures[draw.spritesheet.texture].height);
+				}
+			}
+			y += draw.spritesheet.spriteHeight;
+
+			if (y < textures[draw.spritesheet.texture].height) {
+				context.moveTo(0, y);
+				context.lineTo(textures[draw.spritesheet.texture].width, y);
+			}
+		}
+	}
+
+	function render() {
+		canvas.width = canvas.width; // this one also clears strokes
+		// context.clearRect(0, 0, canvas.width, canvas.height); // this one does not clear strokes
+
+		drawCheckerBoard2(context);
+
+		context.save();
+		var s = scale;
+		context.scale(s, s);
+		context.translate(
+			offsetX + (dragX - dragStartX) / s, 
+			offsetY + (dragY - dragStartY) / s
+		);
+		if (draw.type == 'spritesheet') {
+			if (draw.spritesheet.texture in textures) {
+				window.performance.mark('draw-sprite-start');
+
+				context.fillStyle = 'rgba(0, 0, 0, 0.5)';
+				context.fillRect(0, 0, textures[draw.spritesheet.texture].width, textures[draw.spritesheet.texture].height);
+				context.drawImage(textures[draw.spritesheet.texture], 0, 0);
+
+				// drawing lines when dragging affects the way lines look when moving the mouse
+				// due to the low render framerate
+				if (!isDragging) {
+					drawSpriteSheetGrid();
+				}
+				window.performance.mark('draw-sprite-end');
+
+				window.performance.measure('checker-board', 'checker-board-start', 'checker-board-end');
+				window.performance.measure('draw-sprite', 'draw-sprite-start', 'draw-sprite-end');
+
+				frameIndex++;
+			}
+		}
+		context.stroke();
+		context.restore();
+
+		if (frameIndex == 200) {
+			var items = window.performance.getEntriesByType('measure');
+
+			var averageCheckerboardTime = 0;
+			var averageDrawSpriteTime = 0;
+
+			for (var i in items) {
+				if (items[i].name == 'checker-board')
+					averageCheckerboardTime += items[i].duration;
+				else if (items[i].name == 'draw-sprite')
+					averageDrawSpriteTime += items[i].duration;
+			}			
+
+			averageCheckerboardTime /= frameIndex;
+			averageDrawSpriteTime /= frameIndex;
+
+			console.log('checkerboard took ' + averageCheckerboardTime + 'ms');
+			console.log('draw sprite took ' + averageDrawSpriteTime + 'ms');
+
+			performance.clearMarks();
+			performance.clearMeasures();			
+
+			frameIndex = 0;
+		}
+	}
+
+	function initializeCanvas() {
+		canvas = document.getElementById('canvas');
+		context = canvas.getContext('2d');
+		$(canvas)
+			.mousedown(function(e) {
+				isDragging = true;
+				dragStartX = e.pageX;
+				dragStartY = e.pageY;
+				dragX = dragStartX;
+				dragY = dragStartY;
+				$(canvas).css('cursor', 'pointer');
+			})
+			.mouseup(function(e) {
+				isDragging = false;
+				offsetX += (dragX - dragStartX) / scale;
+				offsetY += (dragY - dragStartY) / scale;
+				dragStartX = dragStartY = dragX = dragY = 0;
+				$(canvas).css('cursor', '');
+			})
+			.mousemove(function(e) {
+				if (isDragging) {
+					dragX = e.pageX;
+					dragY = e.pageY;
+				}
+			})
+			.mousewheel(function(e) {
+				scale += e.deltaY*2 / e.deltaFactor;
+				return false;
+			});
+
+		setInterval(render, 20);
+	}
+
+	function populateAnimationList() {
+		for (var i in animations)
+			$('<div>')
+				.addClass('animation')
+				.data("animation", i)
+				.text(animations[i].name)
+				.appendTo($('#animations'))
+				.click(function() {
+					showAnimation(animations[$(this).data('animation')]);
+				});
+	}
+
+	var texturesToLoad = 0;
+
+	function preloadTexture(texture, takeRaw) {
+		texturesToLoad++;
+		var textureSrc = takeRaw ? '/' + texture : '/data/' + texture;
+		var img = $('<img>').load(function() {
+			textures[texture] = this;
+			console.log('loaded ' + texture);
+		}).attr('src', textureSrc);
+	}
+
+	function getAnimationByName(name) {
+		for (var i in animations)
+			if (animations[i].name == name)
+				return animations[i];
+
+		return null;
+	}
+
+	function initializeFrameList(animationName) {
+		$('#frames').empty();
+
+		var animation = getAnimationByName(animationName);
+		for (var i in animation.frames) {
+			var spritesheet = spriteSheetByName(animation.frames[i].spriteSheet);
+			var $li = $('<li>')
+							.data('spritesheet-frame', animation.frames[i].index)
+							.data('spritesheet-name', animation.frames[i].spriteSheet)
+							.appendTo($('#frames'));
+
+			var spriteSheetFrame = spritesheet.frames[animation.frames[i].index];
+
+			var $div = $('<div>')
+				.data('spritesheet-frame', animation.frames[i].index)
+				.data('spritesheet-name', animation.frames[i].spriteSheet)
+				.css('width', spritesheet.spriteWidth + 'px')
+				.css('height', spritesheet.spriteHeight + 'px')
+				.attr('title', animation.frames[i].spriteSheet + '#' + animation.frames[i].index)
+				.css('background-color', 'rgba(0, 0, 0, 0.7)')
+				.css('background-image', 'url(/data/' + spritesheet.texture + ')')
+				.css('background-position', '-' + spriteSheetFrame.x + 'px' + ' -' + spriteSheetFrame.y + 'px')
+				.click(function() {
+					$(this).parent().toggleClass('selected');
+				})
+				.appendTo($li);
+
+			console.log($div.attr('background-image'));
+		}
+	}
+
+	function calculateSpritesheetFrames() {
+		for (var i in spritesheets) {
+			spritesheets[i].frames = [];
+
+			var spritesheet = spritesheets[i];
+			var textureWidth = textures[spritesheet.texture].width;
+			var textureHeight = textures[spritesheet.texture].height;
+			var spriteWidth = spritesheet.spriteWidth;
+			var spriteHeight = spritesheet.spriteHeight;
+
+			var y = 0;
+			while (y < textureHeight) {
+				var x = 0;
+				while (x < textureWidth) {
+					spritesheets[i].frames[spritesheets[i].frames.length] = {
+						'x': x,
+						'y': y,
+						'w': spriteWidth,
+						'h': spriteHeight
+					}
+					x += spriteWidth;
+				}
+				y += spriteHeight;
+			}
+
+		}
+	}
+
+	function saveCurrentAnimationAs(name) {
+		var animation = getAnimationByName(name);
+		var newFrames = [];
+		$('#frames li').each(function() {
+			newFrames[newFrames.length] = {
+				'spriteSheet': $(this).data('spritesheet-name'),
+				'index': $(this).data('spritesheet-frame')
+			}
+		})
+		animation.frames = newFrames;
+	}
+
+	function initializeSpriteList(filter) {
+		$('#sprites').empty();
+
+		for (var i in spritesheets) {
+			var spritesheet = spritesheets[i];
+			if (filter == '' || filter == spritesheet.name) {
+				for (var j in spritesheet.frames) {
+					var $li = $('<li>')
+									.data('spritesheet-frame', j)
+									.data('spritesheet-name', spritesheet.name)
+									.appendTo($('#sprites'));
+
+					var spriteSheetFrame = spritesheet.frames[j];
+
+					var $div = $('<div>')
+						.data('spritesheet-frame', j)
+						.data('spritesheet-name', spritesheet.name)
+						.css('width', spritesheet.spriteWidth + 'px')
+						.css('height', spritesheet.spriteHeight + 'px')
+						.attr('title', spritesheet.nam + '#' + j)
+						.css('background-color', 'rgba(0, 0, 0, 0.7)')
+						.css('background-image', 'url(/data/' + spritesheet.texture + ')')
+						.css('background-position', '-' + spriteSheetFrame.x + 'px' + ' -' + spriteSheetFrame.y + 'px')
+						.click(function() {
+							$(this).parent().toggleClass('selected');
+						})
+						.appendTo($li);
+				}
+			}
+		}
+	}
+
+
+	function selectSprite() {
+		$filter = $('#spriteSheetFilter').empty();
+		$('<option>').text('All').appendTo($filter);
+
+		$filter.change(function() {
+			initializeSpriteList($(this).val());
+		});
+
+		initializeSpriteList('');
+
+		$("#dlgSelectSprite").dialog({
+			width: '1200',
+			height: '800',
+			modal: true,
+			buttons: {
+				Ok: function() {
+					$(this).dialog("close");
+				}
+			}
+		});
+	}
+
+	function initializeEditor() {
+		var allTexturesLoaded = Object.keys(textures).length == texturesToLoad;
+		if (!allTexturesLoaded) {
+			setTimeout(initializeEditor, 100);
+			return;
+		}
+		console.log('All spritesheet textures loaded');
+
+		preprocessAnimations();
+		calculateSpritesheetFrames();
+		populateAnimationList();
+		initializeCanvas();
+
+		$("#frames").sortable();
+		$("#frames").disableSelection();		
+
+		$('#btnAnimation').click(function() {
+			initializeFrameList('powerup1');
+			 $("#dlgAnimation").dialog({
+			 	width: '1200',
+			 	height: '800',
+				modal: true,
+				buttons: {
+					'Delete Selected': function() {
+						$('#frames .selected').each(function() {
+							$(this).remove();
+						})
+					},
+					'Add Sprite': function() {
+						selectSprite();
+					},
+					Ok: function() {
+						saveCurrentAnimationAs('powerup1');
+						$(this).dialog("close");
+					}
+				}
+			});
+		})
+	}
+
+	function unpackAnimationFrameRanges(animation) {
+		var newFrames = [];
+		for (var i in animation.frames) {
+			if ("indexTo" in animation.frames[i]) {
+				for (var j = animation.frames[i].index; j <= animation.frames[i].indexTo; j++) {
+					newFrames[newFrames.length] = {
+						'spriteSheet': animation.frames[i].spriteSheet,
+						'index': j
+					};
+				}
+			} else {
+				newFrames[newFrames.length] = {
+					'spriteSheet': animation.frames[i].spriteSheet,
+					'index': animation.frames[i].index
+				};
+			}
+		}
+		animation.frames = newFrames;
+	}
+
+	function preprocessAnimations() {
+		// Replace all indexTo - indexFrom frame ranges with individual frames
+		// This will be optimized back before saving. (if needed)
+		for (var i in animations)
+			unpackAnimationFrameRanges(animations[i]);
+	}
+
+	$(document).ready(function() {
+		$.getJSON("/data/animations.json", function(data) {
+			console.log(data);
+			spritesheets = data.spriteSheets;
+			animations = data.animations;
+
+			animations.sort(function(el1,el2){
+				return el1.name == el2.name ? 0 : (el1.name < el2.name ? -1 : 1); 
+			});
+
+			preloadTexture("grid.png", true);
+			for (var i in spritesheets)
+				preloadTexture(spritesheets[i].texture, false);
+
+
+			initializeEditor();
+		});
+	})
+
+	</script>
+
+	<style type="text/css">
+
+	#animations {
+		float: left;
+		width: 10em;
+	}
+
+	.animation {
+		float: left;
+		width: 100%;
+		clear: both;
+		margin-bottom: 0.5em;
+		cursor: pointer;
+		background-color: rgba(30, 0, 30, 0.7);
+	}
+
+	canvas {
+		float: left;
+	}
+
+	#frames {
+		float: left;
+		display: block;
+		width: 1100px;
+		list-style-type: none;
+		padding: 0;
+		margin: 0;
+		/*border: 1px solid red;*/
+		height: 20em;
+		overflow: auto;
+	}
+	#frames li {
+		display: block;
+		float: left;
+		margin-bottom: 1px;
+		margin-right: 1px;
+		cursor: pointer;
+		/*background-image: url(grid.png)*/
+		padding: 0.3em;
+	}
+
+	#sprites {
+		float: left;
+		display: block;
+		width: 1100px;
+		list-style-type: none;
+		padding: 0;
+		margin: 0;
+		height: 20em;
+		overflow: auto;
+	}
+	#sprites li {
+		display: block;
+		float: left;
+		margin-bottom: 1px;
+		margin-right: 1px;
+		cursor: pointer;
+		padding: 0.3em;
+	}
+
+	.selected {
+		background-color: rgba(180, 120, 60, 0.7);
+	}
+
+	body {
+		font-family: sans-serif;
+		/*font-size: 20pt;*/
+		background-color: #1A2127;
+		color: rgba(255, 255, 255, 0.9);
+	}
+
+	a {
+		color: #D7503C;
+	}
+
+	.holder {
+		width: 30em;
+		margin-left: auto;
+		margin-right: auto;
+		margin-top: 5em;
+	}
+
+	.form {
+		float: left;
+		width: 30em;
+	}
+	.row {
+		float: left;
+		width: 30em;
+		clear: both;
+		margin-bottom: 0.5em;
+	}
+	.result {
+		font-weight: bold;
+		color: #5EEBB8;
+	}
+	.label {
+		float: left;
+		width: 8em;
+	}
+	.form input {
+		font-size: 20pt;
+		background-color: #0D1319;
+		border: none;
+		padding: 0.2em;
+		color: rgba(255, 255, 255, 0.8);
+	}
+
+	.note {
+		padding-top: 10em;
+		font-size: 0.85em;
+	}
+
+	.ui-tooltip {
+		padding: 10px 20px;
+		border: 0px;
+		font: bold 0.6em "Helvetica Neue", Sans-Serif;
+		background: black;
+		background-color: #1A2127;
+		color: rgba(255, 255, 255, 0.8);
+  	}
+  	h1 {
+  		margin-bottom: 2em;
+  	}
+
+	</style>
+
+	</head>
+	<body>
+		<div id="animations"></div>
+		<canvas id="canvas" width="1024" height="768"></canvas>
+		<input type="button" id="btnAnimation" value="Animation"/>
+
+
+		<div id="dlgAnimation" title="Animation" >
+			<ul id="frames"></ul>
+		</div>
+
+		<div id="dlgSelectSprite" title="Selecte sprite">
+			<div>
+				Filter <select id="spriteSheetFilter"></select>
+			</div>
+			<ul id="sprites"></ul>
+		</div>
+
+	</body>
+</html>

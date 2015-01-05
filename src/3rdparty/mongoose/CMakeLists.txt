@@ -1,0 +1,6 @@
+set(SOURCE
+   ${SOURCE}
+   ${CMAKE_CURRENT_SOURCE_DIR}/mongoose.h
+   ${CMAKE_CURRENT_SOURCE_DIR}/mongoose.c
+   PARENT_SCOPE
+)

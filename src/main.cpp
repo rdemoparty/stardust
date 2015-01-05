@@ -6,13 +6,17 @@
 #include <easylogging++.h>
 #include <game/Level.h>
 #include <CommandLineParser.h>
+#include <GameStateEditor.h>
+#include <GameStateIntro.h>
 
 _INITIALIZE_EASYLOGGINGPP
 
-using namespace Acidrain;
+namespace Acidrain {
+    DEFINE_string(log_level, l, "The log level", "debug")
+    DEFINE_bool(editor, e, "Whether to enter editor mode or not", false)
+}
 
-DEFINE_string(log_level, l, "The log level", "debug")
-DEFINE_string(data_dir, d, "Data dir relative to cwd", "../data")
+using namespace Acidrain;
 
 void configureLogging();
 
@@ -31,6 +35,11 @@ int main(int argc, char** argv) {
 
         Timer timer;
         Stardust game;
+
+        if (FLAG_editor)
+            game.fsm->changeState(&GameStateEditor::instance());
+        else
+            game.fsm->changeState(&GameStateIntro::instance());
 
         double dt = 1.0 / 20.0;
         double accumulator = 0;

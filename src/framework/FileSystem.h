@@ -1,10 +1,22 @@
 #pragma once
 
 #include <string>
+#include <CommandLineParser.h>
 
 #define FILESYS Acidrain::FileSystem::getInstance()
 
+
 namespace Acidrain {
+
+    DECLARE_string(data_dir);
+
+    using namespace std;
+
+    struct FileInfo {
+        string filename;
+        string uri;
+        bool isDirectory;
+    };
 
     class FileSystem {
     public:
@@ -26,6 +38,10 @@ namespace Acidrain {
         std::string getFileContent(const char* pathRelativeToRoot);
 
         std::string getFileContent(const std::string& pathRelativeToRoot);
+
+        vector<FileInfo> filesInDirectory(string directoryURI);
+
+        vector<FileInfo> filesInDirectoryRecursive(string directoryURI, vector<FileInfo> filesSoFar = {});
 
     private:
         std::string rootDir = "./";

@@ -16,7 +16,6 @@ namespace Acidrain {
 
     Stardust::Stardust() {
         fsm = make_shared<GameStateMachine<Stardust>>(this);
-        fsm->changeState(&GameStateIntro::instance());
 
         ANIMREPO.initialize("animations.json");
 
