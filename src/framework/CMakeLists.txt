@@ -13,7 +13,7 @@ set(HEADERS
    ${CMAKE_CURRENT_SOURCE_DIR}/GLheaders.h
    ${CMAKE_CURRENT_SOURCE_DIR}/InputProvider.h
    ${CMAKE_CURRENT_SOURCE_DIR}/json11.hpp
-   ${CMAKE_CURRENT_SOURCE_DIR}/Math.h
+   ${CMAKE_CURRENT_SOURCE_DIR}/MathSupport.h
    ${CMAKE_CURRENT_SOURCE_DIR}/Randomizer.h
    ${CMAKE_CURRENT_SOURCE_DIR}/GpuProgram.h
    ${CMAKE_CURRENT_SOURCE_DIR}/GpuProgramConstants.h
@@ -42,7 +42,7 @@ set(SOURCE
    ${CMAKE_CURRENT_SOURCE_DIR}/GfxSystem.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/InputProvider.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/json11.cpp
-   ${CMAKE_CURRENT_SOURCE_DIR}/Math.cpp
+   ${CMAKE_CURRENT_SOURCE_DIR}/MathSupport.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/Randomizer.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/GpuProgram.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/GpuProgramConstants.cpp

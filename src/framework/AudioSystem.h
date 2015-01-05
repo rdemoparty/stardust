@@ -3,6 +3,7 @@
 #include <memory>
 #include <map>
 #include <vector>
+#include <string>
 #include <SDL_mixer.h>
 
 #define AUDIOSYS Acidrain::AudioSystem::getInstance()

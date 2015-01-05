@@ -3,7 +3,7 @@
 #include <Font.h>
 #include <GfxSystem.h>
 #include <InputProvider.h>
-#include <Math.h>
+#include <MathSupport.h>
 #include <AudioSystem.h>
 #include <GameStatePlayLevel.h>
 

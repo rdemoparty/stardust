@@ -2,7 +2,7 @@
 #include <GfxSystem.h>
 #include <Font.h>
 #include <Stardust.h>
-#include <Math.h>
+#include <MathSupport.h>
 #include <GameStateMenu.h>
 #include <InputProvider.h>
 
