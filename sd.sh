@@ -9,6 +9,7 @@ function usage {
 	echo -e "\t$0 run"
 	echo -e "\t$0 run cross"
 	echo -e "\t$0 package"
+	echo -e "\t$0 editor"
 	echo -e ""
 }
 
@@ -52,6 +53,10 @@ function package_project {
 	zip stardust.zip bin/*.exe bin/*.dll data/ -r	
 }
 
+function start_editor {
+	run_project --width 1024 --height 768 --editor --fullscreen=false
+}
+
 function build_project {
 	CMAKE_EXTRA_ARGUMENTS=""
 
@@ -91,6 +96,9 @@ case $1 in
 		;;
 	package)
 		package_project $2
+		;;
+	editor)
+		start_editor $@
 		;;
 	*)
 		echo -e "Unknown option $1"

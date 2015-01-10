@@ -56,7 +56,6 @@ namespace Acidrain {
         menuTime = 0;
 
         AUDIOSYS.playMusic("menu3.ogg");
-//        menuMusic->play(9999, 2000);
     }
 
     void GameStateMenu::onExit(Stardust* game) {
@@ -97,7 +96,7 @@ namespace Acidrain {
             selectedIndex = selectedIndex % MENU_OPTION_COUNT;
             if (selectedIndex < 0)
                 selectedIndex += MENU_OPTION_COUNT;
-            AUDIOSYS.playSound(SOUND_OPTION_CHANGE, AudioGroup::byName("UI"));
+            AUDIOSYS.playSound(SOUND_OPTION_CHANGE, AudioGroup::byName("UI"), 80);
         }
 
         if (INPUT.isKeyJustPressed(SDL_SCANCODE_RETURN)) {

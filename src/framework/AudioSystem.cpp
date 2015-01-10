@@ -147,6 +147,7 @@ namespace Acidrain {
             Mix_FadeOutMusic(500);
         } else {
             currentMusic = song;
+            Mix_VolumeMusic(50);
             Mix_FadeInMusic(currentMusic, 9999, 500);
         }
     }
@@ -166,7 +167,7 @@ namespace Acidrain {
         }
     }
 
-    void AudioSystem::playSound(const char* URI, const AudioGroup* group) {
+    void AudioSystem::playSound(const char* URI, const AudioGroup* group, int volume) {
         if (group == nullptr) {
             LOG(ERROR) << "Wanting to play sound on null group";
             return;
@@ -185,12 +186,14 @@ namespace Acidrain {
             return;
         }
 
+        Mix_Volume(channelToPlayOn, volume);
         if (Mix_PlayChannel(channelToPlayOn, sound, 0) < 0)
+//        if (Mix_FadeInChannel(channelToPlayOn, sound, 0, 100) == -1)
             LOG(ERROR) << "Failed to play sound " << URI << " on group " << group->getName() << ". Error: " << Mix_GetError();
     }
 
-    void AudioSystem::playSound(const char* URI, const char* groupName) {
-        playSound(URI, AudioGroup::byName(groupName));
+    void AudioSystem::playSound(const char* URI, const char* groupName, int volume) {
+        playSound(URI, AudioGroup::byName(groupName), volume);
     }
 
     void AudioSystem::stopSounds(vector<string> groups) {

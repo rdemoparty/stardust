@@ -145,8 +145,13 @@
         {
           "spriteSheet": "powerup",
           "index": 0,
-          "indexTo": 7
-        }
+          "indexTo": 31
+        },
+        {
+          "spriteSheet": "powerup",
+          "index": 0,
+          "indexTo": 31
+        }        
       ]
     },
     {
