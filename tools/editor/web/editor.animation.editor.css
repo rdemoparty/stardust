@@ -1,0 +1,74 @@
+#animation-editor-holder {
+	float: left;
+	width: 100%;
+	padding-top: 2em;
+}
+
+#animation-previewer {
+	float: left;
+}
+
+#animation-editor-sidebar {
+	float: left;
+	width: 20em;
+}
+
+
+#animation-editor-sidebar .row {
+	float: left;
+	width: 100%;
+	margin-bottom: 0.5em;
+}
+
+#animation-editor-sidebar .label {
+	float: left;
+	width: 10em;
+}
+
+#animation-editor-sidebar .field {
+	float: left;
+	width: 8em;
+}
+
+#animation-editor-sidebar .field input {
+	float: left;
+	width: 100%;
+}
+
+#animation-editor-sidebar .field select {
+	float: left;
+	width: 100%;
+}
+
+
+#frames {
+	float: left;
+	display: block;
+	width: 770px;
+	list-style-type: none;
+	padding: 0;
+	margin: 0;
+
+	border-style: solid;
+	border-width: 2px;
+	border-top-color: rgb(100, 100, 100);
+	border-left-color: rgb(100, 100, 100);
+	border-right-color: rgb(200, 200, 200);
+	border-bottom-color: rgb(200, 200, 200);
+
+	background-image: url(grid.png);
+
+	height: 20em;
+	overflow: auto;
+	margin-right: 0.5em;
+}
+
+#frames li {
+	display: block;
+	float: left;
+	margin-bottom: 1px;
+	margin-right: 1px;
+	cursor: pointer;
+	/*background-image: url(grid.png)*/
+	padding: 0.3em;
+}

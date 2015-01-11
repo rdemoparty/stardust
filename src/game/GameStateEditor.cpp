@@ -100,7 +100,11 @@ namespace Acidrain {
                 return MG_MORE;
             } else if (isPostRequest(conn)) {
 
+                LOG(INFO) << "POST request on /data with multiparts: ";
+                LOG(TRACE) << conn->content;
                 map<string, MultipartEntry> multiparts = parseMultipart(conn);
+                for (auto& kv : multiparts)
+                    LOG(INFO) << "\t" << "{var: " << kv.second.var << ", filename: " << kv.second.filename << ", size: " << kv.second.content.size() << ", isFile: " << kv.second.isFile << "}";
 
                 // extract the dir in which to save uploaded files
                 string dir;

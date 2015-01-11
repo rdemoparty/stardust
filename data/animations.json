@@ -69,6 +69,33 @@
   ],
   "animations": [
     {
+      "name": "beacon",
+      "frameTimeInMilliseconds": 100,
+      "loopType": "NONE",
+      "frames": [
+        {
+          "spriteSheet": "beacon",
+          "index": 0
+        },
+        {
+          "spriteSheet": "beacon",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "name": "bullet.hit",
+      "frameTimeInMilliseconds": 20,
+      "loopType": "NONE",
+      "frames": [
+        {
+          "spriteSheet": "bullet.hit",
+          "index": 0,
+          "indexTo": 5
+        }
+      ]
+    },
+    {
       "name": "enemy2",
       "frameTimeInMilliseconds": 200,
       "loopType": "REVERSE",
@@ -77,39 +104,6 @@
           "spriteSheet": "enemyship2b",
           "index": 0,
           "indexTo": 7
-        }
-      ]
-    },
-    {
-      "name": "player",
-      "frameTimeInMilliseconds": 200,
-      "loopType": "NONE",
-      "frames": [
-        {
-          "spriteSheet": "player",
-          "index": 0
-        }
-      ]
-    },
-    {
-      "name": "platform_top",
-      "frameTimeInMilliseconds": 200,
-      "loopType": "NONE",
-      "frames": [
-        {
-          "spriteSheet": "platform_top",
-          "index": 0
-        }
-      ]
-    },
-    {
-      "name": "platform_bottom",
-      "frameTimeInMilliseconds": 200,
-      "loopType": "NONE",
-      "frames": [
-        {
-          "spriteSheet": "platform_bottom",
-          "index": 0
         }
       ]
     },
@@ -126,6 +120,28 @@
       ]
     },
     {
+      "name": "laser.blue",
+      "frameTimeInMilliseconds": 20,
+      "loopType": "FORWARD",
+      "frames": [
+        {
+          "spriteSheet": "laser.blue",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "name": "laser.red",
+      "frameTimeInMilliseconds": 20,
+      "loopType": "FORWARD",
+      "frames": [
+        {
+          "spriteSheet": "laser.red",
+          "index": 0
+        }
+      ]
+    },
+    {
       "name": "missile",
       "frameTimeInMilliseconds": 20,
       "loopType": "FORWARD",
@@ -138,20 +154,48 @@
       ]
     },
     {
+      "name": "platform_bottom",
+      "frameTimeInMilliseconds": 200,
+      "loopType": "NONE",
+      "frames": [
+        {
+          "spriteSheet": "platform_bottom",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "name": "platform_top",
+      "frameTimeInMilliseconds": 200,
+      "loopType": "NONE",
+      "frames": [
+        {
+          "spriteSheet": "platform_top",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "name": "player",
+      "frameTimeInMilliseconds": 200,
+      "loopType": "NONE",
+      "frames": [
+        {
+          "spriteSheet": "player",
+          "index": 0
+        }
+      ]
+    },
+    {
       "name": "powerup1",
       "frameTimeInMilliseconds": 100,
       "loopType": "FORWARD",
       "frames": [
         {
           "spriteSheet": "powerup",
-          "index": 0,
-          "indexTo": 31
-        },
-        {
-          "spriteSheet": "powerup",
-          "index": 0,
-          "indexTo": 31
-        }        
+          "index": 8,
+          "indexTo": 15
+        }
       ]
     },
     {
@@ -235,55 +279,6 @@
           "spriteSheet": "powerup",
           "index": 56,
           "indexTo": 63
-        }
-      ]
-    },
-    {
-      "name": "beacon",
-      "frameTimeInMilliseconds": 100,
-      "loopType": "NONE",
-      "frames": [
-        {
-          "spriteSheet": "beacon",
-          "index": 0
-        },
-        {
-          "spriteSheet": "beacon",
-          "index": 0
-        }
-      ]
-    },
-    {
-      "name": "bullet.hit",
-      "frameTimeInMilliseconds": 20,
-      "loopType": "NONE",
-      "frames": [
-        {
-          "spriteSheet": "bullet.hit",
-          "index": 0,
-          "indexTo": 5
-        }
-      ]
-    },
-    {
-      "name": "laser.red",
-      "frameTimeInMilliseconds": 20,
-      "loopType": "FORWARD",
-      "frames": [
-        {
-          "spriteSheet": "laser.red",
-          "index": 0
-        }
-      ]
-    },
-    {
-      "name": "laser.blue",
-      "frameTimeInMilliseconds": 20,
-      "loopType": "FORWARD",
-      "frames": [
-        {
-          "spriteSheet": "laser.blue",
-          "index": 0
         }
       ]
     }
