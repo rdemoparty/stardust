@@ -2,6 +2,7 @@ var Editor = {
 	assets: null,
 	animationEditor: null,
 	spriteSelector: null,
+	spriteSheetEditor: null,
 
 	initialize: function() {
 		Editor.createMarkup();
@@ -12,7 +13,8 @@ var Editor = {
 			Editor.populateAnimationList();
 		});
 
-		Editor.spriteSelector = SpriteSelector(Editor.assets);
+		Editor.spriteSheetEditor = SpriteSheetEditor(Editor.assets);
+		Editor.spriteSelector = SpriteSelector(Editor.assets, Editor.spriteSheetEditor);
 		Editor.animationEditor = AnimationEditor(Editor.assets, Editor.spriteSelector);
 	},
 

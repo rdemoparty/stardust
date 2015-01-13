@@ -109,7 +109,7 @@
     },
     {
       "name": "explosion",
-      "frameTimeInMilliseconds": 20,
+      "frameTimeInMilliseconds": 50,
       "loopType": "NONE",
       "frames": [
         {
@@ -150,6 +150,18 @@
           "spriteSheet": "missile",
           "index": 0,
           "indexTo": 7
+        }
+      ]
+    },
+    {
+      "name": "dancing.star",
+      "frameTimeInMilliseconds": 50,
+      "loopType": "PING_PONG",
+      "frames": [
+        {
+          "spriteSheet": "explosion",
+          "index": 0,
+          "indexTo": 4
         }
       ]
     },

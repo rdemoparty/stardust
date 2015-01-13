@@ -1,0 +1,50 @@
+#ss-editor-holder {
+	float: left;
+	width: 100%;
+}
+
+#ss-editor-sidebar {
+	float: left;
+	width: 16em;
+}
+
+#ss-editor-sidebar .row {
+	float: left;
+	width: 100%;
+	margin-bottom: 0.5em;
+}
+
+#ss-editor-sidebar .label {
+	float: left;
+	width: 8em;
+}
+
+#ss-editor-sidebar .field {
+	float: left;
+	width: 8em;
+}
+
+#ss-editor-sidebar .field input {
+	float: left;
+	width: 100%;
+}
+
+#ss-editor-sidebar .field select {
+	float: left;
+	width: 100%;
+}
+
+
+#ss-canvas-holder {
+	overflow: auto;
+	float: right;
+	display: block;
+	height: 100%;
+	width: 800px;
+	background-color: blue;
+}
+
+#ss-canvas {
+	float: left;
+	display: block;
+}

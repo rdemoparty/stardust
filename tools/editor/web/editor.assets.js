@@ -28,6 +28,10 @@ Assets.prototype.addAnimation = function(animation) {
 	this.sortAnimations();
 }
 
+Assets.prototype.addSpriteSheet = function(ss) {
+	this.spritesheets[this.spritesheets.length] = ss;
+}
+
 Assets.prototype.sortAnimations = function() {
 	this.animations.sort(function(el1, el2) {
 		return el1.name == el2.name ? 0 : (el1.name < el2.name ? -1 : 1); 
@@ -60,13 +64,17 @@ Assets.prototype.calculateSpritesheetFrames = function() {
 	}
 }
 
-Assets.prototype.preloadTexture = function(textureName, takeRaw) {
+Assets.prototype.preloadTexture = function(textureName, takeRaw, finishedCb) {
 	this.texturesToLoad++;
 	var textureSrc = takeRaw ? '/' + textureName : '/data/' + textureName;
 	var t = this.textures;
+	var cb = finishedCb;
 	var img = $('<img>').load(function() {
 		t[textureName] = this;
 		console.log('loaded ' + textureName);
+		if (typeof cb !== 'undefined') {
+			cb(textureName);
+		}
 	}).attr('src', textureSrc);
 }
 
