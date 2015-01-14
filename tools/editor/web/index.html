@@ -9,33 +9,33 @@
 	<script src="//code.jquery.com/ui/1.11.2/jquery-ui.js"></script>
 	<script src="//cdnjs.cloudflare.com/ajax/libs/jquery-mousewheel/3.1.12/jquery.mousewheel.min.js"></script>
 
+	<script src="ace/ace.js"></script>
+	<script src="ace/theme-monokai.js"></script>
+	<script src="ace/mode-lua.js"></script>
+	<script src="jquery-ace.js"></script>
+
 	<link rel="stylesheet" href="editor.css">
 	<link rel="stylesheet" href="editor.spritesheet.editor.css">
 	<link rel="stylesheet" href="editor.sprite.selector.css">
 	<link rel="stylesheet" href="editor.animation.editor.css">
+	<link rel="stylesheet" href="editor.recipe.editor.css">
 
 	<script src="editor.utils.js"></script>
 	<script src="editor.assets.js"></script>
 	<script src="editor.animation.editor.js"></script>
 	<script src="editor.sprite.selector.js"></script>
 	<script src="editor.spritesheet.editor.js"></script>
+	<script src="editor.recipe.editor.js"></script>
 	<script src="editor.js"></script>
 
 	<script language="javascript">
 
 	$(document).ready(function() {
-
-		$("input[type=submit], input[type=button], a, button").button();
-		$('#btnAddAnimation').click(function() {
-			Editor.addAnimation();
-		})
-
 		Editor.initialize();
 	})
 
 	</script>
 </head>
 <body>
-	<input type="button" id="btnAddAnimation" value="Add Animation"/>
 </body>
 </html>

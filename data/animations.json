@@ -65,6 +65,12 @@
       "texture": "sprites/platform_top2.png",
       "spriteWidth": 551,
       "spriteHeight": 281
+    },
+    {
+      "name": "enemy1",
+      "texture": "sprites/Enemy1.png",
+      "spriteWidth": 64,
+      "spriteHeight": 64
     }
   ],
   "animations": [
@@ -92,6 +98,30 @@
           "spriteSheet": "bullet.hit",
           "index": 0,
           "indexTo": 5
+        }
+      ]
+    },
+    {
+      "name": "dancing.star",
+      "frameTimeInMilliseconds": 50,
+      "loopType": "PING_PONG",
+      "frames": [
+        {
+          "spriteSheet": "explosion",
+          "index": 0,
+          "indexTo": 4
+        }
+      ]
+    },
+    {
+      "name": "enemy1",
+      "frameTimeInMilliseconds": 50,
+      "loopType": "PING_PONG",
+      "frames": [
+        {
+          "spriteSheet": "enemy1",
+          "index": 0,
+          "indexTo": 15
         }
       ]
     },
@@ -143,25 +173,13 @@
     },
     {
       "name": "missile",
-      "frameTimeInMilliseconds": 20,
+      "frameTimeInMilliseconds": 80,
       "loopType": "FORWARD",
       "frames": [
         {
           "spriteSheet": "missile",
           "index": 0,
           "indexTo": 7
-        }
-      ]
-    },
-    {
-      "name": "dancing.star",
-      "frameTimeInMilliseconds": 50,
-      "loopType": "PING_PONG",
-      "frames": [
-        {
-          "spriteSheet": "explosion",
-          "index": 0,
-          "indexTo": 4
         }
       ]
     },

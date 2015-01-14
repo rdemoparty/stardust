@@ -5,6 +5,8 @@ var Assets = function() {
 	this.descriptorsLoaded = false;
 	this.resourcesLoadedCallback = null;
 	this.texturesToLoad = 0;
+	this.recipes = {};
+	this.recipesLoaded = false;
 }
 
 Assets.prototype.spriteSheetByName = function(name) {
@@ -21,6 +23,25 @@ Assets.prototype.animationByName = function(name) {
 			return this.animations[i];
 
 	return null;
+}
+
+Assets.prototype.recipeByName = function(name) {
+	for (var i in this.recipes)
+		if (this.recipes[i].name == name)
+			return this.recipes[i];
+
+	return null;
+}
+
+Assets.prototype.addRecipe = function(recipe) {
+	this.recipes[this.recipes.length] = recipe;
+	this.sortRecipes();
+}
+
+Assets.prototype.sortRecipes = function() {
+	this.recipes.sort(function(el1, el2) {
+		return el1.name == el2.name ? 0 : (el1.name < el2.name ? -1 : 1); 
+	});
 }
 
 Assets.prototype.addAnimation = function(animation) {
@@ -102,7 +123,7 @@ Assets.prototype.preprocessAnimations = function() {
 	this.sortAnimations();
 
 	// Replace all indexTo - indexFrom frame ranges with individual frames
-	// This will be optimized back before saving. (if needed)
+	// This will be optimized back before saving.
 	for (var i in this.animations)
 		this.unpackAnimationFrameRanges(this.animations[i]);
 }
@@ -121,6 +142,7 @@ Assets.prototype.initialize = function(callback) {
 
 Assets.prototype.loadResources = function() {
 	this.descriptorsLoaded = false;
+	this.recipesLoade = false;
 	var self = this;
 	$.getJSON("/data/animations.json", function(data) {
 		console.log('Loaded animation descriptors');
@@ -130,11 +152,18 @@ Assets.prototype.loadResources = function() {
 		self.preprocessAnimations();
 		self.descriptorsLoaded = true;
 	});
+
+	$.getJSON("/data/recipes.json", function(data) {
+		console.log('Loaded game object descriptors');
+		self.recipes = data.recipes;
+		self.sortRecipes();
+		self.recipesLoaded = true;
+	});
 }
 
 Assets.prototype.waitForResourcesToLoad = function() {
 	var allTexturesLoaded = Object.keys(this.textures).length == this.texturesToLoad;
-	if (!this.descriptorsLoaded || !allTexturesLoaded) {
+	if (!this.descriptorsLoaded || !allTexturesLoaded || !this.recipesLoaded) {
 		var self = this;
 		setTimeout(function() { self.waitForResourcesToLoad(); }, 200);
 		return;
@@ -221,11 +250,15 @@ Assets.prototype.buildOptimizedAnimations = function() {
 	}
 }
 
+Assets.prototype.saveRecipes = function() {
+	var content = JSON.stringify(this.recipes, null, 2);
+	Utils.saveContentAsFile(content, 'recipes.json', 'application/json');
+}
+
 Assets.prototype.saveAnimations = function() {
 	var content = JSON.stringify(this.buildOptimizedAnimations(), null, 2);
 	Utils.saveContentAsFile(content, 'animations.json', 'application/json');
 }
-
 
 Assets.prototype.renameAnimation = function(oldName, newName) {
 	var existingAnimation = this.animationByName(oldName);

@@ -1,0 +1,52 @@
+#recipe-editor-holder {
+	float: left;
+}
+
+#recipe-work-area {
+	float: left;
+	/*background-color: red;*/
+	width: 48em;
+	min-height: 420px;
+	margin-left: 1em;
+}
+
+#recipe-brain-code {
+	width: 100%;
+}
+
+#recipe-editor-sidebar {
+	float: left;
+}
+
+#recipe-editor-sidebar .row {
+	width: 30em;
+	float: left;
+	clear: both;
+	margin-bottom: 0.2em;
+}
+
+#recipe-editor-sidebar .row .label {
+	width: 14em;
+	float: left;
+}
+
+#recipe-editor-sidebar .row .field {
+	/*width: 10em;*/
+	float: left;
+}
+
+#recipe-editor-sidebar .row input[type=text] {
+	width: 16em;
+}
+
+#recipe-editor-sidebar .row select {
+	width: 16em;
+}
+
+#recipe-editor-sidebar .row label {
+	cursor: pointer;
+}
+
+#recipe-editor-sidebar .row .flags {
+	margin-bottom: 1em;
+}
