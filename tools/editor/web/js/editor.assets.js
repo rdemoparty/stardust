@@ -129,7 +129,7 @@ Assets.prototype.preprocessAnimations = function() {
 }
 
 Assets.prototype.preloadTextures = function() {
-	this.preloadTexture("grid.png", true);
+	this.preloadTexture("images/grid.png", true);
 	for (var i in this.spritesheets)
 		this.preloadTexture(this.spritesheets[i].texture, false);
 }

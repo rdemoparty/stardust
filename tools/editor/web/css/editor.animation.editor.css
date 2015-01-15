@@ -56,7 +56,7 @@
 	border-right-color: rgb(200, 200, 200);
 	border-bottom-color: rgb(200, 200, 200);
 
-	background-image: url(grid.png);
+	background-image: url(../images/grid.png);
 
 	height: 20em;
 	overflow: auto;
