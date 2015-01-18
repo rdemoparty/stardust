@@ -4,8 +4,8 @@ function usage {
 	echo -e "\nStardust utility script\n"
 	echo -e "Usage:"
 	echo -e "\t$0 clean"
-	echo -e "\t$0 build"
-	echo -e "\t$0 build cross"
+	echo -e "\t$0 build [debug]"
+	echo -e "\t$0 build cross [debug]"
 	echo -e "\t$0 run"
 	echo -e "\t$0 run cross"
 	echo -e "\t$0 package"
@@ -50,7 +50,7 @@ function run_project {
 
 function package_project {
 	rm -rf stardust.zip
-	zip stardust.zip bin/*.exe bin/*.dll data/ -r	
+	zip stardust.zip bin/*.exe bin/*.dll data/ tools -r	
 }
 
 function start_editor {
@@ -61,10 +61,21 @@ function build_project {
 	CMAKE_EXTRA_ARGUMENTS=""
 
 	if [ "$1" == "cross" ]; then
-		echo -e "Building cross-compiled solution...\n"
-		CMAKE_EXTRA_ARGUMENTS="-DCMAKE_TOOLCHAIN_FILE=../cmake/win32.cmake"
+		if [ "$2" == "debug" ]; then
+			CMAKE_EXTRA_ARGUMENTS="$CMAKE_EXTRA_ARGUMENTS -DCMAKE_BUILD_TYPE=Debug"
+		else
+			CMAKE_EXTRA_ARGUMENTS="$CMAKE_EXTRA_ARGUMENTS -DCMAKE_BUILD_TYPE=Release"
+		fi
+		
+		echo -e "Building cross-compiled solution...$CMAKE_EXTRA_ARGUMENTS\n"
+		CMAKE_EXTRA_ARGUMENTS="$CMAKE_EXTRA_ARGUMENTS -DCMAKE_TOOLCHAIN_FILE=../cmake/win32.cmake"
 	else
-		echo -e "Building solution...\n"
+		if [ "$1" == "debug" ]; then
+			CMAKE_EXTRA_ARGUMENTS="$CMAKE_EXTRA_ARGUMENTS -DCMAKE_BUILD_TYPE=Debug"
+		else
+			CMAKE_EXTRA_ARGUMENTS="$CMAKE_EXTRA_ARGUMENTS -DCMAKE_BUILD_TYPE=Release"
+		fi
+		echo -e "Building solution...$CMAKE_EXTRA_ARGUMENTS\n"
 	fi
 
 	mkdir -p build && cd build
