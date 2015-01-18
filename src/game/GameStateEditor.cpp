@@ -82,7 +82,13 @@ namespace Acidrain {
         sstream << "{\"status\": {\"code\": \"OK\"}, \"result\": [";
 
         if (stringStartsWith(URI, "/browse")) {
-            vector<FileInfo> files = FILESYS.filesInDirectoryRecursive("");
+            string startDir = URI.substr(7); // remove "/browse", forward and trailing slash
+            if (startDir[startDir.length() - 1] == '/')
+                startDir = startDir.substr(0, startDir.length() - 1);
+            if (startDir[0] == '/')
+                startDir = startDir.substr(1);
+
+            vector<FileInfo> files = FILESYS.filesInDirectoryRecursive(startDir);
             bool isFirst = true;
             for (auto& f : files) {
                 if (isFirst)

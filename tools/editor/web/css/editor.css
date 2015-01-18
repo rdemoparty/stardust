@@ -30,6 +30,17 @@ body {
 	color: yellow;
 }
 
+#script-list {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+#script-list li a {
+	cursor: pointer;
+	color: yellow;
+}
+
 #editor-tabs {
 	float: right;
 	width: 26em;

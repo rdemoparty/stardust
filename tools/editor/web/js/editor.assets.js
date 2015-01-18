@@ -5,8 +5,10 @@ var Assets = function() {
 	this.descriptorsLoaded = false;
 	this.resourcesLoadedCallback = null;
 	this.texturesToLoad = 0;
-	this.recipes = {};
+	this.recipes = [];
 	this.recipesLoaded = false;
+	this.scripts = [];
+	this.scriptsLoaded = false;
 }
 
 Assets.prototype.spriteSheetByName = function(name) {
@@ -35,7 +37,6 @@ Assets.prototype.recipeByName = function(name) {
 
 Assets.prototype.addRecipe = function(recipe) {
 	this.recipes[this.recipes.length] = recipe;
-	this.sortRecipes();
 }
 
 Assets.prototype.sortRecipes = function() {
@@ -155,15 +156,36 @@ Assets.prototype.loadResources = function() {
 
 	$.getJSON("/data/recipes.json", function(data) {
 		console.log('Loaded game object descriptors');
-		self.recipes = data.recipes;
+
+		self.recipes = [];
+		for (var i in data.recipes) {
+			if (data.recipes[i].name != '__preview_entity')
+				self.addRecipe(data.recipes[i]);
+		}
+
 		self.sortRecipes();
 		self.recipesLoaded = true;
+	});
+
+	$.getJSON("/browse/scripts", function(data) {
+		console.log('Loaded scripts');
+		self.scripts = [];
+		for (var i in data.result) {
+			var item = data.result[i];
+			if (!item.isDir && item.filename != 'scripts/__preview_brain.lua') {
+				self.scripts[self.scripts.length] = {
+					'name': Utils.extractFilenameFromUri(item.filename),
+					'uri': item.filename
+				};
+			}
+		}
+		self.scriptsLoaded = true;
 	});
 }
 
 Assets.prototype.waitForResourcesToLoad = function() {
 	var allTexturesLoaded = Object.keys(this.textures).length == this.texturesToLoad;
-	if (!this.descriptorsLoaded || !allTexturesLoaded || !this.recipesLoaded) {
+	if (!this.descriptorsLoaded || !allTexturesLoaded || !this.recipesLoaded || !this.scriptsLoaded) {
 		var self = this;
 		setTimeout(function() { self.waitForResourcesToLoad(); }, 200);
 		return;
@@ -250,9 +272,21 @@ Assets.prototype.buildOptimizedAnimations = function() {
 	}
 }
 
-Assets.prototype.saveRecipes = function() {
-	var content = JSON.stringify(this.recipes, null, 2);
-	Utils.saveContentAsFile(content, 'recipes.json', 'application/json');
+Assets.prototype.stashRecipes = function() {
+	this.recipesStash = JSON.stringify(this.recipes, null, 2);
+}
+
+Assets.prototype.restoreRecipes = function() {
+	this.recipes = JSON.parse(this.recipesStash);
+	this.saveRecipes();
+}
+
+Assets.prototype.saveRecipes = function(callback) {
+	var recipes = {
+		'recipes': this.recipes
+	}
+	var content = JSON.stringify(recipes, null, 2);
+	Utils.saveContentAsFile(content, 'recipes.json', 'application/json', callback);
 }
 
 Assets.prototype.saveAnimations = function() {

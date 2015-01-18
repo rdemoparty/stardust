@@ -68,10 +68,12 @@ function AnimationEditor(assetsInstance, spriteSelectorInstance) {
 
 	var editMode = EDITING_MODE.NONE;
 	var originalAnimationName;
+	var successCallback;
 
-	var editAnimation = function(animationName) {
+	var editAnimation = function(animationName, callback) {
 		editMode = EDITING_MODE.EDIT_EXISTING;
 		originalAnimationName = animationName;
+		successCallback = callback;
 
 		var animation = assets.animationByName(animationName);
 		$('#animation-name').val(animation.name);
@@ -83,8 +85,9 @@ function AnimationEditor(assetsInstance, spriteSelectorInstance) {
 	}
 
 
-	var newAnimation = function() {
+	var newAnimation = function(callback) {
 		editMode = EDITING_MODE.ADD_NEW;
+		successCallback = callback;
 		// set defaults
 		$('#animation-name').val("new_animation");
 		$('#animation-loop-type').val('FORWARD');
@@ -220,6 +223,9 @@ function AnimationEditor(assetsInstance, spriteSelectorInstance) {
 					if (saveAnimation()) {
 						Editor.populateAnimationList();
 						$(this).dialog("close");
+						if (typeof successCallback != 'undefined') {
+							successCallback($('#animation-name').val());
+						}
 					}
 				},
 				'Cancel': function() {

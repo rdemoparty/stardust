@@ -13,12 +13,13 @@ var Editor = {
 			console.log('Assets initialized');
 			Editor.populateAnimationList();
 			Editor.populateRecipeList();
+			Editor.populateScriptList();
 		});
 
 		Editor.spriteSheetEditor = SpriteSheetEditor(Editor.assets);
 		Editor.spriteSelector = SpriteSelector(Editor.assets, Editor.spriteSheetEditor);
 		Editor.animationEditor = AnimationEditor(Editor.assets, Editor.spriteSelector);
-		Editor.recipeEditor = RecipeEditor(Editor.assets);
+		Editor.recipeEditor = RecipeEditor(Editor.assets, Editor.animationEditor);
 	},
 
 	createMarkup: function() {
@@ -37,6 +38,7 @@ var Editor = {
 				"<input type=\"button\" id=\"btnAddAnimation\" value=\"Add Animation\"/>" +
 			"</div>" + 
 			"<div id=\"tabs-scripts\" class=\"tab-holder\">" + 
+				"<input type=\"button\" id=\"btnAddScript\" value=\"Add Script\"/>" +
 			"</div>" + 
 			"<div id=\"tabs-levels\" class=\"tab-holder\">" + 
 			"</div>" + 
@@ -52,6 +54,10 @@ var Editor = {
 			.attr('id', 'recipe-list')
 			.appendTo($('#tabs-recipes'));
 
+		$('<ul>')
+			.attr('id', 'script-list')
+			.appendTo($('#tabs-scripts'));
+
 		$('#editor-tabs').tabs();
 		$(".tab-holder input[type=submit], .tab-holder input[type=button], .tab-holder a, .tab-holder button").button();
 
@@ -60,6 +66,9 @@ var Editor = {
 		});
 		$('#btnAddRecipe').click(function() {
 			Editor.addRecipe();
+		});
+		$('#btnAddScript').click(function() {
+			Editor.addScript();
 		});
 	},
 
@@ -80,6 +89,25 @@ var Editor = {
 			.appendTo($li);
 
 		$li.appendTo($('#animation-list'));
+	},
+
+	populateScriptList: function() {
+		$('#script-list').empty();
+		for (var i in Editor.assets.scripts)
+			Editor.addScriptToList(Editor.assets.scripts[i]);
+	},
+
+	addScriptToList: function(script) {
+		var $li = $('<li>');
+		$('<a>')
+			.text(script.name)
+			.data('script-name', script.name)
+			.click(function() {
+				Editor.editScript($(this).data('script-name'));
+			})
+			.appendTo($li);
+
+		$li.appendTo($('#script-list'));
 	},
 
 	populateRecipeList: function() {
@@ -115,5 +143,13 @@ var Editor = {
 
 	editRecipe: function(name) {
 		Editor.recipeEditor.editRecipe(name);
+	},
+
+	addScript: function() {
+		alert('Not implemented!');
+	},
+
+	editScript: function(name) {
+		alert('Not implemented!');
 	}
 }

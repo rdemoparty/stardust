@@ -1,7 +1,9 @@
 var a;
 
-function RecipeEditor(assetsInstance) {
+function RecipeEditor(assetsInstance, animationEditorInstance) {
 	var assets = assetsInstance;
+	var animationEditor = animationEditorInstance;
+	var animationPreviewer = null;
 
 	var defaultBrainContent = 
 "---------------------------------------------------------------------\n" +
@@ -27,7 +29,6 @@ function RecipeEditor(assetsInstance) {
 "    local killedEntity = Entity.from(objectPointer)\n" +
 "end";
 
-
 	var addRecipe = function() {
 		defaultRecipeToForm();
 		openDialog();
@@ -41,30 +42,45 @@ function RecipeEditor(assetsInstance) {
 		openDialog();
 	}
 
+	var showCodeInEditor = function(code) {		
+ 		$('#recipe-brain-code').ace({ 
+ 			theme: 'monokai', 
+ 			lang: 'lua' 
+ 		});
+		$('#recipe-brain-code').data('ace').editor.ace.getSession().setValue(code);
+	}
+
+	var showBrainInEditor = function(brain) {
+		$.get("/data/" + brain, function(data) {
+			showCodeInEditor(data);
+		}, 'text');
+	}
+
 	var defaultRecipeToForm = function() {
+		fillInAnimations('');
+		fillInScripts('');
 		$('#recipe-name').val("unnamed");
-		$('#recipe-animation').val('');
-		$('#recipe-brain').val('');
 		$('#recipe-damage-on-collision').val('');
-		$('#recipe-collidable').attr('checked', false);
-		$('#recipe-remove-on-death').attr('checked', false);
-		$('#recipe-kill-if-outside').attr('checked', false);
+		$('#recipe-collidable').attr('checked', true);
+		$('#recipe-remove-on-death').attr('checked', true);
+		$('#recipe-kill-if-outside').attr('checked', true);
 		$('#recipe-max-life').val('');
 		$('#recipe-team').val('');
 		$('#recipe-type').val('');
 
 		$('#dlgRecipeEditor .flags').buttonset('refresh');
- 		$('#recipe-brain-code').ace({ 
- 			theme: 'monokai', 
- 			lang: 'lua' 
- 		});
-		$('#recipe-brain-code').data('ace').editor.ace.getSession().setValue(defaultBrainContent);
+
+		// apparently the first call to creating the editor needs either the form to be visible
+		// or some delay.
+		setTimeout(function() {
+			showCodeInEditor(defaultBrainContent);
+		}, 2);
 	}
 
 	var recipeToForm = function(recipe) {
+		fillInAnimations(recipe.animation);
+		fillInScripts(recipe.brain);
 		$('#recipe-name').val(recipe.name);
-		$('#recipe-animation').val(recipe.animation);
-		$('#recipe-brain').val(recipe.brain);
 		$('#recipe-damage-on-collision').val(recipe.damageProvidedOnCollision);
 		$('#recipe-collidable').attr('checked', recipe.collidable);
 		$('#recipe-remove-on-death').attr('checked', recipe.removeOnDeath);
@@ -75,13 +91,40 @@ function RecipeEditor(assetsInstance) {
 
 		$('#dlgRecipeEditor .flags').buttonset('refresh');
 
-		$.get("/data/" + recipe.brain, function(data) {
-	 		$('#recipe-brain-code').ace({ 
-	 			theme: 'monokai', 
-	 			lang: 'lua' 
-	 		});
-			$('#recipe-brain-code').data('ace').editor.ace.getSession().setValue(data);
-		}, 'text');
+		showBrainInEditor(recipe.brain);
+	}
+
+	var recipeFromForm = function() {
+		return {
+			'name': $('#recipe-name').val().trim(),
+			'animation': $('#recipe-animation').val(),
+			'brain': $('#recipe-brain').val(),
+			'damageProvidedOnCollision': $('#recipe-damage-on-collision').val(),
+			'collidable': $('#recipe-collidable').is(':checked'),
+			'removeOnDeath': $('#recipe-remove-on-death').is(':checked'),
+			'killIfOutside': $('#recipe-kill-if-outside').is(':checked'),
+			'maxLife': $('#recipe-max-life').val(),
+			'team': $('#recipe-team').val(),
+			'type': $('#recipe-type').val()
+		};
+	}
+
+	var previewEntity = function() {
+		assets.stashRecipes();
+
+		var recipe = recipeFromForm();
+		recipe.name = '__preview_entity';
+		recipe.brain = 'scripts/__preview_brain.lua';
+	
+		var brainContent = $('#recipe-brain-code').data('ace').editor.ace.getSession().getValue();
+		Utils.saveContentAsFile(brainContent, recipe.brain, 'text/plain', function() {
+			assets.addRecipe(recipe);
+			assets.saveRecipes(function() {
+				$.getJSON('/editor/preview-entity/' + recipe.name, function(data) {
+					assets.restoreRecipes();
+				});
+			});
+		});
 	}
 
 	var openDialog = function() {
@@ -89,11 +132,17 @@ function RecipeEditor(assetsInstance) {
 			width: '1200',
 			height: '560',
 			modal: true,
-			open: function() {
+			open: function() {				
+				animationPreviewer.start();
+				animationPreviewer.preview($('#recipe-animation').val());
 			},
 			close: function() {
+				animationPreviewer.stop();
 			},
 			buttons: {
+				'Preview': function() {
+					previewEntity();
+				},
 				'Ok': function() {
 					$(this).dialog("close");
 				},
@@ -104,7 +153,48 @@ function RecipeEditor(assetsInstance) {
 		});
 	}
 
-	var brainEditor;
+	var fillInAnimations = function(selectedAnimName) {
+		var $list = $('#recipe-animation').empty();
+		$('<option>')
+			.val("")
+			.text("")
+			.appendTo($list);	
+		$('<option>')
+			.val("_new_anim_")
+			.text("--- New Animation ---")
+			.appendTo($list);	
+		for (var i in assets.animations) {
+			$('<option>')
+				.val(assets.animations[i].name)
+				.text(assets.animations[i].name)
+				.appendTo($list);				
+		}
+
+		if (typeof selectedAnimName != 'undefined')
+			$list.val(selectedAnimName);
+	}
+
+	var fillInScripts = function(selectedBrainName) {
+		var $list = $('#recipe-brain').empty();
+		$('<option>')
+			.val("")
+			.text("")
+			.appendTo($list);	
+		$('<option>')
+			.val("_new_brain_")
+			.text("--- New Brain ---")
+			.appendTo($list);	
+		for (var i in assets.scripts) {
+			$('<option>')
+				.val(assets.scripts[i].uri)
+				.text(assets.scripts[i].name)
+				.appendTo($list);				
+		}
+
+		if (typeof selectedBrainName != 'undefined')
+			$list.val(selectedBrainName);
+	}
+
 	var createMarkup = function() {
 		console.log('Creating recipe editor markup');
 		var $dialog = $('<div>')
@@ -132,13 +222,13 @@ function RecipeEditor(assetsInstance) {
 					"<div class=\"row\">" +
 						"<div class=\"label\">Animation</div>" + 
 						"<div class=\"field\">" + 
-							"<input type=\"text\" id=\"recipe-animation\" value=\"\" />" +
+							"<select id=\"recipe-animation\"></select>" + 
 						"</div>" + 
 					"</div>" + 
 					"<div class=\"row\">" +
 						"<div class=\"label\">Brain</div>" + 
 						"<div class=\"field\">" + 
-							"<input type=\"text\" id=\"recipe-brain\" value=\"\" />" +
+							"<select id=\"recipe-brain\"></select>" + 
 						"</div>" + 
 					"</div>" + 
 					"<div class=\"row\">" +
@@ -175,6 +265,9 @@ function RecipeEditor(assetsInstance) {
 							"</select>" +
 						"</div>" + 
 					"</div>" + 
+					"<div class=\"row\">" +
+						"<canvas id=\"recipe-animation-preview-canvas\" width=\"320\" height=\"200\"></canvas>" +
+					"</div>" +
 				"</div>" +
 				"<div id=\"recipe-work-area\">" + 
 					"<div id=\"recipe-tabs\">" +
@@ -183,7 +276,7 @@ function RecipeEditor(assetsInstance) {
 							"<li><a href=\"#recipe-tab-collision-hull\">Collision Hull</a></li>" + 
 						"</ul>" + 
 						"<div id=\"recipe-tab-brain\" class=\"tab-holder\">" + 
-							"<textarea id=\"recipe-brain-code\" rows=\"20\">" + defaultBrainContent + "</textarea>"
+							"<textarea id=\"recipe-brain-code\" rows=\"20\"></textarea>"
 						"</div>" + 
 						"<div id=\"recipe-tab-collision-hull\" class=\"tab-holder\">" + 
 						"</div>" + 
@@ -193,8 +286,37 @@ function RecipeEditor(assetsInstance) {
 		$(dialogContent).appendTo($dialog);
 		$dialog.appendTo($("body"));
 
+		fillInAnimations('');
+		fillInScripts('');
+
 		$('#recipe-tabs').tabs();
 		$('.flags', $dialog).buttonset();
+
+		$('#recipe-animation').change(function() {
+			if ($(this).val() == '_new_anim_') {
+				animationEditor.addAnimation(function(newAnimName) {
+					fillInAnimations(newAnimName);
+				})
+				$(this).val(""); // if we escape from animation editor without saving, we want to reset state
+			} else {
+				console.log("Selected animation " + $(this).val());
+				animationPreviewer.preview($(this).val());
+			}
+		});
+
+		$('#recipe-brain').change(function() {
+			if ($(this).val() == '_new_brain_') {
+				brainEditor.addBrain(function(newBrainName) {
+					fillInScripts(newBrainName);
+				})
+				$(this).val(""); // if we escape from brain editor without saving, we want to reset state
+			} else {
+				console.log("Selected brain " + $(this).val());
+				showBrainInEditor($(this).val());
+			}
+		});
+
+		animationPreviewer = new AnimationPreviewer(assets, document.getElementById('recipe-animation-preview-canvas')); 
 	}
 
 	createMarkup();

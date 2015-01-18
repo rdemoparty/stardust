@@ -214,15 +214,21 @@ namespace Acidrain {
     }
 
     void GameObjectFactory::initialize(string filename) {
+        recipes.clear();
+        brains.clear();
+
         LOG(INFO) << "Loading game objects repository from " << filename;
         string content = FILESYS.getFileContent(filename);
 
         string parseError;
         auto json = Json::parse(content, parseError);
-        if (parseError.empty())
-            for (auto& k : json["recipes"].array_items())
+        if (parseError.empty()) {
+            for (auto& k : json["recipes"].array_items()) {
                 addRecipe(readGameObjectRecipe(k));
-        else
+            }
+        } else {
+            LOG(INFO) << "Error while parsing JSON content from " << filename << ". Error: " << parseError;
             LOG(FATAL) << "Error while parsing JSON content from " << filename << ". Error: " << parseError;
+        }
     }
 } // namespace Acidrain

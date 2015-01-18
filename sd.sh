@@ -54,7 +54,7 @@ function package_project {
 }
 
 function start_editor {
-	run_project --width 1024 --height 768 --editor --fullscreen=false
+	run_project --width 1024 --height 768 --editor --fullscreen=false -v
 }
 
 function build_project {
