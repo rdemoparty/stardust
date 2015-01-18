@@ -9,8 +9,13 @@
 #include <CommandLineParser.h>
 #include <FileSystem.h>
 #include <sstream>
+#include <StringUtils.h>
+#include <Level.h>
+#include <Scene.h>
+#include <GameStatePreviewEntity.h>
 
 namespace Acidrain {
+
     GameStateEditor& GameStateEditor::instance() {
         static GameStateEditor instance;
         return instance;
@@ -67,6 +72,8 @@ namespace Acidrain {
 
         return result;
     }
+
+    static Stardust* theGame = nullptr;
 
     static int handleRequest(struct mg_connection* conn) {
         string URI = conn->uri;
@@ -128,6 +135,21 @@ namespace Acidrain {
             }
         }
 
+        if (stringStartsWith(URI, "/editor/preview-entity")) {
+            vector<string> pieces = StringUtils::split(URI, '/');
+            string entityName = pieces.at(pieces.size() - 1);
+            if (theGame != nullptr) {
+                LOG(INFO) << "Previewing entity " << entityName;
+                GameStatePreviewEntity::instance().previewEntity(entityName);
+                theGame->fsm->changeState(&GameStatePreviewEntity::instance());
+            }
+
+            mg_send_header(conn, "Content-Type", "application/json");
+            mg_printf_data(conn, "{\"status\": {\"code\": \"OK\"}}");
+
+            return MG_TRUE;
+        }
+
         return MG_FALSE;
     }
 
@@ -145,6 +167,7 @@ namespace Acidrain {
     static struct mg_server* server = nullptr;
 
     void GameStateEditor::onEnter(Stardust* game) {
+        theGame = game;
         if (!font)
             font = make_shared<Font>("fonts/Neo Sans Pro Bold.ttf", 20.0f);
 
@@ -163,20 +186,24 @@ namespace Acidrain {
 
     void GameStateEditor::onExit(Stardust* game) {
         mg_destroy_server(&server);
+        theGame = nullptr;
     }
 
     void GameStateEditor::update(Stardust* game, float elapsedSeconds) {
-        if (INPUT.isKeyJustPressed(SDL_SCANCODE_ESCAPE))
+        if (INPUT.isKeyJustPressed(SDL_SCANCODE_ESCAPE) && game->fsm->getCurrentState() == nullptr) {
             game->quitGame = true;
+        }
 
-        mg_poll_server(server, 100);
+        mg_poll_server(server, 10);
     }
 
     void GameStateEditor::render(Stardust* game, float alpha) {
-        GFXSYS.clearScreen();
+        if (game->fsm->getCurrentState() == nullptr) {
+            GFXSYS.clearScreen();
 
-        GFXSYS.setTransparencyMode(TransparencyMode::Additive);
-        font->print(100, 100, "Editor mode. Waiting for commands", vec4(1, 1, 1, 0.8f));
-        GFXSYS.show();
+            GFXSYS.setTransparencyMode(TransparencyMode::Additive);
+            font->print(100, 100, "Editor mode. Waiting for commands", vec4(1, 1, 1, 0.8f));
+            GFXSYS.show();
+        }
     }
 } // namespace Acidrain

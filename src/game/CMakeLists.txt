@@ -10,8 +10,10 @@ set(HEADERS
    ${CMAKE_CURRENT_SOURCE_DIR}/GameStateIntro.h
    ${CMAKE_CURRENT_SOURCE_DIR}/GameStateMenu.h
    ${CMAKE_CURRENT_SOURCE_DIR}/GameStatePlayLevel.h
+   ${CMAKE_CURRENT_SOURCE_DIR}/GameStatePreviewEntity.h
    ${CMAKE_CURRENT_SOURCE_DIR}/Level.h
    ${CMAKE_CURRENT_SOURCE_DIR}/LevelScript.h
+   ${CMAKE_CURRENT_SOURCE_DIR}/LevelScriptPreviewEntity.h
    ${CMAKE_CURRENT_SOURCE_DIR}/Scene.h
    ${CMAKE_CURRENT_SOURCE_DIR}/ScriptedBrain.h
    ${CMAKE_CURRENT_SOURCE_DIR}/SpriteAnimationRepository.h
@@ -31,8 +33,10 @@ set(SOURCE
    ${CMAKE_CURRENT_SOURCE_DIR}/GameStateEditor.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/GameStateMenu.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/GameStatePlayLevel.cpp
+   ${CMAKE_CURRENT_SOURCE_DIR}/GameStatePreviewEntity.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/Level.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/LevelScript.cpp
+   ${CMAKE_CURRENT_SOURCE_DIR}/LevelScriptPreviewEntity.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/Scene.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/ScriptedBrain.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/SpriteAnimationRepository.cpp

@@ -26,16 +26,17 @@ namespace Acidrain {
 
         void load(string scriptURI);
 
-        void reset();
+        virtual void reset();
 
-        void update(float elapsedSeconds);
+        virtual void update(float elapsedSeconds);
+
+    protected:
+        Scene* scene;
 
     private:
-
-        Scene* scene;
         float timeUntilNextSpawn;
-        vector<LevelScriptEntry> events;
 
+        vector<LevelScriptEntry> events;
         void addEvent(LevelScriptEntry entry);
     };
 } // namespace Acidrain

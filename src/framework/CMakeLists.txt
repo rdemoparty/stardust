@@ -21,6 +21,7 @@ set(HEADERS
    ${CMAKE_CURRENT_SOURCE_DIR}/SpritePool.h
    ${CMAKE_CURRENT_SOURCE_DIR}/stb_image.h
    ${CMAKE_CURRENT_SOURCE_DIR}/stb_truetype.h
+   ${CMAKE_CURRENT_SOURCE_DIR}/StringUtils.h
    ${CMAKE_CURRENT_SOURCE_DIR}/Texture.h
    ${CMAKE_CURRENT_SOURCE_DIR}/TextureGenerator.h
    ${CMAKE_CURRENT_SOURCE_DIR}/Timer.h
@@ -48,6 +49,7 @@ set(SOURCE
    ${CMAKE_CURRENT_SOURCE_DIR}/GpuProgramConstants.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/Sprite.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/SpritePool.cpp
+   ${CMAKE_CURRENT_SOURCE_DIR}/StringUtils.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/Texture.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/TextureGenerator.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/Timer.cpp

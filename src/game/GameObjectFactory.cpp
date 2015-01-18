@@ -10,7 +10,7 @@ namespace Acidrain {
 
     using namespace json11;
 
-    bool icompare(const string& a, const string& b) {
+    inline bool icompare(const string& a, const string& b) {
         return a == b;
     }
 
@@ -175,7 +175,7 @@ namespace Acidrain {
     }
 
     GameObjectRecipe readGameObjectRecipe(const Json& element) {
-        GameObjectRecipe result = {};
+        GameObjectRecipe result;
 
         for (auto& e : element.object_items()) {
             const string& param = e.first;

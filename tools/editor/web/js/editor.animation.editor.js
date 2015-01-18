@@ -1,3 +1,5 @@
+var a;
+
 function AnimationEditor(assetsInstance, spriteSelectorInstance) {
 
 	var assets = assetsInstance;

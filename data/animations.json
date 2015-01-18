@@ -127,13 +127,13 @@
     },
     {
       "name": "enemy2",
-      "frameTimeInMilliseconds": 200,
+      "frameTimeInMilliseconds": 40,
       "loopType": "REVERSE",
       "frames": [
         {
-          "spriteSheet": "enemyship2b",
+          "spriteSheet": "enemy1",
           "index": 0,
-          "indexTo": 7
+          "indexTo": 15
         }
       ]
     },

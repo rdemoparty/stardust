@@ -50,6 +50,7 @@ namespace Acidrain {
                 LOG(WARNING) << "Unknown level script event attribute \"" << param << "\"";
             }
         }
+        return result;
     }
 
     void LevelScript::load(string scriptURI) {

@@ -18,12 +18,11 @@
 #endif
 
 #ifdef _WIN32
+    #include <tchar.h>
 #else
-
-#include <sys/types.h>
-#include <unistd.h>
-#include <dirent.h>
-
+    #include <sys/types.h>
+    #include <unistd.h>
+    #include <dirent.h>
 #endif
 
 
@@ -150,24 +149,51 @@ namespace Acidrain {
         LOG(INFO) << "Shutting down file system";
     }
 
-    vector<FileInfo> FileSystem::filesInDirectory(string directoryURI) {
-        vector<FileInfo> result;
+    #if defined _WIN32 || defined _WIN64
 
-        DIR* dir = opendir(absolutePath(directoryURI).c_str());
-        if (dir != nullptr) {
-            struct dirent* entry;
-            while ((entry = readdir(dir)) != nullptr) {
-                FileInfo info;
-                info.filename = entry->d_name;
-                info.uri = (directoryURI.empty() ? "" : directoryURI + "/") + info.filename;
-                info.isDirectory = entry->d_type == DT_DIR;
-                result.push_back(info);
+        vector<FileInfo> FileSystem::filesInDirectory(string directoryURI) {
+            vector<FileInfo> result;
+
+            HANDLE dir;
+            WIN32_FIND_DATA fileData;
+            std::string fileName;
+            if ((dir = FindFirstFile(_T((directoryURI +  "/*").c_str()), &fileData)) == INVALID_HANDLE_VALUE) {
+                return result;
             }
-            closedir(dir);
-        }
 
-        return result;
-    }
+            while (FindNextFile(dir, &fileData)) {
+                fileName = fileData.cFileName;
+                if (fileName !=  "." && fileName != "..") {
+                    FileInfo info;
+                    info.filename = fileName;
+                    info.uri = (directoryURI.empty() ? "" : directoryURI + "/") + info.filename;
+                    info.isDirectory = fileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY;
+                    result.push_back(info);
+                }
+            }
+
+            return result;
+        }
+    #else
+        vector<FileInfo> FileSystem::filesInDirectory(string directoryURI) {
+            vector<FileInfo> result;
+
+            DIR* dir = opendir(absolutePath(directoryURI).c_str());
+            if (dir != nullptr) {
+                struct dirent* entry;
+                while ((entry = readdir(dir)) != nullptr) {
+                    FileInfo info;
+                    info.filename = entry->d_name;
+                    info.uri = (directoryURI.empty() ? "" : directoryURI + "/") + info.filename;
+                    info.isDirectory = entry->d_type == DT_DIR;
+                    result.push_back(info);
+                }
+                closedir(dir);
+            }
+
+            return result;
+        }
+    #endif
 
     vector<FileInfo> FileSystem::filesInDirectoryRecursive(string directoryURI, vector<FileInfo> filesSoFar) {
         vector<FileInfo> result = filesSoFar;

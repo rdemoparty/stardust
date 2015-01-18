@@ -1,3 +1,5 @@
+var a;
+
 function RecipeEditor(assetsInstance) {
 	var assets = assetsInstance;
 

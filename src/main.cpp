@@ -36,10 +36,11 @@ int main(int argc, char** argv) {
         Timer timer;
         Stardust game;
 
-        if (FLAG_editor)
-            game.fsm->changeState(&GameStateEditor::instance());
-        else
+        if (FLAG_editor) {
+            game.fsm->setGlobalState(&GameStateEditor::instance());
+        } else {
             game.fsm->changeState(&GameStateIntro::instance());
+        }
 
         double dt = 1.0 / 20.0;
         double accumulator = 0;

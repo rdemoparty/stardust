@@ -1,3 +1,5 @@
+var a;
+
 function SpriteSelector(assetsInstance, spriteSheetEditorInstance) {
 
 	var assets = assetsInstance;

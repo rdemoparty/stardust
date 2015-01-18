@@ -26,12 +26,21 @@ namespace Acidrain {
             currentState = s;
         }
 
+        GameState<T>* getCurrentState() {
+            return currentState;
+        }
+
         void setPreviousState(GameState<T>* s) {
             previousState = s;
         }
 
         void setGlobalState(GameState<T>* s) {
+            if (globalState != nullptr)
+                globalState->onExit(owner);
+
             globalState = s;
+            if (globalState != nullptr)
+                globalState->onEnter(owner);
         }
 
         void update(float elapsedMilliseconds) {
@@ -56,7 +65,8 @@ namespace Acidrain {
                 currentState->onExit(owner);
 
             currentState = s;
-            currentState->onEnter(owner);
+            if (currentState != nullptr)
+                currentState->onEnter(owner);
         }
 
         void revertToPreviousState() {
