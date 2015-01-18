@@ -8,7 +8,8 @@ function onSpawn(objectPointer)
     o:setFloat("speed", 1.5)
     local x, y = o:getPosition()
     o:setFloat("y", y)
-    o:setScale(0.65)
+    o:setScale(2.65)
+    o:setFloat("t", 0)
 
 end
 
@@ -21,8 +22,12 @@ function onUpdate(objectPointer, elapsedSeconds)
     local phase = o:getFloat("phase") + o:getFloat("speed") * math.pi * elapsedSeconds
     o:setFloat("phase", phase)
 
+    local t = o:getFloat("t")
+    t = t + 100 * elapsedSeconds
+    o:setFloat("t", t)
+    
     local x, y = o:getPosition()
-    y = o:getFloat("y") + math.sin(phase) * 10
+    y = o:getFloat("y") + math.sin(phase) * 10 + t
     o:setPosition(x, y)
 
     -- if o:isAnimationFinished() then

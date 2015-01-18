@@ -29,17 +29,136 @@ function RecipeEditor(assetsInstance, animationEditorInstance) {
 "    local killedEntity = Entity.from(objectPointer)\n" +
 "end";
 
-	var addRecipe = function() {
+	var EDITING_MODE = {
+		NONE: 0,
+		ADD_NEW: 1,
+		EDIT_EXISTING: 2
+	};
+
+	var editMode = EDITING_MODE.NONE;
+	var originalRecipeName;
+	var successCallback;
+
+	var addRecipe = function(callback) {
+		editMode = EDITING_MODE.ADD_NEW;
+		successCallback = callback;
+
 		defaultRecipeToForm();
 		openDialog();
 	}
 
-	var editRecipe = function(name) {
+	var editRecipe = function(name, callback) {
+		editMode = EDITING_MODE.EDIT_EXISTING;
+		originalRecipeName = name;
+		successCallback = callback;
+
 		var recipe = assets.recipeByName(name);
 		if (recipe != null) {
 			recipeToForm(recipe);
 		}
 		openDialog();
+	}
+
+	var saveRecipe = function() {
+		var recipe = recipeFromForm();
+		if (!isRecipeValid(recipe))
+			return false;
+
+		if (editMode == EDITING_MODE.ADD_NEW) {
+			var existingRecipe = assets.recipeByName(recipe.name);
+			if (existingRecipe != null) {
+				alert('A recipe with this name already exists');
+				$('#recipe-name').select().focus();
+				return false;
+			}
+			assets.addRecipe(recipe);
+			var brainContent = $('#recipe-brain-code').data('ace').editor.ace.getSession().getValue();
+			assets.saveRecipes(function() {
+				Utils.saveContentAsFile(brainContent, recipe.brain, 'text/plain');
+			});
+			return true;
+		} else if (editMode == EDITING_MODE.EDIT_EXISTING) {
+			console.log('saving recipe after edit');
+			var recipeNameChanged = recipe.name != originalRecipeName;
+			if (recipeNameChanged) {
+				console.log('recipe name changed');
+				var otherRecipe = assets.recipeByName(recipe.name);
+				if (otherRecipe !== null) {
+					alert('A recipe with this name already exists!');
+					$('#recipe-name').select().focus();
+					return false;
+				}
+				assets.renameRecipe(originalRecipeName, recipe.name);
+			}
+			assets.copyRecipeDataFrom(recipe, recipe.name);
+
+			var brainContent = $('#recipe-brain-code').data('ace').editor.ace.getSession().getValue();
+			assets.saveRecipes(function() {
+				Utils.saveContentAsFile(brainContent, recipe.brain, 'text/plain');
+			});
+			return true;
+		}
+		return false;
+	}
+
+	var isRecipeValid = function(recipe) {
+		if (recipe.name == '') {
+			alert('Need to set a name!');
+			$('#recipe-name').select().focus();
+			return false;
+		}
+
+		if (recipe.animation == '') {
+			alert('Need to set an animation!');
+			$('#recipe-animation').focus();
+			return false;
+		}
+
+		if (recipe.brain == '') {
+			alert('Need to set brain!');
+			$('#recipe-brain').focus();
+			return false;
+		}
+
+		try {
+			var damageOnCollision = parseInt(recipe.damageProvidedOnCollision);
+			recipe.damageProvidedOnCollision = damageOnCollision;
+		} catch (e) {
+			alert('Invalid damage on collision!');
+			$('#recipe-damage-on-collision').select().focus();
+		}
+
+		try {
+			var maxLife = parseInt(recipe.maxLife);
+			recipe.maxLife = maxLife;
+			if (maxLife < 0) {
+				alert('Invalid max life!');
+				$('#recipe-max-life').select().focus();
+			}
+		} catch (e) {
+			alert('Invalid max life!');
+			$('#recipe-max-life').select().focus();
+		}
+
+		return true;
+	}
+
+	var previewEntity = function() {
+		assets.stashRecipes();
+
+		var recipe = recipeFromForm();
+		recipe.name = '__preview_entity';
+		recipe.brain = 'scripts/__preview_brain.lua';
+	
+		var brainContent = $('#recipe-brain-code').data('ace').editor.ace.getSession().getValue();
+		Utils.saveContentAsFile(brainContent, recipe.brain, 'text/plain', function() {
+			assets.addRecipe(recipe);
+			assets.saveRecipes(function() {
+				$.getJSON('/editor/preview-entity/' + recipe.name, function(data) {
+					assets.restoreRecipes();
+				});
+			});
+		});
 	}
 
 	var showCodeInEditor = function(code) {		
@@ -109,24 +228,6 @@ function RecipeEditor(assetsInstance, animationEditorInstance) {
 		};
 	}
 
-	var previewEntity = function() {
-		assets.stashRecipes();
-
-		var recipe = recipeFromForm();
-		recipe.name = '__preview_entity';
-		recipe.brain = 'scripts/__preview_brain.lua';
-	
-		var brainContent = $('#recipe-brain-code').data('ace').editor.ace.getSession().getValue();
-		Utils.saveContentAsFile(brainContent, recipe.brain, 'text/plain', function() {
-			assets.addRecipe(recipe);
-			assets.saveRecipes(function() {
-				$.getJSON('/editor/preview-entity/' + recipe.name, function(data) {
-					assets.restoreRecipes();
-				});
-			});
-		});
-	}
-
 	var openDialog = function() {
 		$("#dlgRecipeEditor").dialog({
 			width: '1200',
@@ -144,7 +245,13 @@ function RecipeEditor(assetsInstance, animationEditorInstance) {
 					previewEntity();
 				},
 				'Ok': function() {
-					$(this).dialog("close");
+					if (saveRecipe()) {
+						Editor.populateRecipeList();
+						$(this).dialog("close");
+						if (typeof successCallback != 'undefined') {
+							successCallback($('#recipe-name').val());
+						}
+					}
 				},
 				'Cancel': function() {
 					$(this).dialog("close");

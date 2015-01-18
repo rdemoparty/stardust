@@ -301,7 +301,19 @@ Assets.prototype.renameAnimation = function(oldName, newName) {
 	}
 
 	// fix references
-	console.log('TODO: renamed animation from ' + oldName + ' to ' + newName + '. Need to fix recipe references to animations');
+	for (i = 0; i < 10; i++)
+		console.log('TODO: renamed animation from ' + oldName + ' to ' + newName + '. Need to fix recipe references to animations');
+}
+
+Assets.prototype.renameRecipe = function(oldName, newName) {
+	var existingRecipe = this.recipeByName(oldName);
+	if (existingRecipe !== null) {
+		existingRecipe.name = newName;
+	}
+
+	// fix references
+	for (i = 0; i < 10; i++)
+		console.log('TODO: renamed recipe from ' + oldName + ' to ' + newName + '. Need to fix level references to recipe');
 }
 
 Assets.prototype.copyAnimationDataFrom = function(animation, name) {
@@ -321,6 +333,22 @@ Assets.prototype.copyAnimationDataFrom = function(animation, name) {
 				existingAnimation.frames[existingAnimation.frames.length - 1]['indexTo'] = animation.frames[i].indexTo;
 			}
 		}
+	}
+}
+
+Assets.prototype.copyRecipeDataFrom = function(recipe, name) {
+	var existingRecipe = this.recipeByName(name);
+	if (existingRecipe !== null) {
+		existingRecipe.name = recipe.name;
+		existingRecipe.animation = recipe.animation;
+		existingRecipe.brain = recipe.brain;
+		existingRecipe.damageProvidedOnCollision = recipe.damageProvidedOnCollision;
+		existingRecipe.collidable = recipe.collidable;
+		existingRecipe.removeOnDeath = recipe.removeOnDeath;
+		existingRecipe.killIfOutside = recipe.killIfOutside;
+		existingRecipe.maxLife = recipe.maxLife;
+		existingRecipe.team = recipe.team;
+		existingRecipe.type = recipe.type;
 	}
 }
 
