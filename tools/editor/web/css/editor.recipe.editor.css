@@ -19,7 +19,7 @@
 }
 
 #recipe-editor-sidebar .row {
-	width: 30em;
+	width: 28em;
 	float: left;
 	clear: both;
 	margin-bottom: 0.2em;
@@ -36,11 +36,11 @@
 }
 
 #recipe-editor-sidebar .row input[type=text] {
-	width: 16em;
+	width: 14em;
 }
 
 #recipe-editor-sidebar .row select {
-	width: 16em;
+	width: 14em;
 }
 
 #recipe-editor-sidebar .row label {

@@ -231,7 +231,7 @@ function RecipeEditor(assetsInstance, animationEditorInstance) {
 	var openDialog = function() {
 		$("#dlgRecipeEditor").dialog({
 			width: '1200',
-			height: '560',
+			height: '610',
 			modal: true,
 			open: function() {				
 				animationPreviewer.start();
