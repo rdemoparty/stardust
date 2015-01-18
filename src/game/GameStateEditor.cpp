@@ -35,7 +35,7 @@ namespace Acidrain {
 
     void persistFile(const string& path, const string& content) {
         ofstream out;
-        out.open(path);
+        out.open(path, ios :: out | ios :: binary);
         out << content;
         out.close();
     }
