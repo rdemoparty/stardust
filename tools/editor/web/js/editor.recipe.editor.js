@@ -257,6 +257,14 @@ function RecipeEditor(assetsInstance, animationEditorInstance) {
 				animationPreviewer.preview($('#recipe-animation').val());
 
 				editedHull = JSON.parse($('#recipe-hull').val());
+				for (var i in editedHull) {
+					if (!('x' in editedHull[i]))
+						editedHull[i].x = 0;
+
+					if (!('y' in editedHull[i]))
+						editedHull[i].y = 0;
+				}
+
 				collisionHullEditor.start(editedHull, $('#recipe-animation').val());
 			},
 			close: function() {
