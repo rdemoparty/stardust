@@ -88,7 +88,7 @@ namespace Acidrain {
             if (startDir[0] == '/')
                 startDir = startDir.substr(1);
 
-            vector<FileInfo> files = FILESYS.filesInDirectoryRecursive(FILESYS.absolutePath(startDir));
+            vector<FileInfo> files = FILESYS.filesInDirectoryRecursive(startDir);
             bool isFirst = true;
             for (auto& f : files) {
                 if (isFirst)

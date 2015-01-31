@@ -157,7 +157,7 @@ namespace Acidrain {
             HANDLE dir;
             WIN32_FIND_DATA fileData;
             std::string fileName;
-            if ((dir = FindFirstFile(_T((directoryURI +  "/*").c_str()), &fileData)) == INVALID_HANDLE_VALUE) {
+            if ((dir = FindFirstFile(_T((absolutePath(directoryURI) +  "/*").c_str()), &fileData)) == INVALID_HANDLE_VALUE) {
                 return result;
             }
 
