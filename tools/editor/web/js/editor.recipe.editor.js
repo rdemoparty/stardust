@@ -452,10 +452,15 @@ function RecipeEditor(assetsInstance, animationEditorInstance) {
 
 		$('#recipe-brain').change(function() {
 			if ($(this).val() == '_new_brain_') {
-				brainEditor.addBrain(function(newBrainName) {
-					fillInScripts(newBrainName);
-				})
-				$(this).val(""); // if we escape from brain editor without saving, we want to reset state
+				var brainName = prompt("Insert a new brain filename", "");
+				if (brainName.trim() != "") {
+					var brainURI = 'scripts/' + brainName;
+					Utils.saveContentAsFile(defaultBrainContent, brainURI, 'text/plain', function() {
+						fillInScripts(brainURI);
+					});
+				} else {
+					$(this).val(""); // if we escape from brain editor without saving, we want to reset state
+				}
 			} else {
 				console.log("Selected brain " + $(this).val());
 				showBrainInEditor($(this).val());
