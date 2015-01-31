@@ -1,9 +1,20 @@
 var a;
 
+function toInt(value, defaultValue) {
+	try {
+		var i = parseInt(value);
+		return isNaN(i) ? defaultValue : i;
+	} catch (e) {
+		return defaultValue;
+	}
+}
+
 function RecipeEditor(assetsInstance, animationEditorInstance) {
 	var assets = assetsInstance;
 	var animationEditor = animationEditorInstance;
 	var animationPreviewer = null;
+	var collisionHullEditor = null;
+	var editedHull = [];
 
 	var defaultBrainContent = 
 "---------------------------------------------------------------------\n" +
@@ -187,6 +198,8 @@ function RecipeEditor(assetsInstance, animationEditorInstance) {
 		$('#recipe-team').val('');
 		$('#recipe-type').val('');
 
+		$('#recipe-hull').val(JSON.stringify([], null, 2));
+
 		$('#dlgRecipeEditor .flags').buttonset('refresh');
 
 		// apparently the first call to creating the editor needs either the form to be visible
@@ -208,6 +221,11 @@ function RecipeEditor(assetsInstance, animationEditorInstance) {
 		$('#recipe-team').val(recipe.team);
 		$('#recipe-type').val(recipe.type);
 
+		if ('hull' in recipe)
+			$('#recipe-hull').val(JSON.stringify(recipe.hull, null, 2));
+		else
+			$('#recipe-hull').val(JSON.stringify([], null, 2));
+
 		$('#dlgRecipeEditor .flags').buttonset('refresh');
 
 		showBrainInEditor(recipe.brain);
@@ -218,13 +236,14 @@ function RecipeEditor(assetsInstance, animationEditorInstance) {
 			'name': $('#recipe-name').val().trim(),
 			'animation': $('#recipe-animation').val(),
 			'brain': $('#recipe-brain').val(),
-			'damageProvidedOnCollision': $('#recipe-damage-on-collision').val(),
+			'damageProvidedOnCollision': toInt($('#recipe-damage-on-collision').val(), 0),
 			'collidable': $('#recipe-collidable').is(':checked'),
 			'removeOnDeath': $('#recipe-remove-on-death').is(':checked'),
 			'killIfOutside': $('#recipe-kill-if-outside').is(':checked'),
-			'maxLife': $('#recipe-max-life').val(),
+			'maxLife': toInt($('#recipe-max-life').val(), 0),
 			'team': $('#recipe-team').val(),
-			'type': $('#recipe-type').val()
+			'type': $('#recipe-type').val(),
+			'hull': JSON.parse($('#recipe-hull').val())
 		};
 	}
 
@@ -236,16 +255,22 @@ function RecipeEditor(assetsInstance, animationEditorInstance) {
 			open: function() {				
 				animationPreviewer.start();
 				animationPreviewer.preview($('#recipe-animation').val());
+
+				editedHull = JSON.parse($('#recipe-hull').val());
+				collisionHullEditor.start(editedHull, $('#recipe-animation').val());
 			},
 			close: function() {
 				animationPreviewer.stop();
+				collisionHullEditor.stop();
 			},
 			buttons: {
 				'Preview': function() {
 					previewEntity();
 				},
 				'Ok': function() {
+					$('#recipe-hull').val(JSON.stringify(editedHull, null, 2));
 					if (saveRecipe()) {
+						// TODO: this should go in the success callback, lowering the coupling
 						Editor.populateRecipeList();
 						$(this).dialog("close");
 						if (typeof successCallback != 'undefined') {
@@ -350,6 +375,8 @@ function RecipeEditor(assetsInstance, animationEditorInstance) {
 							"<input type=\"text\" id=\"recipe-max-life\" value=\"\" />" +
 						"</div>" + 
 					"</div>" + 
+					// this one holds the JSON representation of the collision hull
+					"<input type=\"hidden\" id=\"recipe-hull\" value=\"\" />" +
 					"<div class=\"row\">" +
 						"<div class=\"label\">Team</div>" + 
 						"<div class=\"field\">" + 
@@ -382,10 +409,13 @@ function RecipeEditor(assetsInstance, animationEditorInstance) {
 							"<li><a href=\"#recipe-tab-brain\">Brain</a></li>" + 
 							"<li><a href=\"#recipe-tab-collision-hull\">Collision Hull</a></li>" + 
 						"</ul>" + 
+						"<div id=\"recipe-tab-collision-hull\" class=\"tab-holder\">" + 
+							"<canvas id=\"recipe-collision-hull-canvas\" width=\"480\" height=\"400\"></canvas>" +
+							"<div id=\"recipe-collision-hull-items\">" + 
+							"</div>" + 
+						"</div>" + 
 						"<div id=\"recipe-tab-brain\" class=\"tab-holder\">" + 
 							"<textarea id=\"recipe-brain-code\" rows=\"20\"></textarea>"
-						"</div>" + 
-						"<div id=\"recipe-tab-collision-hull\" class=\"tab-holder\">" + 
 						"</div>" + 
 					"</div>"
 				"</div>" + 
@@ -408,6 +438,7 @@ function RecipeEditor(assetsInstance, animationEditorInstance) {
 			} else {
 				console.log("Selected animation " + $(this).val());
 				animationPreviewer.preview($(this).val());
+				collisionHullEditor.start(editedHull, $(this).val());
 			}
 		});
 
@@ -424,6 +455,11 @@ function RecipeEditor(assetsInstance, animationEditorInstance) {
 		});
 
 		animationPreviewer = new AnimationPreviewer(assets, document.getElementById('recipe-animation-preview-canvas')); 
+		collisionHullEditor = new CollisionHullEditor(
+			assets, 
+			document.getElementById('recipe-collision-hull-canvas'), 
+			document.getElementById('recipe-collision-hull-items')
+		);
 	}
 
 	createMarkup();

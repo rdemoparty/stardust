@@ -1,0 +1,52 @@
+#recipe-collision-hull-canvas {
+	/*border: 1px solid red;*/
+	display: block;
+	float: left;
+}
+
+#recipe-tab-collision-hull {
+	float: left;
+	width: 100%;
+}
+
+
+#recipe-collision-hull-items {
+	float: left;
+	/*background-color: green;*/
+	/*width: 200px;*/
+}
+
+.hull-item-row {
+	float: left;
+	width: 100%;
+	clear: both;
+	cursor: pointer;
+	background-color: #333;
+}
+
+#recipe-collision-hull-items > .selected {
+	background-color: red;
+}
+
+
+.hull-item-cell {
+	float: left;
+	margin-right: 0.1em;
+	margin-bottom: 0.1em;
+	text-align: right;
+}
+
+.selected > .hull-item-cell {
+	/*background-color: red;*/
+}
+
+.hull-item-x {
+	width: 4em;
+}
+
+.hull-item-y {
+	width: 4em;
+}
+.hull-item-radius {
+	width: 4em;
+}

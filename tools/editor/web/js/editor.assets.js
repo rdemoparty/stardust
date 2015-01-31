@@ -349,6 +349,14 @@ Assets.prototype.copyRecipeDataFrom = function(recipe, name) {
 		existingRecipe.maxLife = recipe.maxLife;
 		existingRecipe.team = recipe.team;
 		existingRecipe.type = recipe.type;
+		existingRecipe.hull = [];
+		if ('hull' in recipe)
+			for (var i in recipe.hull)
+				existingRecipe.hull[existingRecipe.hull.length] = {
+					'x': recipe.hull[i].x,
+					'y': recipe.hull[i].y,
+					'radius': recipe.hull[i].radius
+				}
 	}
 }
 
