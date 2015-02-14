@@ -10,8 +10,36 @@ function LevelEditor(assetsInstance) {
 		console.log('Editing level ' + name);
 	}
 
-	var addNewSpriteAt = function(x, y) {
+	var levelFromDesign = function() {
+		var levelHeight = $('#level').height();
+		level.events = [];
 
+		$('.level-sprite', '#level').each(function() {
+			var $this = $(this);
+			var recipeName = $this.data('recipe')
+			var width = $this.width();
+			var height = $this.height();
+			var position = $this.position();
+			 // div position coords refer to the top-left corner
+			var placementX = position.left + width / 2;
+			var placementY = position.top + height / 2;
+
+			level.events.push({
+				"recipe": recipeName, 
+				"x": placementX,
+				"y": levelHeight - placementY,
+				"layer": 0
+			});
+		});
+	}
+
+	var saveLevel = function(successCallback) {
+		levelFromDesign();
+		var serializedLevel = JSON.stringify(level, null, 2);
+		Utils.saveContentAsFile(serializedLevel, 'levels/level1.json', 'application/json', successCallback);
+	}
+
+	var addNewSpriteAt = function(x, y) {
 		var recipeName = prompt("Input the name of the recipe");
 		var recipe = assets.recipeByName(recipeName);
 		var animation = assets.animationByName(recipe.animation);
@@ -27,6 +55,7 @@ function LevelEditor(assetsInstance) {
 		$('<div>')
 			.addClass('level-sprite')
 			.attr('title', recipeName)
+			.data('recipe', recipeName)
 			.css({
 				'top': placementY,
 				'left': placementX,
@@ -35,25 +64,15 @@ function LevelEditor(assetsInstance) {
 				'background-image': 'url(/data/' + spriteSheet.texture + ')',
 				'background-position': '-' + spriteSheetFrame.x + 'px' + ' -' + spriteSheetFrame.y + 'px'
 			})
-			// .draggable()
+			.draggable()
+			.css('position', 'absolute')
 			.appendTo($('#level'));
-
-		var levelHeight = $('#level').height();
-		level.events.push({
-			recipe: recipeName, 
-			x: placementX,
-			y: levelHeight - placementY,
-			layer: 0
-		});
-
-		var serializedLevel = JSON.stringify(level, null, 2);
-		Utils.saveContentAsFile(serializedLevel, 'levels/level1.json', 'application/json', function() {
-			console.log("Level saved");
-		});
 	}
 
 	var previewLevel = function() {
-		$.getJSON('/editor/preview-level');
+		saveLevel(function() {
+			$.getJSON('/editor/preview-level');
+		});
 	}
 
 	var createMarkup = function() {
