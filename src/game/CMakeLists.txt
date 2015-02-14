@@ -11,6 +11,7 @@ set(HEADERS
    ${CMAKE_CURRENT_SOURCE_DIR}/GameStateMenu.h
    ${CMAKE_CURRENT_SOURCE_DIR}/GameStatePlayLevel.h
    ${CMAKE_CURRENT_SOURCE_DIR}/GameStatePreviewEntity.h
+   ${CMAKE_CURRENT_SOURCE_DIR}/GameStatePreviewLevel.h
    ${CMAKE_CURRENT_SOURCE_DIR}/Level.h
    ${CMAKE_CURRENT_SOURCE_DIR}/LevelScript.h
    ${CMAKE_CURRENT_SOURCE_DIR}/LevelScriptPreviewEntity.h
@@ -34,6 +35,7 @@ set(SOURCE
    ${CMAKE_CURRENT_SOURCE_DIR}/GameStateMenu.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/GameStatePlayLevel.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/GameStatePreviewEntity.cpp
+   ${CMAKE_CURRENT_SOURCE_DIR}/GameStatePreviewLevel.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/Level.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/LevelScript.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/LevelScriptPreviewEntity.cpp

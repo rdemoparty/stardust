@@ -13,6 +13,7 @@
 #include <Level.h>
 #include <Scene.h>
 #include <GameStatePreviewEntity.h>
+#include <GameStatePreviewLevel.h>
 
 namespace Acidrain {
 
@@ -148,6 +149,19 @@ namespace Acidrain {
                 LOG(INFO) << "Previewing entity " << entityName;
                 GameStatePreviewEntity::instance().previewEntity(entityName);
                 theGame->fsm->changeState(&GameStatePreviewEntity::instance());
+            }
+
+            mg_send_header(conn, "Content-Type", "application/json");
+            mg_printf_data(conn, "{\"status\": {\"code\": \"OK\"}}");
+
+            return MG_TRUE;
+        }
+
+        if (stringStartsWith(URI, "/editor/preview-level")) {
+            if (theGame != nullptr) {
+                LOG(INFO) << "Previewing level ";
+                GameStatePreviewLevel::instance().preview(theGame);
+                theGame->fsm->changeState(&GameStatePreviewLevel::instance());
             }
 
             mg_send_header(conn, "Content-Type", "application/json");

@@ -1,0 +1,12 @@
+
+.level-sprite {
+	position: absolute;
+	width: 32px;
+	height: 32px;
+	border: 1px solid blue;
+	cursor: pointer;
+}
+
+.level-sprite .selected {
+	border: 1px solid red;
+}

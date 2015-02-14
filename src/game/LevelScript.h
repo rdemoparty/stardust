@@ -15,6 +15,7 @@ namespace Acidrain {
         string recipeName;
         vec2 position;
         int layer;
+        bool created = false;
     };
 
     class LevelScript {
@@ -35,6 +36,8 @@ namespace Acidrain {
 
     private:
         float timeUntilNextSpawn;
+        float offset;
+        float pixelsToScrollPerSecond = 100;
 
         vector<LevelScriptEntry> events;
         void addEvent(LevelScriptEntry entry);

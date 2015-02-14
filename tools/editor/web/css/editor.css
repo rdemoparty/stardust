@@ -9,6 +9,32 @@ body {
 	color: rgba(255, 255, 255, 0.9);
 }
 
+
+#level-holder {
+	float: left;
+	width: 1024px;
+	overflow: auto;
+	max-height: 1000px;
+	margin: auto;
+}
+
+#level {
+	float: right;
+	width: 1024px;
+	height: 50000px;
+	background-color: rgb(0, 0, 0);
+	position: relative;
+}
+
+#level-screen {
+	float: left;
+	width: 1024px;
+	height: 768px;
+	bottom: 0;
+	background-color: rgba(255, 255, 255, 0.1);
+	position: absolute;
+}
+
 #animation-list {
 	list-style: none;
 	margin: 0;

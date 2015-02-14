@@ -24,7 +24,7 @@ function SpriteSelector(assetsInstance, spriteSheetEditorInstance) {
 						.data('spritesheet-name', spritesheet.name)
 						.css('width', spritesheet.spriteWidth + 'px')
 						.css('height', spritesheet.spriteHeight + 'px')
-						.attr('title', spritesheet.nam + '#' + j)
+						.attr('title', spritesheet.name + '#' + j)
 						.css('background-color', 'rgba(0, 0, 0, 0.7)')
 						.css('background-image', 'url(/data/' + spritesheet.texture + ')')
 						.css('background-position', '-' + spriteSheetFrame.x + 'px' + ' -' + spriteSheetFrame.y + 'px')

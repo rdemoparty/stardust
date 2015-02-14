@@ -4,6 +4,7 @@ var Editor = {
 	spriteSelector: null,
 	spriteSheetEditor: null,
 	recipeEditor: null,
+	levelEditor: null,
 
 	initialize: function() {
 		Editor.createMarkup();
@@ -20,10 +21,16 @@ var Editor = {
 		Editor.spriteSelector = SpriteSelector(Editor.assets, Editor.spriteSheetEditor);
 		Editor.animationEditor = AnimationEditor(Editor.assets, Editor.spriteSelector);
 		Editor.recipeEditor = RecipeEditor(Editor.assets, Editor.animationEditor);
+		Editor.levelEditor = LevelEditor(Editor.assets);
 	},
 
 	createMarkup: function() {
 		var content = 
+		"<div id=\"level-holder\">" +
+			"<div id=\"level\">" +
+			"</div>" +
+		"</div>" +
+		"<button id=\"btnPreviewLevel\" type=\"button\" >Preview</button>" +
 		"<div id=\"editor-tabs\">" +
 			"<ul>" + 
 				"<li><a href=\"#tabs-recipes\">Recipes</a></li>" + 
@@ -41,6 +48,7 @@ var Editor = {
 				"<input type=\"button\" id=\"btnAddScript\" value=\"Add Script\"/>" +
 			"</div>" + 
 			"<div id=\"tabs-levels\" class=\"tab-holder\">" + 
+				"<input type=\"button\" id=\"btnAddLevel\" value=\"Add Level\"/>" +
 			"</div>" + 
 		"</div>"
 		;
@@ -69,6 +77,9 @@ var Editor = {
 		});
 		$('#btnAddScript').click(function() {
 			Editor.addScript();
+		});
+		$('#btnAddLevel').click(function() {
+			Editor.addLevel();
 		});
 	},
 
@@ -151,5 +162,9 @@ var Editor = {
 
 	editScript: function(name) {
 		alert('Not implemented!');
+	},
+
+	addLevel: function() {
+		Editor.levelEditor.addLevel();
 	}
 }

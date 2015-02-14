@@ -14,23 +14,36 @@ namespace Acidrain {
     }
 
     LevelScript::LevelScript(Scene* s) : scene(s) {
+        load("levels/level1.json");
     }
 
     LevelScript::~LevelScript() {
     }
 
     void LevelScript::reset() {
-        timeUntilNextSpawn = 5;
+        offset = 0;
     }
 
     void LevelScript::update(float elapsedSeconds) {
-        timeUntilNextSpawn -= elapsedSeconds;
-        if (timeUntilNextSpawn < 0) {
-            GameObject* enemy = scene->createByName("enemy");
-            enemy->currentState.position = vec2(rand() % 1024, -64);
-            scene->add(enemy);
-            timeUntilNextSpawn = rand() % 3 + 1;
+        offset += elapsedSeconds * pixelsToScrollPerSecond;
+        for (auto& e : events) {
+            if (!e.created && e.position.y <= offset) {
+                GameObject* entity = scene->createByName(e.recipeName);
+                entity->currentState.position.x = e.position.x;
+                entity->currentState.position.y = e.position.y - offset;
+                scene->add(entity);
+
+                e.created = true;
+            }
         }
+
+        // timeUntilNextSpawn -= elapsedSeconds;
+        // if (timeUntilNextSpawn < 0) {
+        //     GameObject* enemy = scene->createByName("enemy");
+        //     enemy->currentState.position = vec2(rand() % 1024, -64);
+        //     scene->add(enemy);
+        //     timeUntilNextSpawn = rand() % 3 + 1;
+        // }
     }
 
     LevelScriptEntry readEvent(const Json& element) {
