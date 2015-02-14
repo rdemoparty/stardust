@@ -34,7 +34,7 @@ bin/logs
 *.trace
 *.mp4
 
-
+stardust.sublime-*
 tools/editor/acidsnow/bin/*
 tools/editor/acidsnow/obj/*
 tools/editor/acidsnow/editor.userprefs
