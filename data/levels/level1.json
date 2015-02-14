@@ -2,26 +2,26 @@
   "events": [
     {
       "recipe": "enemy",
-      "x": 19,
-      "y": 49004,
+      "x": 495,
+      "y": 32,
       "layer": 0
     },
     {
       "recipe": "enemy",
-      "x": 384,
-      "y": 77,
+      "x": 495,
+      "y": 96,
       "layer": 0
     },
     {
       "recipe": "enemy",
-      "x": 384,
-      "y": 326,
+      "x": 494,
+      "y": 159,
       "layer": 0
     },
     {
-      "recipe": "beacon",
-      "x": 387,
-      "y": 196,
+      "recipe": "enemy",
+      "x": 490,
+      "y": 222,
       "layer": 0
     }
   ]

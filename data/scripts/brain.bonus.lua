@@ -8,7 +8,7 @@ function onSpawn(objectPointer)
     o:setFloat("speed", 1.5)
     local x, y = o:getPosition()
     o:setFloat("y", y)
-    o:setScale(2.65)
+    o:setScale(0.65)
     o:setFloat("t", 0)
 
 end

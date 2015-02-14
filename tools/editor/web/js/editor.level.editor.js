@@ -64,7 +64,7 @@ function LevelEditor(assetsInstance) {
 				'background-image': 'url(/data/' + spriteSheet.texture + ')',
 				'background-position': '-' + spriteSheetFrame.x + 'px' + ' -' + spriteSheetFrame.y + 'px'
 			})
-			.draggable()
+			.draggable({containment: "parent"})
 			.css('position', 'absolute')
 			.appendTo($('#level'));
 	}

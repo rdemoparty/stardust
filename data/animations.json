@@ -115,13 +115,13 @@
     },
     {
       "name": "enemy1",
-      "frameTimeInMilliseconds": 50,
+      "frameTimeInMilliseconds": 150,
       "loopType": "PING_PONG",
       "frames": [
         {
-          "spriteSheet": "enemy1",
+          "spriteSheet": "enemyship2b",
           "index": 0,
-          "indexTo": 15
+          "indexTo": 7
         }
       ]
     },

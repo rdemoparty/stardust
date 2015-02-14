@@ -3,7 +3,7 @@
 	position: absolute;
 	width: 32px;
 	height: 32px;
-	border: 1px solid blue;
+	border: 0px solid rgba(255, 255, 255, 0.2);
 	cursor: pointer;
 }
 

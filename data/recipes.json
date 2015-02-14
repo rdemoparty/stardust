@@ -12,7 +12,7 @@
     },
     {
       "name": "enemy",
-      "animation": "missile",
+      "animation": "enemy1",
       "brain": "scripts/brain.enemy.lua",
       "collidable": true,
       "damageProvidedOnCollision": 10,
@@ -23,6 +23,8 @@
       "type": "Ship",
       "hull": [
         {
+          "x": 0,
+          "y": 0,
           "radius": 28
         }
       ],
@@ -191,9 +193,12 @@
       "type": "Bonus",
       "hull": [
         {
+          "x": 0,
+          "y": 0,
           "radius": 32
         }
-      ]
+      ],
+      "damageProvidedOnCollision": 0
     },
     {
       "name": "powerup2",
