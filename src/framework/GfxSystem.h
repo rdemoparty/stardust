@@ -53,6 +53,8 @@ namespace Acidrain {
 
         void show();
 
+        void raiseWindow() const;
+
         int windowWidth() const;
 
         int windowHeight() const;

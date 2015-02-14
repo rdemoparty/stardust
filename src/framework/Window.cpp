@@ -73,4 +73,8 @@ namespace Acidrain {
     int Window::height() {
         return height_;
     }
+
+    void Window::raise() {
+        SDL_RaiseWindow(displayWindow);
+    }
 } // namespace Acidrain

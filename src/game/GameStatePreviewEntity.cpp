@@ -17,6 +17,7 @@ namespace Acidrain {
     }
 
     void GameStatePreviewEntity::onEnter(Stardust* game) {
+        GFXSYS.raiseWindow();
         GFXSYS.setClearColor(vec3(0.1f, 0.0f, 0.1f));
 
         SpriteAnimationRepository::getInstance().initialize("animations.json");

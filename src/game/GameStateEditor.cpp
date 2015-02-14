@@ -214,7 +214,7 @@ namespace Acidrain {
             game->quitGame = true;
         }
 
-        mg_poll_server(server, 10);
+        mg_poll_server(server, 1);
     }
 
     void GameStateEditor::render(Stardust* game, float alpha) {

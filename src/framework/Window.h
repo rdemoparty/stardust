@@ -21,6 +21,8 @@ namespace Acidrain {
 
         int height();
 
+        void raise();
+
     private:
 
         int width_;

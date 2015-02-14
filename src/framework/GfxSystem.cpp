@@ -213,6 +213,10 @@ namespace Acidrain {
         }
     }
 
+    void GfxSystem::raiseWindow() const {
+        window->raise();
+    }
+
     int GfxSystem::windowWidth() const {
         return window->width();
     }
