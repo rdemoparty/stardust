@@ -48,7 +48,8 @@ function onUpdate(objectPointer, elapsedSeconds)
 
     local speed = o:getFloat("speed")
     local x, y = o:getPosition()
-    x = o:getFloat("aperture") * math.sin(phase) + o:getFloat("center")
+--    x = o:getFloat("aperture") * math.sin(phase) + o:getFloat("center")
+    x = o:getFloat("center")
     y = y + speed * elapsedSeconds
     o:setPosition(x, y)
 end

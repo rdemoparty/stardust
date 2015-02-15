@@ -2,14 +2,14 @@
   "events": [
     {
       "recipe": "enemy",
-      "x": 507,
-      "y": 65,
+      "x": 525,
+      "y": 75,
       "layer": 0
     },
     {
       "recipe": "beacon",
-      "x": 512,
-      "y": 202,
+      "x": 665,
+      "y": 151,
       "layer": 0
     }
   ]

@@ -86,8 +86,6 @@ var Editor = {
 		$('#btnAddLevel').click(function() {
 			Editor.addLevel();
 		});
-
-		$('#level-holder').scrollTop($('#level-holder').prop("scrollHeight"));
 	},
 
 	populateAnimationList: function() {
@@ -192,5 +190,9 @@ var Editor = {
 
 	addLevel: function() {
 		Editor.levelEditor.addLevel();
+	},
+
+	editLevel: function(name) {
+		Editor.levelEditor.editLevel(name);
 	}
 }

@@ -29,6 +29,14 @@ Assets.prototype.animationByName = function(name) {
 	return null;
 }
 
+Assets.prototype.levelByName = function(name) {
+	for (var i in this.levels)
+		if (this.levels[i].name == name)
+			return this.levels[i];
+
+	return null;
+}
+
 Assets.prototype.recipeByName = function(name) {
 	for (var i in this.recipes)
 		if (this.recipes[i].name == name)
