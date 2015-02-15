@@ -2,14 +2,50 @@
   "events": [
     {
       "recipe": "enemy",
-      "x": 525,
-      "y": 75,
+      "x": 363,
+      "y": 71,
+      "layer": 0
+    },
+    {
+      "recipe": "enemy",
+      "x": 362,
+      "y": 125,
       "layer": 0
     },
     {
       "recipe": "beacon",
-      "x": 665,
-      "y": 151,
+      "x": 528,
+      "y": 254,
+      "layer": 0
+    },
+    {
+      "recipe": "enemy",
+      "x": 359,
+      "y": 183,
+      "layer": 0
+    },
+    {
+      "recipe": "enemy",
+      "x": 357,
+      "y": 240,
+      "layer": 0
+    },
+    {
+      "recipe": "enemy",
+      "x": 356,
+      "y": 296,
+      "layer": 0
+    },
+    {
+      "recipe": "enemy",
+      "x": 354,
+      "y": 353,
+      "layer": 0
+    },
+    {
+      "recipe": "enemy",
+      "x": 354,
+      "y": 412,
       "layer": 0
     }
   ]

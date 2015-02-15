@@ -9,8 +9,10 @@ function onSpawn(objectPointer)
 
     o:setFloat("center", x)
     o:setFloat("speed", 200)
-    o:setFloat("aperture", math.random(100, 400))
-    o:setFloat("phase", math.random() * math.pi * 2.0)
+--    o:setFloat("aperture", math.random(100, 400))
+--    o:setFloat("phase", math.random() * math.pi * 2.0)
+    o:setFloat("aperture", 200)
+    o:setFloat("phase", 0.0)
     o:setFloat("hitTimer", 0)
     o:setFloat("hitDuration", 0.05)
 
@@ -48,8 +50,7 @@ function onUpdate(objectPointer, elapsedSeconds)
 
     local speed = o:getFloat("speed")
     local x, y = o:getPosition()
---    x = o:getFloat("aperture") * math.sin(phase) + o:getFloat("center")
-    x = o:getFloat("center")
+    x = o:getFloat("aperture") * math.sin(phase) + o:getFloat("center")
     y = y + speed * elapsedSeconds
     o:setPosition(x, y)
 end

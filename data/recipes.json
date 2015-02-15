@@ -14,7 +14,7 @@
       "name": "enemy",
       "animation": "enemy1",
       "brain": "scripts/brain.enemy.lua",
-      "collidable": true,
+      "collidable": false,
       "damageProvidedOnCollision": 10,
       "removeOnDeath": true,
       "killIfOutside": true,

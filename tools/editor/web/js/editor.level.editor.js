@@ -13,16 +13,16 @@ function LevelEditor(assetsInstance) {
 		var levelInfo = assets.levelByName(name);
 		$.getJSON('data/' + levelInfo.uri, function(data) {
 			level = data;
-			levelToData();
+			levelToDesign();
 			scrollLevelToBottom();
 		})
 	}
 
-	var levelToData = function() {
+	var levelToDesign = function() {
 		clearLevel();
 		for (var i in level.events) {
 			var e = level.events[i];
-			addRecipeInstanceAt(e.recipe, e.x, e.y, e.layer);
+			addRecipeInstanceAtGameCoordinates(e.recipe, e.x, e.y, e.layer);
 		}
 	}
 
@@ -30,7 +30,7 @@ function LevelEditor(assetsInstance) {
 		$('.level-sprite', '#level').remove();
 	}
 
-	var addRecipeInstanceAt = function(recipeName, x, y, layer) {
+	var addRecipeInstanceAtGameCoordinates = function(recipeName, x, y, layer) {
 		var recipe = assets.recipeByName(recipeName);
 		var animation = assets.animationByName(recipe.animation);
 		var firstFrame = animation.frames[0];
@@ -108,7 +108,7 @@ function LevelEditor(assetsInstance) {
 
 		var coords = divCoordinatesToGameCoordinates(x, y);
 		var layer = 0;
-		addRecipeInstanceAt(recipeName, coords.x, coords.y, layer);
+		addRecipeInstanceAtGameCoordinates(recipeName, coords.x, coords.y, layer);
 	}
 
 	var previewLevel = function() {
@@ -122,6 +122,8 @@ function LevelEditor(assetsInstance) {
 
 		$('#level').on('dblclick', function(e) {
 			addNewSpriteAt(e.offsetX, e.offsetY);
+			e.preventDefault();
+			return false;
 		});
 
 		$('#btnPreviewLevel').on('click', function(e) {

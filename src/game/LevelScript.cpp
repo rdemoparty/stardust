@@ -31,6 +31,7 @@ namespace Acidrain {
                 GameObject* entity = scene->createByName(e.recipeName);
                 entity->currentState.position.x = e.position.x;
                 entity->currentState.position.y = e.position.y - offset;
+                entity->previousState = entity->currentState;
                 scene->add(entity);
 
                 e.created = true;
