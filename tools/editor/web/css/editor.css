@@ -67,6 +67,17 @@ body {
 	color: yellow;
 }
 
+#level-list {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+#level-list li a {
+	cursor: pointer;
+	color: yellow;
+}
+
 #editor-tabs {
 	float: right;
 	width: 26em;

@@ -15,6 +15,7 @@ var Editor = {
 			Editor.populateAnimationList();
 			Editor.populateRecipeList();
 			Editor.populateScriptList();
+			Editor.populateLevelList();
 		});
 
 		Editor.spriteSheetEditor = SpriteSheetEditor(Editor.assets);
@@ -65,6 +66,10 @@ var Editor = {
 		$('<ul>')
 			.attr('id', 'script-list')
 			.appendTo($('#tabs-scripts'));
+
+		$('<ul>')
+			.attr('id', 'level-list')
+			.appendTo($('#tabs-levels'));
 
 		$('#editor-tabs').tabs();
 		$(".tab-holder input[type=submit], .tab-holder input[type=button], .tab-holder a, .tab-holder button").button();
@@ -140,6 +145,25 @@ var Editor = {
 			.appendTo($li);
 
 		$li.appendTo($('#recipe-list'));
+	},
+
+	populateLevelList: function() {
+		$('#level-list').empty();
+		for (var i in Editor.assets.levels)
+			Editor.addLevelToList(Editor.assets.levels[i]);
+	},
+
+	addLevelToList: function(level) {
+		var $li = $('<li>');
+		$('<a>')
+			.text(level.name)
+			.data('level-name', level.name)
+			.click(function() {
+				Editor.editLevel($(this).data('level-name'));
+			})
+			.appendTo($li);
+
+		$li.appendTo($('#level-list'));
 	},
 
 	addAnimation: function() {

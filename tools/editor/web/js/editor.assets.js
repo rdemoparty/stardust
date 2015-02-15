@@ -9,6 +9,8 @@ var Assets = function() {
 	this.recipesLoaded = false;
 	this.scripts = [];
 	this.scriptsLoaded = false;
+	this.levels = [];
+	this.levelsLoaded = false;
 }
 
 Assets.prototype.spriteSheetByName = function(name) {
@@ -56,6 +58,12 @@ Assets.prototype.addSpriteSheet = function(ss) {
 
 Assets.prototype.sortAnimations = function() {
 	this.animations.sort(function(el1, el2) {
+		return el1.name == el2.name ? 0 : (el1.name < el2.name ? -1 : 1); 
+	});
+}
+
+Assets.prototype.sortLevels = function() {
+	this.levels.sort(function(el1, el2) {
 		return el1.name == el2.name ? 0 : (el1.name < el2.name ? -1 : 1); 
 	});
 }
@@ -181,11 +189,27 @@ Assets.prototype.loadResources = function() {
 		}
 		self.scriptsLoaded = true;
 	});
+
+	$.getJSON("/browse/levels", function(data) {
+		console.log('Loaded levels');
+		self.levels = [];
+		for (var i in data.result) {
+			var item = data.result[i];
+			if (!item.isDir && item.filename != 'level/__preview_level.lua') {
+				self.levels.push({
+					'name': Utils.extractFilenameFromUri(item.filename),
+					'uri': item.filename
+				});
+			}
+		}
+		self.sortLevels();
+		self.levelsLoaded = true;
+	});
 }
 
 Assets.prototype.waitForResourcesToLoad = function() {
 	var allTexturesLoaded = Object.keys(this.textures).length == this.texturesToLoad;
-	if (!this.descriptorsLoaded || !allTexturesLoaded || !this.recipesLoaded || !this.scriptsLoaded) {
+	if (!this.descriptorsLoaded || !allTexturesLoaded || !this.recipesLoaded || !this.scriptsLoaded || !this.levelsLoaded) {
 		var self = this;
 		setTimeout(function() { self.waitForResourcesToLoad(); }, 200);
 		return;

@@ -1,0 +1,28 @@
+{
+  "events": [
+    {
+      "recipe": "enemy",
+      "x": 495,
+      "y": 32,
+      "layer": 0
+    },
+    {
+      "recipe": "enemy",
+      "x": 495,
+      "y": 96,
+      "layer": 0
+    },
+    {
+      "recipe": "enemy",
+      "x": 494,
+      "y": 159,
+      "layer": 0
+    },
+    {
+      "recipe": "enemy",
+      "x": 490,
+      "y": 222,
+      "layer": 0
+    }
+  ]
+}
