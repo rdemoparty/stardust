@@ -31,7 +31,10 @@ var Editor = {
 			"<div id=\"level\">" +
 			"</div>" +
 		"</div>" +
-		"<button id=\"btnPreviewLevel\" type=\"button\" >Preview</button>" +
+		"<div id=\"level-details\">" +
+			"<button id=\"btnPreviewLevel\" type=\"button\" disabled=\"disabled\">Preview</button>" +
+			"<button id=\"btnSaveLevel\" type=\"button\" disabled=\"disabled\">Save</button>" +
+		"</div>" +
 		"<div id=\"editor-tabs\">" +
 			"<ul>" + 
 				"<li><a href=\"#tabs-recipes\">Recipes</a></li>" + 
@@ -73,6 +76,8 @@ var Editor = {
 
 		$('#editor-tabs').tabs();
 		$(".tab-holder input[type=submit], .tab-holder input[type=button], .tab-holder a, .tab-holder button").button();
+
+		$("button", '#level-details').button();
 
 		$('#btnAddAnimation').click(function() {
 			Editor.addAnimation();

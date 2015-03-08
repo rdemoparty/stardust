@@ -1,3 +1,6 @@
+#level-details {
+	
+}
 
 .level-sprite {
 	position: absolute;
@@ -9,4 +12,64 @@
 
 .level-sprite .selected {
 	border: 1px solid red;
+}
+
+
+#level-editor-dialog-holder .row {
+	width: 28em;
+	float: left;
+	clear: both;
+	margin-bottom: 0.2em;
+}
+
+#level-editor-dialog-holder .row .label {
+	width: 14em;
+	float: left;
+}
+
+#level-editor-dialog-holder .row .field {
+	/*width: 10em;*/
+	float: left;
+}
+
+#level-editor-dialog-holder .row input[type=text] {
+	width: 14em;
+}
+
+#level-editor-dialog-holder .row select {
+	width: 14em;
+}
+
+#level-editor-dialog-holder .row label {
+	cursor: pointer;
+}
+
+
+#entity-properties-dialog-holder .row {
+	width: 28em;
+	float: left;
+	clear: both;
+	margin-bottom: 0.2em;
+}
+
+#entity-properties-dialog-holder .row .label {
+	width: 14em;
+	float: left;
+}
+
+#entity-properties-dialog-holder .row .field {
+	/*width: 10em;*/
+	float: left;
+}
+
+#entity-properties-dialog-holder .row input[type=text] {
+	width: 14em;
+}
+
+#entity-properties-dialog-holder .row select {
+	width: 14em;
+}
+
+#entity-properties-dialog-holder .row label {
+	cursor: pointer;
 }

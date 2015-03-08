@@ -1,5 +1,14 @@
 Utils = {
 
+	toInt: function(value, defaultValue) {
+		try {
+			var i = parseInt(value);
+			return isNaN(i) ? defaultValue : i;
+		} catch (e) {
+			return defaultValue;
+		}
+	},
+
 	extractDirFromUri: function(uri) {
 		var pieces = uri.split('/');
 		pieces.pop();
@@ -27,7 +36,7 @@ Utils = {
 			'processData': false,
 			'contentType': false,
 			'success': function() {
-				console.log('Success saving ' + path + filename);
+				console.log('Success saving ' + path + '/' + filename);
 				if (typeof successCallback != 'undefined') {
 					successCallback();
 				}

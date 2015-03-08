@@ -66,7 +66,7 @@ namespace Acidrain {
             entry.var = varName;
             entry.filename = filename;
             entry.content = string(data, dataLength);
-            entry.isFile = !entry.content.empty();
+            entry.isFile = !entry.filename.empty();
 
             result[entry.var] = entry;
         }
@@ -158,9 +158,11 @@ namespace Acidrain {
         }
 
         if (stringStartsWith(URI, "/editor/preview-level")) {
+            vector<string> pieces = StringUtils::split(URI, '/');
+            string levelName = pieces.at(pieces.size() - 1);
             if (theGame != nullptr) {
-                LOG(INFO) << "Previewing level ";
-                GameStatePreviewLevel::instance().preview(theGame);
+                LOG(INFO) << "Previewing level " << levelName;
+                GameStatePreviewLevel::instance().preview(theGame, levelName);
                 theGame->fsm->changeState(&GameStatePreviewLevel::instance());
             }
 

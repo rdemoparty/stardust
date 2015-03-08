@@ -1,14 +1,3 @@
-var a;
-
-function toInt(value, defaultValue) {
-	try {
-		var i = parseInt(value);
-		return isNaN(i) ? defaultValue : i;
-	} catch (e) {
-		return defaultValue;
-	}
-}
-
 function RecipeEditor(assetsInstance, animationEditorInstance) {
 	var assets = assetsInstance;
 	var animationEditor = animationEditorInstance;
@@ -236,11 +225,11 @@ function RecipeEditor(assetsInstance, animationEditorInstance) {
 			'name': $('#recipe-name').val().trim(),
 			'animation': $('#recipe-animation').val(),
 			'brain': $('#recipe-brain').val(),
-			'damageProvidedOnCollision': toInt($('#recipe-damage-on-collision').val(), 0),
+			'damageProvidedOnCollision': Utils.toInt($('#recipe-damage-on-collision').val(), 0),
 			'collidable': $('#recipe-collidable').is(':checked'),
 			'removeOnDeath': $('#recipe-remove-on-death').is(':checked'),
 			'killIfOutside': $('#recipe-kill-if-outside').is(':checked'),
-			'maxLife': toInt($('#recipe-max-life').val(), 0),
+			'maxLife': Utils.toInt($('#recipe-max-life').val(), 0),
 			'team': $('#recipe-team').val(),
 			'type': $('#recipe-type').val(),
 			'hull': JSON.parse($('#recipe-hull').val())

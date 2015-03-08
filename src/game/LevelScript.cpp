@@ -14,7 +14,6 @@ namespace Acidrain {
     }
 
     LevelScript::LevelScript(Scene* s) : scene(s) {
-        load("levels/level1.json");
     }
 
     LevelScript::~LevelScript() {
@@ -37,14 +36,6 @@ namespace Acidrain {
                 e.created = true;
             }
         }
-
-        // timeUntilNextSpawn -= elapsedSeconds;
-        // if (timeUntilNextSpawn < 0) {
-        //     GameObject* enemy = scene->createByName("enemy");
-        //     enemy->currentState.position = vec2(rand() % 1024, -64);
-        //     scene->add(enemy);
-        //     timeUntilNextSpawn = rand() % 3 + 1;
-        // }
     }
 
     LevelScriptEntry readEvent(const Json& element) {
@@ -68,16 +59,30 @@ namespace Acidrain {
     }
 
     void LevelScript::load(string scriptURI) {
-        LOG(INFO) << "Loading game objects repository from \"" << scriptURI << "\"";
+        LOG(INFO) << "Loading level script from \"" << scriptURI << "\"";
         string content = FILESYS.getFileContent(scriptURI);
 
         string parseError;
         auto json = Json::parse(content, parseError);
-        if (parseError.empty())
-            for (auto& k : json["events"].array_items())
-                addEvent(readEvent(k));
-        else
+        if (parseError.empty()) {
+            for (auto& e : json.object_items()) {
+                const string& param = e.first;
+                if (icompare(param, "events"))
+                    for (auto& k : e.second.array_items())
+                        addEvent(readEvent(k));
+                else if (icompare(param, "speed"))
+                    pixelsToScrollPerSecond = (float) e.second.number_value();
+                else if (icompare(param, "name"))
+                    LOG(INFO) << "Read level name " << e.second.string_value();
+                else if (icompare(param, "length"))
+                    LOG(INFO) << "Read level length " << e.second.int_value();
+                else {
+                    LOG(WARNING) << "Unknown level script attribute \"" << param << "\"";
+                }
+            }
+        } else {
             LOG(FATAL) << "Error while parsing JSON content from " << scriptURI << ". Error: " << parseError;
+        }
     }
 
     void LevelScript::addEvent(LevelScriptEntry entry) {

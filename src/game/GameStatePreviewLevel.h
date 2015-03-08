@@ -15,7 +15,7 @@ namespace Acidrain {
 
         static GameStatePreviewLevel& instance();
 
-        void preview(Stardust* game);
+        void preview(Stardust* game, std::string levelName);
 
         virtual void onEnter(Stardust* game) override;
 

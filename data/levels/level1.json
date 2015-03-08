@@ -44,9 +44,12 @@
     },
     {
       "recipe": "enemy",
-      "x": 354,
-      "y": 412,
+      "x": 579,
+      "y": 542,
       "layer": 0
     }
-  ]
+  ],
+  "name": "First level",
+  "length": 50000,
+  "speed": 100
 }

@@ -21,9 +21,6 @@ namespace Acidrain {
         GFXSYS.setClearColor(vec3(0.1f, 0.0f, 0.1f));
 
         SpriteAnimationRepository::getInstance().initialize("animations.json");
-
-        game->level = make_shared<Level>();
-        game->level->levelScript = make_shared<LevelScript>(game->level->scene.get());
     }
 
     void GameStatePreviewLevel::onExit(Stardust* game) {
@@ -48,8 +45,11 @@ namespace Acidrain {
         GFXSYS.show();
     }
 
-    void GameStatePreviewLevel::preview(Stardust* game) {
-        game->level->levelScript->load("levels/level1.json");
+    void GameStatePreviewLevel::preview(Stardust* game, std::string levelName) {
+        game->level = make_shared<Level>();
+        game->level->levelScript = make_shared<LevelScript>(game->level->scene.get());
+        
+        game->level->levelScript->load("levels/" + levelName);
         game->level->levelScript->reset();
     }
 }

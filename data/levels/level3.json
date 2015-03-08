@@ -24,5 +24,8 @@
       "y": 222,
       "layer": 0
     }
-  ]
+  ],
+  "name": "First level",
+  "length": 50000,
+  "speed": 100
 }
