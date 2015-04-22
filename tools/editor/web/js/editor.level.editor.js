@@ -354,6 +354,7 @@ function LevelEditor(assetsInstance) {
 							.attr('id', 'dlgEntityProperties')
 							.attr('title', 'Entity Properties')
 							.addClass('dialog')
+							.zIndex(1000)
 							.hide();
 
 		var dialogContent = 
@@ -395,6 +396,7 @@ function LevelEditor(assetsInstance) {
 							.attr('id', 'dlgLevelEditor')
 							.attr('title', 'Level Editor')
 							.addClass('dialog')
+							.zIndex(1000)
 							.hide();
 
 		var dialogContent = 

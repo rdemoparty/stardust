@@ -11,6 +11,7 @@ function AnimationEditor(assetsInstance, spriteSelectorInstance) {
 							.attr('id', 'dlgAnimation')
 							.attr('title', 'Animation Editor')
 							.addClass('dialog')
+							.zIndex(1000)
 							.hide();
 
 		var dialogContent = "<div id=\"animation-editor-holder\">" +
