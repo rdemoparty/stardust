@@ -330,7 +330,6 @@ function RecipeEditor(assetsInstance, animationEditorInstance) {
 							.attr('id', 'dlgRecipeEditor')
 							.attr('title', 'Recipe Editor')
 							.addClass('dialog')
-							.zIndex(1000)
 							.hide();
 
 		var dialogContent = 

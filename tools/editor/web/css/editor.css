@@ -9,6 +9,10 @@ body {
 	color: rgba(255, 255, 255, 0.9);
 }
 
+/* Make all dialogs be in front of all sprites in the level editor*/
+.ui-dialog {
+	z-index: 1001 !important;
+}
 
 #level-holder {
 	float: left;

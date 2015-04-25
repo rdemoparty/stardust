@@ -86,7 +86,6 @@ function SpriteSelector(assetsInstance, spriteSheetEditorInstance) {
 						.attr('id', 'dlgSelectSprite')
 						.attr('title', 'Sprite Selector')
 						.addClass('dialog')
-						.zIndex(1000)
 						.hide();
 		var dialogContent = "<div style=\"margin-bottom: 1em;\">" +
 				"Filter <select id=\"spriteSheetFilter\"></select>" +

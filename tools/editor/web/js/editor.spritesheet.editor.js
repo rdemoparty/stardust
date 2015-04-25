@@ -169,7 +169,6 @@ var SpriteSheetEditor = function(assetsInstance) {
 							.attr('id', 'dlgSpriteSheetEditor')
 							.attr('title', 'Spritesheet Editor')
 							.addClass('dialog')
-							.zIndex(1000)
 							.hide();
 
 		var dialogContent = 

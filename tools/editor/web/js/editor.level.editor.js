@@ -41,7 +41,7 @@ function LevelEditor(assetsInstance) {
 			width: '600',
 			height: '240',
 			modal: true,
-			open: function() {				
+			open: function() {
 				$('#level-filename').val('');
 				$('#level-name').val('');
 				$('#level-length').val(DEFAULT_LEVEL_LENGTH); 
@@ -166,7 +166,7 @@ function LevelEditor(assetsInstance) {
 				'width': spriteSheet.spriteWidth,
 				'height': spriteSheet.spriteHeight,
 				'background-image': 'url(/data/' + spriteSheet.texture + ')',
-				'background-position': '-' + spriteSheetFrame.x + 'px' + ' -' + spriteSheetFrame.y + 'px',
+				'background-position': '-' + spriteSheetFrame.x + 'px' + ' -' + spriteSheetFrame.y + 'px'
 			})
 			.zIndex(LAYER_ZERO_ZINDEX + layer)
 			.draggable({
@@ -257,7 +257,7 @@ function LevelEditor(assetsInstance) {
 			width: '600',
 			height: '240',
 			modal: true,
-			open: function() {				
+			open: function() {
 				$('#entity-x').val(initialPosition.x);
 				$('#entity-y').val(initialPosition.y);
 				$('#entity-layer').val(initialLayer);
@@ -277,7 +277,7 @@ function LevelEditor(assetsInstance) {
 
 					$(entity).css({
 						'top': Utils.toInt(position.top) - dy,
-						'left': Utils.toInt(position.left) + dx,
+						'left': Utils.toInt(position.left) + dx
 					});
 
 					$(entity).zIndex(LAYER_ZERO_ZINDEX + layer);
@@ -354,7 +354,6 @@ function LevelEditor(assetsInstance) {
 							.attr('id', 'dlgEntityProperties')
 							.attr('title', 'Entity Properties')
 							.addClass('dialog')
-							.zIndex(1000)
 							.hide();
 
 		var dialogContent = 
@@ -396,7 +395,6 @@ function LevelEditor(assetsInstance) {
 							.attr('id', 'dlgLevelEditor')
 							.attr('title', 'Level Editor')
 							.addClass('dialog')
-							.zIndex(1000)
 							.hide();
 
 		var dialogContent = 
