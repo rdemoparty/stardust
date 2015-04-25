@@ -54,7 +54,11 @@ function package_project {
 }
 
 function start_editor {
-	run_project --width 1024 --height 768 --editor --fullscreen=false -v
+	if [ "$2" == "cross" ]; then
+		run_project cross --width 1024 --height 768 --editor --fullscreen=false -v
+	else
+		run_project --width 1024 --height 768 --editor --fullscreen=false -v
+	fi
 }
 
 function build_project {
