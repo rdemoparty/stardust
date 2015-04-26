@@ -5,6 +5,10 @@
 #include <GLheaders.h>
 #include <easylogging++.h>
 
+#ifdef _WIN32
+	#include <windows.h> // BringWindowToTop()
+#endif
+
 namespace Acidrain {
 
     Window::Window(int w, int h, bool vsyncEnabled, WindowType t)
@@ -75,7 +79,14 @@ namespace Acidrain {
     }
 
     void Window::raise() {
-        SDL_ShowWindow(displayWindow);
         SDL_RaiseWindow(displayWindow);
+
+        #if defined _WIN32 || defined _WIN64
+            LOG(INFO) << "Raising window in Windows";
+
+            BringWindowToTop(GetActiveWindow());
+            SetWindowPos(GetActiveWindow(), 0, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
+            SetFocus(GetActiveWindow());
+        #endif
     }
 } // namespace Acidrain
