@@ -6,6 +6,7 @@
 #include <MathSupport.h>
 #include <AudioSystem.h>
 #include <GameStatePlayLevel.h>
+#include <Version.h>
 
 namespace Acidrain {
     GameStateMenu& GameStateMenu::instance() {
@@ -47,6 +48,9 @@ namespace Acidrain {
     void GameStateMenu::onEnter(Stardust* game) {
         if (!menuFont)
             menuFont = make_shared<Font>("fonts/Neo Sans Pro Bold.ttf", 40.0f);
+
+        if (!versionFont)
+            versionFont = make_shared<Font>("fonts/Neo Sans Pro Bold.ttf", 10.0f);
 
         GFXSYS.setClearColor(vec3(0, 0, 0));
 
@@ -131,6 +135,9 @@ namespace Acidrain {
                     selectedIndex == i ? SELECTED_OPTION_COLOR : OPTION_COLOR
             );
         }
+
+        versionFont->print(800, 700, STARDUST_VERSION, vec4(1, 1, 1, 1));
+
         GFXSYS.show();
     }
 

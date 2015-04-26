@@ -27,6 +27,8 @@ namespace Acidrain {
     private:
         shared_ptr<Font> menuFont;
 
+        shared_ptr<Font> versionFont;
+
         void handleMenuSelection(Stardust* game, int selectedIndex);
     };
 

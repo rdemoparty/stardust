@@ -75,6 +75,7 @@ namespace Acidrain {
     }
 
     void Window::raise() {
+        SDL_ShowWindow(displayWindow);
         SDL_RaiseWindow(displayWindow);
     }
 } // namespace Acidrain

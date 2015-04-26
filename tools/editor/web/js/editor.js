@@ -23,10 +23,37 @@ var Editor = {
 		Editor.animationEditor = AnimationEditor(Editor.assets, Editor.spriteSelector);
 		Editor.recipeEditor = RecipeEditor(Editor.assets, Editor.animationEditor);
 		Editor.levelEditor = LevelEditor(Editor.assets);
+
+		Editor.initializeVersionCheck();
+	},
+
+	initializeVersionCheck: function() {
+		$('#editor-version').html('Editor version <span>' + STARDUST_VERSION + '</span>');
+		Editor.checkNewVersion();
+	},
+
+	checkNewVersion: function() {
+		$.getJSON('http://hq.scene.ro/stardust/index.php', function(data) {
+			if (data && data.versions && data.versions[0].date > STARDUST_TIMESTAMP) {
+				Editor.notifyNewVersion(data.versions[0]);
+			} else {
+				setTimeout(function() {
+					Editor.checkNewVersion();
+				}, 1000 * 10);
+			}
+		});
+	},
+
+	notifyNewVersion: function(version) {
+		$('#editor-new-version').html("New version available <a href=\"http://hq.scene.ro/stardust/" + version.filename + "\">" + version.version + "</a>");
 	},
 
 	createMarkup: function() {
-		var content = 
+		var content =
+		"<div id=\"version-holder\">" +
+			"<div id=\"editor-version\"></div>" +
+			"<div id=\"editor-new-version\"></div>" +
+		"</div>" +
 		"<div id=\"level-holder\">" +
 			"<div id=\"level\">" +
 			"</div>" +

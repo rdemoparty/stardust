@@ -20,6 +20,7 @@ set(HEADERS
    ${CMAKE_CURRENT_SOURCE_DIR}/SpriteAnimationRepository.h
    ${CMAKE_CURRENT_SOURCE_DIR}/Stardust.h
    ${CMAKE_CURRENT_SOURCE_DIR}/Starfield.h
+   ${CMAKE_CURRENT_SOURCE_DIR}/Version.h
    ${CMAKE_CURRENT_SOURCE_DIR}/Weapon.h
    PARENT_SCOPE
 )

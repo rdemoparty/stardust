@@ -3,6 +3,7 @@
 function usage {
 	echo -e "\nStardust utility script\n"
 	echo -e "Usage:"
+	echo -e "\t$0 update-version"
 	echo -e "\t$0 clean"
 	echo -e "\t$0 build [debug]"
 	echo -e "\t$0 build cross [debug]"
@@ -11,6 +12,21 @@ function usage {
 	echo -e "\t$0 package"
 	echo -e "\t$0 editor"
 	echo -e ""
+}
+
+function update-version {
+	echo -e "Updating version metadata files...\n"
+
+	CURRENT_VERSION=$(git describe)
+	CURRENT_TIMESTAMP=$(git show -s --format=%ct)
+
+	echo -e "STARDUST_VERSION = '$CURRENT_VERSION';\nSTARDUST_TIMESTAMP = $CURRENT_TIMESTAMP;\n" > tools/editor/web/js/editor.version.js
+
+	cp src/game/Version.h.sample src/game/Version.h
+	sed -i.bak -e s/{version}/$CURRENT_VERSION/g src/game/Version.h
+	sed -i.bak -e s/{timestamp}/$CURRENT_TIMESTAMP/g src/game/Version.h
+
+	rm src/game/Version.h.bak
 }
 
 function clean_project {
@@ -49,8 +65,10 @@ function run_project {
 }
 
 function package_project {
-	rm -rf stardust.zip
-	zip stardust.zip bin/*.exe bin/*.dll data/ tools -r	
+	CURRENT_VERSION=$(git describe)
+	ARCHIVE_FILENAME="stardust-$CURRENT_VERSION.zip"
+	rm -rf $ARCHIVE_FILENAME
+	zip $ARCHIVE_FILENAME bin/*.exe bin/*.dll data/ tools -r
 }
 
 function start_editor {
@@ -100,6 +118,9 @@ fi
 case $1 in
 	clean)
 		clean_project
+		;;
+	update-version)
+		update-version
 		;;
 	build)
 		build_project $2

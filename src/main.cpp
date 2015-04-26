@@ -8,6 +8,7 @@
 #include <CommandLineParser.h>
 #include <GameStateEditor.h>
 #include <GameStateIntro.h>
+#include <Version.h>
 
 _INITIALIZE_EASYLOGGINGPP
 
@@ -27,6 +28,8 @@ int main(int argc, char** argv) {
 
         const int GAME_LOGICAL_RESOLUTION_X = 1024;
         const int GAME_LOGICAL_RESOLUTION_Y = 768;
+
+        LOG(INFO) << "STARDUST " << STARDUST_VERSION << " (" << STARDUST_TIMESTAMP << ")";
 
         EVENTSYS.init();
         FILESYS.init(FLAG_data_dir);

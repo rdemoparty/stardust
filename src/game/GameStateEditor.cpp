@@ -14,6 +14,7 @@
 #include <Scene.h>
 #include <GameStatePreviewEntity.h>
 #include <GameStatePreviewLevel.h>
+#include <Version.h>
 
 namespace Acidrain {
 
@@ -225,6 +226,7 @@ namespace Acidrain {
 
             GFXSYS.setTransparencyMode(TransparencyMode::Additive);
             font->print(100, 100, "Editor mode. Waiting for commands", vec4(1, 1, 1, 0.8f));
+            font->print(100, 132, (string("Version ") + STARDUST_VERSION).c_str() , vec4(1, 1, 1, 0.8f));
             GFXSYS.show();
         }
     }

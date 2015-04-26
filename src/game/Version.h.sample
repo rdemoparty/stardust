@@ -1,0 +1,4 @@
+#pragma once
+
+static const char* STARDUST_VERSION = "{version}";
+static const int STARDUST_TIMESTAMP = {timestamp};

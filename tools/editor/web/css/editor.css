@@ -9,6 +9,36 @@ body {
 	color: rgba(255, 255, 255, 0.9);
 }
 
+#version-holder {
+	width: 100%;
+	float: left;
+	background-color: black;
+	padding: 4px;
+	margin-bottom: 10px;
+}
+
+#editor-version {
+	float: left;
+	margin-left: 10px;
+}
+
+#editor-version span {
+	font-weight: bold;
+}
+
+#editor-new-version {
+	margin-left: 100px;
+	float: left;
+	color: tomato;
+}
+
+#editor-new-version a {
+	color: inherit;
+	font-weight: bold;
+	text-decoration: none;
+}
+
+
 /* Make all dialogs be in front of all sprites in the level editor*/
 .ui-dialog {
 	z-index: 1001 !important;
