@@ -14,7 +14,7 @@ function usage {
 	echo -e ""
 }
 
-function update-version {
+function update_version {
 	echo -e "Updating version metadata files...\n"
 
 	CURRENT_VERSION=$(git describe)
@@ -120,7 +120,7 @@ case $1 in
 		clean_project
 		;;
 	update-version)
-		update-version
+		update_version
 		;;
 	build)
 		build_project $2
