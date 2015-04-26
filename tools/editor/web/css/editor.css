@@ -38,6 +38,28 @@ body {
 	text-decoration: none;
 }
 
+#recipe-menu {
+	width: 150px;
+	position: absolute;
+	display: none;
+	z-index: 2000;
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+#recipe-menu li {
+	cursor: pointer;
+	margin: 0;
+	padding: 4px;
+	background-color: #272727;
+}
+
+#recipe-menu li:hover {
+	background-color: #bf6000;
+	color: antiquewhite;
+}
+
 
 /* Make all dialogs be in front of all sprites in the level editor*/
 .ui-dialog {

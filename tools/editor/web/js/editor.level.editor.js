@@ -21,6 +21,11 @@ function LevelEditor(assetsInstance) {
 	};
 	var editMode = EDITING_MODE.NONE;
 
+	var currentMousePos = { x: -1, y: -1 };
+	$(document).mousemove(function(event) {
+		currentMousePos.x = event.pageX;
+		currentMousePos.y = event.pageY;
+	})
 
 	var markLevelAsModified = function() {
 		levelModified = true;
@@ -235,13 +240,34 @@ function LevelEditor(assetsInstance) {
 	}
 
 	var addNewSpriteAt = function(x, y) {
-		var recipeName = prompt("Input the name of the recipe");
-		var recipe = assets.recipeByName(recipeName);
+		var xx = x;
+		var yy = y;
+		// rebuild recipe menu if needed
+		if ($('#recipe-menu li').length != assets.recipes.length) {
+			$('#recipe-menu').empty();
+			for (var i in assets.recipes) {
+				var recipe = assets.recipes[i];
+				$('#recipe-menu').append($('<li>').text(recipe.name));
+			}
+			$('#recipe-menu li').click(function() {
+				$(this).parent().trigger('recipe-selected', $(this).text());
+			});
+		}
 
-		var coords = divCoordinatesToGameCoordinates(x, y);
-		var layer = 0;
-		addRecipeInstanceAtGameCoordinates(recipeName, coords.x, coords.y, layer);
-	}
+		$('#recipe-menu')
+			.off('recipe-selected')
+			.on('recipe-selected', function(event, recipeName) {
+				var coords = divCoordinatesToGameCoordinates(xx, yy);
+				var layer = 0;
+				addRecipeInstanceAtGameCoordinates(recipeName, coords.x, coords.y, layer);
+				$(this).hide();
+			})
+			.css({
+				'top': currentMousePos.y - 10,
+				'left': currentMousePos.x - 20
+			})
+			.show();
+	};
 
 	var previewLevel = function() {
 		saveLevel(function() {
@@ -328,6 +354,13 @@ function LevelEditor(assetsInstance) {
 		$(document).on('click', '.level-sprite', function(e) {
 			$(this).toggleClass('selected');
 			return false;
+		});
+
+		$(document).on('click', '#level', function(e) {
+			var $recipeMenu = $('#recipe-menu');
+			if ($recipeMenu.is(':visible')) {
+				$recipeMenu.hide();
+			}
 		});
 
 		$(document).on('keydown', '', function(e) {

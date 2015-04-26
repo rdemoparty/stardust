@@ -50,6 +50,7 @@ var Editor = {
 
 	createMarkup: function() {
 		var content =
+		"<ul id=\"recipe-menu\"></ul>" +
 		"<div id=\"version-holder\">" +
 			"<div id=\"editor-version\"></div>" +
 			"<div id=\"editor-new-version\"></div>" +
