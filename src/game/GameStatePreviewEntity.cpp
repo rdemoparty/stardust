@@ -8,6 +8,7 @@
 #include <SpriteAnimationRepository.h>
 #include <LevelScriptPreviewEntity.h>
 #include <InputProvider.h>
+#include <AudioSystem.h>
 
 namespace Acidrain {
 
@@ -27,6 +28,8 @@ namespace Acidrain {
     }
 
     void GameStatePreviewEntity::onExit(Stardust* game) {
+        AUDIOSYS.stopMusic();
+        AUDIOSYS.stopSounds({"EXPLOSIONS", "PLAYER", "PLAYER_WEAPONS", "UI"});
     }
 
     void GameStatePreviewEntity::update(Stardust* game, float elapsedSeconds) {
