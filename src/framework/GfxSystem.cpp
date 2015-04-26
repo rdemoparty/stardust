@@ -24,6 +24,14 @@ namespace Acidrain {
 
     void GfxSystem::init(const int desiredWidth, const int desiredHeight) {
         LOG(INFO) << "Initializing graphics system";
+
+        SDL_version compiled, linked;
+        SDL_VERSION(&compiled);
+        SDL_GetVersion(&linked);
+
+        LOG(INFO) << "Compiled against SDL version " << (int)compiled.major << "." << (int)compiled.minor << "." << (int)compiled.patch;
+        LOG(INFO) << "Linking against SDL version " << (int)linked.major << "." << (int)linked.minor << "." << (int)linked.patch;
+
         SDL_DisplayMode displayMode = establishDisplayMode();
 
         window = make_shared<Window>(
