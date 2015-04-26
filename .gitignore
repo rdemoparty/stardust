@@ -39,4 +39,7 @@ tools/editor/acidsnow/bin/*
 tools/editor/acidsnow/obj/*
 tools/editor/acidsnow/editor.userprefs
 
+# these are not needed anymore. they will be re-generated at each "release"
+src/game/Version.h
+tools/editor/web/js/editor.version.js
 
