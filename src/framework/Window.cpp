@@ -6,7 +6,8 @@
 #include <easylogging++.h>
 
 #ifdef _WIN32
-	#include <windows.h> // BringWindowToTop()
+	#include <SDL_syswm.h>
+	#include <windows.h>
 #endif
 
 namespace Acidrain {
@@ -78,15 +79,46 @@ namespace Acidrain {
         return height_;
     }
 
+    #if defined _WIN32 || defined _WIN64
+    void ActivateWindowHandle(HWND hWnd) {
+        DWORD threadId1 = GetWindowThreadProcessId(GetForegroundWindow(), NULL);
+        DWORD threadId2 = GetWindowThreadProcessId(hWnd, NULL);
+
+        if (threadId1 != threadId2) {
+            AttachThreadInput(threadId1, threadId2, 1);
+            SetForegroundWindow(hWnd);
+            AttachThreadInput(threadId1, threadId2, 0);
+        } else {
+            SetForegroundWindow(hWnd);
+        }
+
+        if (IsIconic(hWnd)) {
+            ShowWindow(hWnd, SW_RESTORE);
+        } else {
+            ShowWindow(hWnd, SW_SHOW);
+        }
+    }
+    #endif
+
     void Window::raise() {
-        SDL_RaiseWindow(displayWindow);
-
         #if defined _WIN32 || defined _WIN64
-            LOG(INFO) << "Raising window in Windows";
+            struct SDL_SysWMinfo wmInfo;
+            SDL_VERSION(&wmInfo.version);
+            SDL_GetWindowWMInfo(displayWindow, &wmInfo);
 
-            BringWindowToTop(GetActiveWindow());
-            SetWindowPos(GetActiveWindow(), 0, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
-            SetFocus(GetActiveWindow());
+            HWND hWnd = wmInfo.info.win.window;
+
+            // The section below raise the window in Wine. It is not needed for true windows behaviour
+            // but it is nice to also have it if running in Wine. One thing worth noting is that
+            // we do not get window focus in Wine.
+            SetWindowPos(hWnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE | SWP_SHOWWINDOW);
+            SetWindowPos(hWnd, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE | SWP_SHOWWINDOW);
+            SwitchToThisWindow(hWnd, TRUE);
+
+            // This makes it raise and get focus in Windows
+            ActivateWindowHandle(hWnd);
+        #else
+            SDL_RaiseWindow(displayWindow);
         #endif
     }
 } // namespace Acidrain
