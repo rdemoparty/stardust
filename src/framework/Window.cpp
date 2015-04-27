@@ -80,6 +80,7 @@ namespace Acidrain {
     }
 
     #if defined _WIN32 || defined _WIN64
+    // Thank you nekitu for finding this hack!
     void ActivateWindowHandle(HWND hWnd) {
         DWORD threadId1 = GetWindowThreadProcessId(GetForegroundWindow(), NULL);
         DWORD threadId2 = GetWindowThreadProcessId(hWnd, NULL);
