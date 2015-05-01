@@ -1,4 +1,30 @@
 {
+  "layers": [
+    {
+      "name": "front",
+      "depth": 1,
+      "visible": true,
+      "selected": false
+    },
+    {
+      "name": "main",
+      "depth": 0,
+      "visible": true,
+      "selected": false
+    },
+    {
+      "name": "back",
+      "depth": -1,
+      "visible": true,
+      "selected": false
+    },
+    {
+      "name": "far away",
+      "depth": -2,
+      "visible": true,
+      "selected": true
+    }
+  ],
   "events": [
     {
       "recipe": "enemy",
@@ -14,9 +40,9 @@
     },
     {
       "recipe": "beacon",
-      "x": 528,
-      "y": 254,
-      "layer": 0
+      "x": 360,
+      "y": 239,
+      "layer": -1
     },
     {
       "recipe": "enemy",
@@ -44,9 +70,33 @@
     },
     {
       "recipe": "enemy",
-      "x": 579,
-      "y": 542,
+      "x": 540,
+      "y": 536,
       "layer": 0
+    },
+    {
+      "recipe": "beacon",
+      "x": 366,
+      "y": 64,
+      "layer": -1
+    },
+    {
+      "recipe": "beacon",
+      "x": 366,
+      "y": 112,
+      "layer": -1
+    },
+    {
+      "recipe": "beacon",
+      "x": 362,
+      "y": 180,
+      "layer": -1
+    },
+    {
+      "recipe": "beacon",
+      "x": 357,
+      "y": 326,
+      "layer": -1
     }
   ],
   "name": "First level",

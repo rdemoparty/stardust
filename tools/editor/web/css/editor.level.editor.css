@@ -2,6 +2,45 @@
 	float: left;
 }
 
+.floating-button {
+    float: left;
+}
+
+#level-layer-holder {
+	float: left;
+	clear: both;
+}
+
+.layer {
+	float: left;
+	clear: both;
+    padding: 4px;
+    background-color: #272727;
+    color: wheat;
+    cursor: pointer;
+}
+
+.layer.selected {
+    background-color: #474747;
+    color: #cd2e29;
+}
+
+.layer-visibility {
+    float: left;
+    width: 2em;
+}
+
+.layer-name {
+	float: left;
+    font-weight: bold;
+    width: 20em;
+}
+
+.layer-depth {
+	float: right;
+    width: 2em;
+}
+
 .level-sprite {
 	position: absolute;
 	width: 32px;

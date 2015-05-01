@@ -60,8 +60,11 @@ var Editor = {
 			"</div>" +
 		"</div>" +
 		"<div id=\"level-details\">" +
-			"<button id=\"btnPreviewLevel\" type=\"button\" disabled=\"disabled\">Preview</button>" +
-			"<button id=\"btnSaveLevel\" type=\"button\" disabled=\"disabled\">Save</button>" +
+			"<button id=\"btnPreviewLevel\" type=\"button\" class=\"floating-button\" disabled=\"disabled\">Preview</button>" +
+			"<button id=\"btnSaveLevel\" type=\"button\" class=\"floating-button\" disabled=\"disabled\">Save</button>" +
+			"<div id=\"level-layer-holder\">" +
+			"</div>" +
+            "<button id=\"btnAddLayer\" type=\"button\" class=\"floating-button\" style=\"clear: left;\" disabled=\"disabled\">Add Layer</button>" +
 		"</div>" +
 		"<div id=\"editor-tabs\">" +
 			"<ul>" + 

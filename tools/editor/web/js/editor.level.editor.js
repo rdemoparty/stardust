@@ -1,7 +1,8 @@
 function LevelEditor(assetsInstance) {
 	var assets = assetsInstance;
 	var level = {
-		events: [], 
+		events: [],
+		layers: [],
 		name: '', 
 		length: 0, 
 		speed: 0
@@ -9,6 +10,7 @@ function LevelEditor(assetsInstance) {
 	var levelFilename = '';
 	var editDialog = null;
 	var entityPropertiesDialog = null;
+    var addLayerDialog = null;
 	var DEFAULT_LEVEL_LENGTH = 50000; // pixels
 	var DEFAULT_LEVEL_SPEED = 100; // pixels per second
 	var levelModified = false;
@@ -25,21 +27,22 @@ function LevelEditor(assetsInstance) {
 	$(document).mousemove(function(event) {
 		currentMousePos.x = event.pageX;
 		currentMousePos.y = event.pageY;
-	})
+	});
 
 	var markLevelAsModified = function() {
 		levelModified = true;
 		$('#btnSaveLevel').button('enable');
-	}
+	};
 
 	var markLevelAsSaved = function() {
 		levelModified = false;
 		$('#btnSaveLevel').button('disable');
-	}
+	};
 
 	var enablePreviewing = function() {
 		$('#btnPreviewLevel').button('enable');
-	}
+        $('#btnAddLayer').button('enable');
+	};
 
 	var addLevel = function() {
 		editDialog.dialog({
@@ -60,11 +63,14 @@ function LevelEditor(assetsInstance) {
 					fillLevelDetailsFromDialog();
 					if (isLevelValid()) {
 						setLevelHeight(level.length);
+						createStandardLevelLayers();
 						clearLevel();
 						scrollLevelToBottom();
 						$(this).dialog("close");
 						markLevelAsModified();
 						enablePreviewing();
+                        setSelectedLayer(0);
+                        rebuildLayersMarkup();
 					}
 				},
 				'Cancel': function() {
@@ -72,7 +78,7 @@ function LevelEditor(assetsInstance) {
 				}
 			}
 		});
-	}
+	};
 
 	var isLevelValid = function() {
 		if (levelFilename == '') {
@@ -108,31 +114,34 @@ function LevelEditor(assetsInstance) {
 		}
 
 		return true;
-	}
+	};
 
 	var fillLevelDetailsFromDialog = function() {
 		levelFilename = $('#level-filename').val().trim();
 		level.name = $('#level-name').val().trim();
 		level.length = Utils.toInt($('#level-length').val(), -1);
 		level.speed = Utils.toInt($('#level-speed').val(), -1);
-	}
+	};
 
 	var setLevelHeight = function(height) {
 		$('#level').height(height + 'px');
-	}
+	};
 
 	var editLevel = function(levelName) {
 		console.log('Editing level ' + levelName);
 		var levelInfo = assets.levelByName(levelName);
 		$.getJSON('data/' + levelInfo.uri, function(data) {
 			level = data;
+            console.log("Loaded level " + levelName);
 			levelFilename = levelName;
+            setSelectedLayer(0);
+            initializeCurrentLevelLayers();
 			levelToDesign();
 			scrollLevelToBottom();
 			markLevelAsSaved();
 			enablePreviewing();
 		});
-	}
+	};
 
 	var levelToDesign = function() {
 		clearLevel();
@@ -140,11 +149,142 @@ function LevelEditor(assetsInstance) {
 			var e = level.events[i];
 			addRecipeInstanceAtGameCoordinates(e.recipe, e.x, e.y, e.layer);
 		}
-	}
+	};
 
 	var clearLevel = function() {
 		$('.level-sprite', '#level').remove();
-	}
+	};
+
+	var createStandardLevelLayers = function() {
+		level.layers = [];
+		addLevelLayer("main", 0);
+
+        rebuildLayersMarkup();
+	};
+
+    var initializeCurrentLevelLayers = function() {
+        rebuildLayersMarkup();
+    };
+
+	var addLevelLayer = function(name, depth) {
+		level.layers.push({
+			"name": name,
+			"depth": depth,
+			"visible": true
+		});
+    };
+
+    var rebuildLayersMarkup = function() {
+        level.layers.sort(function(el1, el2) {
+            return el1.depth == el2.depth ? 0 : (el1.depth < el2.depth ? 1 : -1);
+        });
+
+        var $levelLayerHolder = $('#level-layer-holder');
+        $levelLayerHolder.empty();
+
+        for (var i in level.layers)
+            createLayerMarkup(level.layers[i]).appendTo($levelLayerHolder);
+    };
+
+    var createLayerMarkup = function(layer) {
+        var $result = $('<div>')
+                            .addClass('layer')
+                            .data('layer-depth', layer.depth);
+        if (layer.selected)
+            $result.addClass('selected');
+
+        var $checkbox = $('<input type="checkbox"/>')
+                            .prop('checked', layer.visible)
+                            .on('click', function() {
+                                toggleLayerVisibility(layer.name);
+                            });
+        $('<div>').addClass('layer-visibility').append($checkbox).appendTo($result);
+        $('<div>')
+            .addClass('layer-name')
+            .text(layer.name)
+            .on('click', function() {
+                setSelectedLayer(layer.depth);
+                rebuildLayersMarkup();
+            })
+            .appendTo($result);
+        $('<div>').addClass('layer-depth').text(layer.depth).appendTo($result);
+
+        return $result;
+    };
+
+    var setSelectedLayer = function(layerDepth) {
+        for (var i in level.layers)
+            level.layers[i].selected = (level.layers[i].depth == layerDepth);
+    };
+
+    var toggleLayerVisibility = function(layerName) {
+        for (var i in level.layers) {
+            var layer = level.layers[i];
+            if (layer.name == layerName) {
+                level.layers[i].visible = !level.layers[i].visible;
+                var zIndexDepth = layer.depth + LAYER_ZERO_ZINDEX;
+                $('#level').find('.level-sprite').each(function() {
+                    if ($(this).css('z-index') == zIndexDepth)
+                        $(this).toggle();
+                });
+                return;
+            }
+        }
+    };
+
+    var addLayer = function() {
+        addLayerDialog.dialog({
+            width: '600',
+            height: '240',
+            modal: true,
+            open: function() {
+                $('#layer-name').val('');
+                $('#layer-depth').val(1);
+            },
+            close: function() {
+            },
+            buttons: {
+                'Ok': function() {
+                    var layer = layerFromDialog();
+                    if (isLayerValid(layer)) {
+                        addLevelLayer(layer.name, layer.depth);
+                        rebuildLayersMarkup();
+                        markLevelAsModified();
+                        $(this).dialog('close');
+                    }
+                },
+                'Cancel': function() {
+                    $(this).dialog('close');
+                }
+            }
+        });
+    };
+
+    var layerFromDialog = function() {
+        var layerName = addLayerDialog.find('#layer-name').val().trim();
+        var layerDepth = Utils.toInt($('#layer-depth').val(), 0);
+        return {
+            'name': layerName,
+            'depth': layerDepth
+        }
+    };
+
+    var isLayerValid = function(layer) {
+        for (var i in level.layers) {
+            if (level.layers[i].name == layer.name) {
+                alert('A layer with this name already exists!');
+                addLayerDialog.find('#layer-name').select().focus();
+                return false;
+            }
+
+            if (level.layers[i].depth == layer.depth) {
+                alert('A layer with this depth already exists!');
+                addLayerDialog.find('#layer-depth').select().focus();
+                return false;
+            }
+        }
+        return true;
+    };
 
 	var addRecipeInstanceAtGameCoordinates = function(recipeName, x, y, layer) {
 		var recipe = assets.recipeByName(recipeName);
@@ -153,7 +293,8 @@ function LevelEditor(assetsInstance) {
 		var spriteSheet = assets.spriteSheetByName(firstFrame.spriteSheet);
 		var spriteSheetFrame = spriteSheet.frames[firstFrame.index];
 
-		var levelHeight = $('#level').height();
+        var $level = $('#level');
+		var levelHeight = $level.height();
 
 		var spriteWidth = spriteSheet.spriteWidth;
 		var spriteHeight = spriteSheet.spriteHeight;
@@ -181,17 +322,17 @@ function LevelEditor(assetsInstance) {
 				}				
 			})
 			.css('position', 'absolute')
-			.appendTo($('#level'));
+			.appendTo($level);
 
 		markLevelAsModified();
-	}
+	};
 
 	var levelFromDesign = function() {
 		level.events = [];
 
 		$('.level-sprite', '#level').each(function() {
 			var $this = $(this);
-			var recipeName = $this.data('recipe')
+			var recipeName = $this.data('recipe');
 			var layer = $this.data('layer');
 			var position = eventPositionFromEntity(this);
 
@@ -202,25 +343,26 @@ function LevelEditor(assetsInstance) {
 				"layer": layer
 			});
 		});
-	}
+	};
 
 	var eventPositionFromEntity = function(entity) {
-		$this = $(entity);
+		var $this = $(entity);
 		var width = $this.width();
 		var height = $this.height();
 		var position = $this.position();
-		 // div position coords refer to the top-left corner
+		 // div position coordinates refer to the top-left corner
 		var placementX = position.left + width / 2;
 		var placementY = position.top + height / 2;
 		return {
 			'x': placementX,
 			'y': level.length - placementY
 		}
-	}
+	};
 
 	var scrollLevelToBottom = function() {
-		$('#level-holder').scrollTop($('#level-holder').prop("scrollHeight"));
-	}
+        var $levelHolder = $('#level-holder');
+		$levelHolder.scrollTop($levelHolder.prop('scrollHeight'));
+	};
 
 	var saveLevel = function(successCallback) {
 		levelFromDesign();
@@ -237,7 +379,7 @@ function LevelEditor(assetsInstance) {
 			'x': x,
 			'y': level.length - y
 		}
-	}
+	};
 
 	var addNewSpriteAt = function(x, y) {
 		var xx = x;
@@ -258,7 +400,7 @@ function LevelEditor(assetsInstance) {
 			.off('recipe-selected')
 			.on('recipe-selected', function(event, recipeName) {
 				var coords = divCoordinatesToGameCoordinates(xx, yy);
-				var layer = 0;
+				var layer = $('#level-layer-holder').find('.layer.selected').data('layer-depth');
 				addRecipeInstanceAtGameCoordinates(recipeName, coords.x, coords.y, layer);
 				$(this).hide();
 			})
@@ -273,7 +415,7 @@ function LevelEditor(assetsInstance) {
 		saveLevel(function() {
 			$.getJSON('/editor/preview-level/' + levelFilename);
 		});
-	}
+	};
 
 	var openEntityPropertiesDialog = function(entity) {
 		var initialPosition = eventPositionFromEntity(entity);
@@ -317,13 +459,14 @@ function LevelEditor(assetsInstance) {
 				}
 			}
 		});
-	}
+	};
 
 	var createMarkup = function() {
 		console.log('Creating recipe editor markup');
 
 		createLevelEditDialogMarkup();
 		createEntityPropertiesDialogMarkup();
+        createAddLayerDialogMarkup();
 
 		$('#btnPreviewLevel').on('click', function(e) {
 			previewLevel();
@@ -334,6 +477,11 @@ function LevelEditor(assetsInstance) {
 			saveLevel();
 			return false;
 		});
+
+        $('#btnAddLayer').on('click', function(e) {
+            addLayer();
+            return false;
+        });
 
 		$(document).on('dblclick', '.level-sprite', function(e) {
 			$('.level-sprite.selected').each(function() {
@@ -380,7 +528,7 @@ function LevelEditor(assetsInstance) {
 		});
 
 		scrollLevelToBottom();
-	}
+	};
 
 	var createEntityPropertiesDialogMarkup = function() {
 		var $dialog = $('<div>')
@@ -418,14 +566,49 @@ function LevelEditor(assetsInstance) {
 				$('#dlgEntityProperties').next().find('button:eq(0)').trigger('click');
 				return false;
 			}
-		})
+		});
 
 		entityPropertiesDialog = $dialog;
-	}
+	};
+
+    var createAddLayerDialogMarkup = function() {
+        var $dialog = $('<div>')
+                        .attr('id', 'dlgAddLayer')
+                        .attr('title', 'Add Layer')
+                        .addClass('dialog')
+                        .hide();
+
+        var dialogContent =
+            "<div id=\"add-layer-dialog-holder\">" +
+                "<div class=\"row\">" +
+                    "<div class=\"label\">Name</div>" +
+                    "<div class=\"field\">" +
+                        "<input type=\"text\" id=\"layer-name\" value=\"\" />" +
+                    "</div>" +
+                "</div>" +
+                "<div class=\"row\">" +
+                    "<div class=\"label\">Depth</div>" +
+                    "<div class=\"field\">" +
+                        "<input type=\"text\" id=\"layer-depth\" value=\"\" />" +
+                    "</div>" +
+                "</div>" +
+            "</div>";
+        $(dialogContent).appendTo($dialog);
+        $dialog.appendTo($('body'));
+
+        $('#add-layer-dialog-holder').find('input').on('keydown', function(e) {
+            if (e.keyCode == $.ui.keyCode.ENTER) {
+                $('#dlgAddLayer').next().find('button:eq(0)').trigger('click');
+                return false;
+            }
+        });
+
+        addLayerDialog = $dialog;
+    };
 
 	var createLevelEditDialogMarkup = function() {
 		var $dialog = $('<div>')
-							.attr('id', 'dlgLevelEditor')
+							.attr('id', 'dlgLayerEditor')
 							.attr('title', 'Level Editor')
 							.addClass('dialog')
 							.hide();
@@ -465,11 +648,10 @@ function LevelEditor(assetsInstance) {
 				$('#dlgLevelEditor').next().find('button:eq(0)').trigger('click');
 				return false;
 			}
-		})
-
+		});
 
 		editDialog = $dialog;
-	}
+	};
 
 	createMarkup();
 

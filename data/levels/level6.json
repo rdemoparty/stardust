@@ -22,30 +22,36 @@
   "events": [
     {
       "recipe": "enemy",
-      "x": 495,
+      "x": 310,
+      "y": 401,
+      "layer": 0
+    },
+    {
+      "recipe": "missile",
+      "x": 412,
+      "y": 300,
+      "layer": 0
+    },
+    {
+      "recipe": "platform_bottom",
+      "x": 519.5,
+      "y": 140,
+      "layer": 4
+    },
+    {
+      "recipe": "platform_top",
+      "x": 518.5,
+      "y": 140.5,
+      "layer": 6
+    },
+    {
+      "recipe": "player",
+      "x": 510,
       "y": 32,
-      "layer": 0
-    },
-    {
-      "recipe": "enemy",
-      "x": 495,
-      "y": 96,
-      "layer": 0
-    },
-    {
-      "recipe": "enemy",
-      "x": 494,
-      "y": 159,
-      "layer": 0
-    },
-    {
-      "recipe": "enemy",
-      "x": 490,
-      "y": 222,
-      "layer": 0
+      "layer": 5
     }
   ],
-  "name": "First level",
+  "name": "Rapture",
   "length": 50000,
   "speed": 100
 }

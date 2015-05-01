@@ -164,20 +164,20 @@
       "collidable": true,
       "damageProvidedOnCollision": 10,
       "removeOnDeath": true,
-      "killIfOutside": true,
+      "killIfOutside": false,
       "maxLife": 1,
       "team": "Friendly",
       "type": "Bullet",
       "hull": [
         {
-          "radius": 4,
           "x": 0,
-          "y": -10
+          "y": -10,
+          "radius": 4
         },
         {
-          "radius": 4,
           "x": 0,
-          "y": 10
+          "y": 10,
+          "radius": 4
         }
       ]
     },

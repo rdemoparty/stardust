@@ -1,4 +1,24 @@
 {
+  "layers": [
+    {
+      "name": "front",
+      "depth": 1,
+      "visible": true,
+      "selected": false
+    },
+    {
+      "name": "main",
+      "depth": 0,
+      "visible": true,
+      "selected": false
+    },
+    {
+      "name": "back",
+      "depth": -1,
+      "visible": true,
+      "selected": true
+    }
+  ],
   "events": [
     {
       "recipe": "enemy",
