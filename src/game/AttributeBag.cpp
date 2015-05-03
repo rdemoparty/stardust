@@ -16,4 +16,9 @@ namespace Acidrain {
     void AttributeBag::setFloat(const char* const key, float value) {
         floatMap[key] = value;
     }
+
+    void AttributeBag::clear() {
+        floatMap.clear();
+        integerMap.clear();
+    }
 }

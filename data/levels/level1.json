@@ -10,7 +10,7 @@
       "name": "main",
       "depth": 0,
       "visible": true,
-      "selected": false
+      "selected": true
     },
     {
       "name": "back",
@@ -22,7 +22,7 @@
       "name": "far away",
       "depth": -2,
       "visible": true,
-      "selected": true
+      "selected": false
     }
   ],
   "events": [
@@ -97,6 +97,12 @@
       "x": 357,
       "y": 326,
       "layer": -1
+    },
+    {
+      "recipe": "beacon",
+      "x": 486,
+      "y": 907,
+      "layer": 0
     }
   ],
   "name": "First level",

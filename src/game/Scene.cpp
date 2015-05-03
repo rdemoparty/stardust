@@ -306,7 +306,11 @@ namespace Acidrain {
         for (auto& o : objects)
             if (o->getId() == id)
                 return o;
-        
+
+        for (auto& o : newlyCreatedObjects)
+            if (o->getId() == id)
+                return o;
+
         return nullptr;
     }
 }

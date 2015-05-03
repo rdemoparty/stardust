@@ -34,7 +34,8 @@ namespace Acidrain {
         // initialize some gpuProgram constants
         gpuProgramConstantBundle = make_shared<GpuProgramConstantBundle>();
 
-        gpuProgramConstantBundle->add("orthoMatrix", GpuProgramConstant(ortho(0.0f, 1024.0f, 768.0f, 0.0f, 0.0f, 1.0f)));
+        gpuProgramConstantBundle->add("orthoMatrix",
+                                      GpuProgramConstant(ortho(0.0f, 1024.0f, 768.0f, 0.0f, 0.0f, 1.0f)));
         int textureSamplerIndex = 0;
         gpuProgramConstantBundle->add("diffuseSampler", GpuProgramConstant(textureSamplerIndex));
         gpuProgramConstantBundle->add("cameraShakeMatrix", GpuProgramConstant(camera->getShakeMatrix()));
@@ -50,24 +51,15 @@ namespace Acidrain {
     void Level::start() {
         scene->clear();
         levelScript->reset();
+    }
 
-        // add game objects
-        vec2 platformPosition = vec2(1024 / 2, 700);
-
-        auto player = gameObjectFactory->createByName("player");
-        player->setId(PLAYER_OBJECT_ID);
-        player->currentState.position = vec2(1024 / 2, 800);
-        scene->add(player);
-
-        auto platformTop = gameObjectFactory->createByName("platform_top");
-        platformTop->currentState.position = platformPosition;
-        scene->add(platformTop, 1);
-
-        auto platformBottom = gameObjectFactory->createByName("platform_bottom");
-        platformBottom->currentState.position = platformPosition;
-        scene->add(platformBottom, -1);
-
-        AUDIOSYS.playMusic("main.ogg");
+    void Level::addPlayerToScene() const {
+        if (!playerExists()) {
+            auto player = gameObjectFactory->createByName("player");
+            player->setId(PLAYER_OBJECT_ID);
+            player->currentState.position = vec2(1024 / 2, 800);
+            scene->add(player);
+        }
     }
 
     void Level::update(float elapsedSeconds) {
@@ -101,17 +93,33 @@ namespace Acidrain {
                     vec4(1, 1, 1, 0.2f));
             GFXSYS.drawFilledRectangle(
                     vec2(x + 3, y + 3),
-                    vec2(x + (lifeBarWidth - 3)* lifePercent, y + lifeBarHeight - 3),
+                    vec2(x + (lifeBarWidth - 3) * lifePercent, y + lifeBarHeight - 3),
                     mix(vec4(0, 1, 0, 0.6), vec4(1, 0, 0, 0.6), (1.0 - lifePercent)));
 //            vec4(1, 1, 1, 0.5f));
         }
     }
 
     bool Level::isFinished() const {
-        return false;
+        return levelScript->isFinished() && scene->countObjects() == 1 && playerExists();
     }
 
     int Level::objectsCount() const {
         return scene->countObjects();
+    }
+
+    bool Level::playerExists() const {
+        return scene->getById(PLAYER_OBJECT_ID) != nullptr;
+    }
+
+    void Level::addPlatformsToScene() {
+        vec2 platformPosition = vec2(1024 / 2, 700);
+
+        auto platformTop = gameObjectFactory->createByName("platform_top");
+        platformTop->currentState.position = platformPosition;
+        scene->add(platformTop, 1);
+
+        auto platformBottom = gameObjectFactory->createByName("platform_bottom");
+        platformBottom->currentState.position = platformPosition;
+        scene->add(platformBottom, -1);
     }
 }

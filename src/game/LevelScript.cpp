@@ -21,20 +21,30 @@ namespace Acidrain {
 
     void LevelScript::reset() {
         offset = 0;
+
+        // removing all remaining events in an efficient manner
+        queue<LevelScriptEntry> emptyQueue;
+        swap(remainingEvents, emptyQueue);
+
+        for (auto& e : events)
+            remainingEvents.push(e);
     }
 
     void LevelScript::update(float elapsedSeconds) {
         offset += elapsedSeconds * pixelsToScrollPerSecond;
-        for (auto& e : events) {
-            if (!e.created && e.position.y <= offset) {
-                GameObject* entity = scene->createByName(e.recipeName);
-                entity->currentState.position.x = e.position.x;
-                entity->currentState.position.y = e.position.y - offset;
-                entity->previousState = entity->currentState;
-                scene->add(entity);
 
-                e.created = true;
+        while (!remainingEvents.empty()) {
+            auto e = remainingEvents.front();
+            if (e.position.y > offset) {
+                break;
             }
+            remainingEvents.pop();
+
+            GameObject* entity = scene->createByName(e.recipeName);
+            entity->currentState.position.x = e.position.x;
+            entity->currentState.position.y = e.position.y - offset;
+            entity->previousState = entity->currentState;
+            scene->add(entity, e.layer);
         }
     }
 
@@ -59,6 +69,8 @@ namespace Acidrain {
     }
 
     void LevelScript::load(string scriptURI) {
+        events.clear();
+
         LOG(INFO) << "Loading level script from \"" << scriptURI << "\"";
         string content = FILESYS.getFileContent(scriptURI);
 
@@ -80,6 +92,13 @@ namespace Acidrain {
                     LOG(WARNING) << "Unknown level script attribute \"" << param << "\"";
                 }
             }
+
+            // sort events in their appearance order
+            sort(events.begin(), events.end(),
+                 [](const LevelScriptEntry& a, const LevelScriptEntry& b) -> bool {
+                     return a.position.y < b.position.y;
+                 });
+
         } else {
             LOG(FATAL) << "Error while parsing JSON content from " << scriptURI << ". Error: " << parseError;
         }
@@ -87,5 +106,9 @@ namespace Acidrain {
 
     void LevelScript::addEvent(LevelScriptEntry entry) {
         events.push_back(entry);
+    }
+
+    bool LevelScript::isFinished() {
+        return remainingEvents.empty();
     }
 }

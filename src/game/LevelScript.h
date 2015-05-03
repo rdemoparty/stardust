@@ -2,6 +2,7 @@
 
 #include <string>
 #include <vector>
+#include <queue>
 #include <glm/vec2.hpp>
 
 namespace Acidrain {
@@ -15,7 +16,6 @@ namespace Acidrain {
         string recipeName;
         vec2 position;
         int layer;
-        bool created = false;
     };
 
     class LevelScript {
@@ -27,6 +27,8 @@ namespace Acidrain {
 
         void load(string scriptURI);
 
+        bool isFinished();
+
         virtual void reset();
 
         virtual void update(float elapsedSeconds);
@@ -35,11 +37,11 @@ namespace Acidrain {
         Scene* scene;
 
     private:
-        float timeUntilNextSpawn;
         float offset;
         float pixelsToScrollPerSecond = 100;
 
         vector<LevelScriptEntry> events;
+        queue<LevelScriptEntry> remainingEvents;
         void addEvent(LevelScriptEntry entry);
     };
 } // namespace Acidrain

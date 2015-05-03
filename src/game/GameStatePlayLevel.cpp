@@ -6,6 +6,8 @@
 #include <FpsCounter.h>
 #include <GameStateMenu.h>
 #include <AudioSystem.h>
+#include <GameSession.h>
+#include <LevelScript.h>
 
 namespace Acidrain {
 
@@ -15,27 +17,83 @@ namespace Acidrain {
     }
 
     void GameStatePlayLevel::onEnter(Stardust* game) {
-        game->level->start();
         GFXSYS.setClearColor(vec3(0.1f, 0.0f, 0.1f));
     }
 
     void GameStatePlayLevel::onExit(Stardust* game) {
-        AUDIOSYS.stopSounds({"PLAYER", "EXPLOSIONS"});
     }
 
     void GameStatePlayLevel::update(Stardust* game, float elapsedSeconds) {
-        if (INPUT.isKeyDown(SDL_SCANCODE_ESCAPE))
+        if (INPUT.isKeyDown(SDL_SCANCODE_ESCAPE)) {
+            AUDIOSYS.stopSounds({"PLAYER", "EXPLOSIONS"});
             game->fsm->changeState(&GameStateMenu::instance());
+            return;
+        }
 
-        game->level->update(elapsedSeconds);
-        game->fpsCounter->update(elapsedSeconds);
+        GameSession* gameSession = game->gameSession.get();
+        Level* level = game->level.get();
+        LevelScript* levelScript = level->levelScript.get();
+
+        // TODO: create individual states for both game over and game completed states
+        if (gameSession != nullptr) {
+            switch (gameSession->getState()) {
+                case GameSessionState::GAME_OVER:
+                case GameSessionState::GAME_FINISHED:
+                    return;
+
+                case GameSessionState::NEW:
+                    levelScript->load(gameSession->getLevelUri());
+                    level->start();
+
+                    level->addPlayerToScene();
+                    level->addPlatformsToScene();
+
+                    AUDIOSYS.playMusic("main.ogg");
+
+                    gameSession->notifySessionStarted();
+                    break;
+
+                case GameSessionState::PLAYING:
+                    if (!level->playerExists()) {
+                        gameSession->notifyPlayerDeath();
+                        if (gameSession->getState() != GameSessionState::GAME_OVER) {
+                            level->addPlayerToScene();
+                            level->addPlatformsToScene();
+                        }
+                    }
+
+                    if (level->isFinished()) {
+                        gameSession->notifyLevelFinish();
+                        if (gameSession->getState() != GameSessionState::GAME_FINISHED) {
+                            levelScript->load(gameSession->getLevelUri());
+                            level->start();
+                        }
+                    }
+
+                    game->level->update(elapsedSeconds);
+                    game->fpsCounter->update(elapsedSeconds);
+                    break;
+            }
+        }
     }
 
     void GameStatePlayLevel::render(Stardust* game, float alpha) {
         GFXSYS.clearScreen();
-        game->level->render(alpha);
 
-        game->drawStats();
+        if (game->gameSession) {
+            switch (game->gameSession->getState()) {
+                case GameSessionState::NEW:
+                    break;
+                case GameSessionState::PLAYING:
+                    game->level->render(alpha);
+                    game->drawStats();
+                    break;
+                case GameSessionState::GAME_OVER:
+                    break;
+                case GameSessionState::GAME_FINISHED:
+                    break;
+            }
+        }
 
         game->fpsCounter->addFrame();
         GFXSYS.show();

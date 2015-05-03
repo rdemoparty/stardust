@@ -25,27 +25,28 @@ namespace Acidrain {
 
         ~FileSystem();
 
-        void init(std::string rootDir);
+        void init(string rootDir);
 
-        std::string absolutePath(const char* relativePath);
+        string absolutePath(const char* relativePath);
 
-        std::string absolutePath(std::string relativePath);
+        string absolutePath(string relativePath);
 
-        static std::string getExePath();
+        static string getExePath();
 
-        static std::string getExeDir(std::string fullPath);
+        static string getExeDir(string fullPath);
 
-        std::string getFileContent(const char* pathRelativeToRoot);
+        bool fileExists(const string& pathRelativeToRoot);
 
-        std::string getFileContent(const std::string& pathRelativeToRoot);
+        string getFileContent(const char* pathRelativeToRoot);
+
+        string getFileContent(const string& pathRelativeToRoot);
 
         vector<FileInfo> filesInDirectory(string directoryURI);
 
         vector<FileInfo> filesInDirectoryRecursive(string directoryURI, vector<FileInfo> filesSoFar = {});
 
     private:
-        std::string rootDir = "./";
-
+        string rootDir = "./";
     };
 
 } // namespace Acidrain

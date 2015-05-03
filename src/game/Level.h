@@ -37,6 +37,10 @@ namespace Acidrain {
 
         int objectsCount() const;
 
+        bool playerExists() const;
+
+        void addPlayerToScene() const;
+
 //    private:
         shared_ptr<GpuProgramConstantBundle> gpuProgramConstantBundle;
 
@@ -53,5 +57,7 @@ namespace Acidrain {
         shared_ptr<Starfield> starfield;
 
         void drawPlayerLife();
+
+        void addPlatformsToScene();
     };
 }

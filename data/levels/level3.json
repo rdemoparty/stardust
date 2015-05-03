@@ -10,38 +10,38 @@
       "name": "main",
       "depth": 0,
       "visible": true,
-      "selected": false
+      "selected": true
     },
     {
       "name": "back",
       "depth": -1,
       "visible": true,
-      "selected": true
+      "selected": false
     }
   ],
   "events": [
     {
       "recipe": "enemy",
-      "x": 495,
-      "y": 32,
+      "x": 396,
+      "y": 421,
       "layer": 0
     },
     {
       "recipe": "enemy",
-      "x": 495,
-      "y": 96,
+      "x": 454,
+      "y": 418,
       "layer": 0
     },
     {
       "recipe": "enemy",
-      "x": 494,
-      "y": 159,
+      "x": 509,
+      "y": 416,
       "layer": 0
     },
     {
       "recipe": "enemy",
-      "x": 490,
-      "y": 222,
+      "x": 566,
+      "y": 414,
       "layer": 0
     }
   ],

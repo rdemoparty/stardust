@@ -3,7 +3,8 @@
     {
       "name": "super front",
       "depth": 2,
-      "visible": true
+      "visible": true,
+      "selected": false
     },
     {
       "name": "front",
@@ -33,20 +34,20 @@
     },
     {
       "recipe": "enemy",
-      "x": 495,
-      "y": 96,
+      "x": 964,
+      "y": 303,
       "layer": 0
     },
     {
       "recipe": "enemy",
-      "x": 494,
-      "y": 159,
+      "x": 151,
+      "y": 724,
       "layer": 0
     },
     {
       "recipe": "enemy",
-      "x": 490,
-      "y": 222,
+      "x": 658,
+      "y": 1210,
       "layer": 0
     }
   ],

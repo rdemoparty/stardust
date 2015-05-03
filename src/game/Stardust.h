@@ -16,11 +16,13 @@ namespace Acidrain {
 
     class Level;
 
+    class GameSession;
+
     class Stardust : public EventListener {
     public:
-        Stardust();
+        explicit Stardust();
 
-        ~Stardust();
+        virtual ~Stardust();
 
         void update(float elapsedSeconds);
 
@@ -29,16 +31,16 @@ namespace Acidrain {
         bool shouldQuit();
 
         shared_ptr<GameStateMachine<Stardust>> fsm;
+        shared_ptr<GameSession> gameSession;
         shared_ptr<Level> level;
-        bool quitGame = false;
         shared_ptr<FpsCounter> fpsCounter;
+
+        bool quitGame = false;
 
         void drawStats();
 
     private:
-
-        shared_ptr<Font> titleFont;
-        shared_ptr<Font> fontSmall;
+        shared_ptr<Font> statsFont;
 
         virtual void onEvent(SDL_Event const& param);
     };

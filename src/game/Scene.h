@@ -69,6 +69,9 @@ namespace Acidrain {
 
         GameObject* getById(long id);
 
+        /**
+         * Removes all entities from both the active as well as newly created objects list
+         */
         void clear();
 
         void update(float elapsedSeconds);

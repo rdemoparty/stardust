@@ -8,6 +8,7 @@
 #include <InputProvider.h>
 #include <Level.h>
 #include <GameStateIntro.h>
+#include <GameSession.h>
 
 namespace Acidrain {
 
@@ -22,11 +23,9 @@ namespace Acidrain {
         // TODO Adrian: figure out a better name for the event system. It is too generic. Events of?
         EVENTSYS.addListener(this, SDL_QUIT);
 
-        titleFont = make_shared<Font>("fonts/Neo Sans Pro Bold.ttf", 90.0f);
-        fontSmall = make_shared<Font>("fonts/Impact.ttf", 20.0f);
-
+        statsFont = make_shared<Font>("fonts/Impact.ttf", 20.0f);
         fpsCounter = make_shared<FpsCounter>();
-
+        gameSession = make_shared<GameSession>();
         level = make_shared<Level>();
     }
 
@@ -61,7 +60,7 @@ namespace Acidrain {
         s << "FPS: " << fpsCounter->getFps() << "  . Objects in scene: " << level->objectsCount();
 
         GFXSYS.setTransparencyMode(TransparencyMode::Additive);
-        fontSmall->print(10, 10, s.str().c_str(), vec4(1, 1, 1, 0.9f));
+        statsFont->print(10, 10, s.str().c_str(), vec4(1, 1, 1, 0.9f));
     }
 
     bool Stardust::shouldQuit() {
