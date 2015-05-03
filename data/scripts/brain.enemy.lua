@@ -36,8 +36,8 @@ function onUpdate(objectPointer, elapsedSeconds)
 
         local duration = o:getFloat("hitDuration")
         local rValue = 1
-        local gValue = easeIn(hitTimer, 0, 1, duration)
-        local bValue = easeIn(hitTimer, 0, 1, duration)
+        local gValue = easeInQuintic(hitTimer, 0, 1, duration)
+        local bValue = easeInQuintic(hitTimer, 0, 1, duration)
         -- gValue, bValue = 0, 0
         o:setColor(rValue, gValue, bValue, 1)
     else

@@ -15,10 +15,10 @@ function onUpdate(objectPointer, elapsedSeconds)
     local t = o:getFloat("passedTime") + elapsedSeconds
     o:setFloat("passedTime", t)
 
-    local scale = easeOut(t, 1, 1.5, duration)
+    local scale = easeOutQuintic(t, 1, 1.5, duration)
     o:setScale(scale)
 
-    local alpha = easeOut(t, 1, -1, duration)
+    local alpha = easeOutQuintic(t, 1, -1, duration)
     o:setColor(1, 1, 1, alpha)
 
     if t >= duration then

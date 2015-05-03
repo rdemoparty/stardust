@@ -13,6 +13,20 @@ namespace Acidrain {
     // Lua exported functions
     // ----------------------------------------
 
+    static void loadAndInterpret(lua_State* L, const char* scriptUri) {
+        if (luaL_loadstring(L, FILESYS.getFileContent(scriptUri).c_str()) != 0)
+            LOG(ERROR) << "Failed to load script " << scriptUri << ". Error: " << lua_tostring(L, -1) << endl;
+
+        // Interpret the file so we make the symbols available in the scope (functions)
+        if (lua_pcall(L, 0, 0, 0) != 0)
+            LOG(ERROR) << "Failed to interpret script contents: " << lua_tostring(L, -1) << endl;
+    }
+
+    static int includeScriptFile(lua_State* L) {
+        loadAndInterpret(L, lua_tostring(L, 1));
+        return 0; // arguments pushed on stack
+    }
+
     static int isAnimationFinished(lua_State* L) {
         GameObject* object = (GameObject*) lua_topointer(L, 1);
         lua_pushboolean(L, object->isAnimationFinished());
@@ -222,7 +236,7 @@ namespace Acidrain {
         Scene* scene = (Scene*) lua_topointer(L, 1);
         GameObject* object = (GameObject*) lua_topointer(L, 2);
         const char* const brainName = lua_tostring(L, 3);
-        scene->setBrain(object, brainName);
+        scene->changeObjectBrain(object, brainName);
         return 0; // arguments pushed on stack
     }
 
@@ -243,31 +257,23 @@ namespace Acidrain {
     // ScriptedBrain implementation
     // ----------------------------------------
 
-    ScriptedBrain::ScriptedBrain(std::string brainFilename) : brainName(brainFilename) {
+    ScriptedBrain::ScriptedBrain(const string& brainFilename)
+            : brainName(brainFilename) {
         initializeLuaContext(brainFilename);
-        registerExports();
     }
 
-    void ScriptedBrain::initializeLuaContext(string& brainFilename) {
+    void ScriptedBrain::initializeLuaContext(const string& brainFilename) {
         L = luaL_newstate();
         luaL_openlibs(L);
 
-        if (luaL_loadstring(L, FILESYS.getFileContent("scripts/base.lua").c_str()) != 0)
-            cerr << "Failed to load base script. Error: " << lua_tostring(L, -1) << endl;
+        registerExports();
 
-        // Interpret the file so we make the symbols available in the scope (functions)
-        if (lua_pcall(L, 0, 0, 0) != 0)
-            std::cerr << "Failed to interpret script contents: " << lua_tostring(L, -1) << std::endl;
-
-        if (luaL_loadstring(L, FILESYS.getFileContent(brainFilename).c_str()) != 0)
-            cerr << "Failed to load script " << brainFilename << ". Error: " << lua_tostring(L, -1) << endl;
-
-        // Interpret the file so we make the symbols available in the scope (functions)
-        if (lua_pcall(L, 0, 0, 0) != 0)
-            std::cerr << "Failed to interpret script contents: " << lua_tostring(L, -1) << std::endl;
+        loadAndInterpret(L, "scripts/base.lua");
+        loadAndInterpret(L, brainFilename.c_str());
     }
 
     void ScriptedBrain::registerExports() {
+        lua_register(L, "include", includeScriptFile);
         lua_register(L, "fireWeapons", fireWeapons);
         lua_register(L, "kill", kill);
         lua_register(L, "isAnimationFinished", isAnimationFinished);

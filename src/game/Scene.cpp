@@ -113,10 +113,8 @@ namespace Acidrain {
 
             // zOrders are equal. we care for type of entity then
             // order is: scenery, ship, bullets, explosions
-            if (a->state.type < b->state.type)
-                return true;
+            return a->state.type < b->state.type;
 
-            return false;
         }
     } DrawComparator;
 
@@ -295,7 +293,7 @@ namespace Acidrain {
         collisions.clear();
     }
 
-    void Scene::setBrain(GameObject* object, char const* const brainName) {
+    void Scene::changeObjectBrain(GameObject* object, char const* const brainName) {
         auto brain = objectFactory->getBrain(brainName);
         object->setBrain(brain);
         object->setScene(this);

@@ -15,7 +15,7 @@ namespace Acidrain {
     class ScriptedBrain {
     public:
 
-        explicit ScriptedBrain(std::string brainFilename);
+        explicit ScriptedBrain(const string& brainFilename);
 
         virtual ~ScriptedBrain();
 
@@ -41,9 +41,9 @@ namespace Acidrain {
     private:
         lua_State* L;
 
-        std::string brainName;
+        string brainName;
 
-        void initializeLuaContext(string& brainFilename);
+        void initializeLuaContext(const string& brainFilename);
 
         void registerExports();
     };

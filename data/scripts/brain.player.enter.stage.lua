@@ -15,7 +15,7 @@ function onUpdate(objectPointer, elapsedSeconds)
     local t = o:getFloat("elapsedSeconds") + elapsedSeconds
     o:setFloat("elapsedSeconds", t)
 
-    y = easeIn(t, 800, -260, 2)
+    y = easeInQuintic(t, 800, -260, 2)
 
     o:setPosition(x, y)
 

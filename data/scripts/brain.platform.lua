@@ -20,7 +20,7 @@ function onUpdate(objectPointer, elapsedSeconds)
 
     if state == 0 then
         local t = o:getFloat("elapsedSeconds") + elapsedSeconds
-        y = easeOut(t, 800, -160, 1.5)
+        y = easeOutQuintic(t, 800, -160, 1.5)
         o:setFloat("elapsedSeconds", t)
 
         if t >= 1.5 then
@@ -36,7 +36,7 @@ function onUpdate(objectPointer, elapsedSeconds)
         end
     else
         local t = o:getFloat("elapsedSeconds") + elapsedSeconds
-        y = easeIn(t, 640, 400, 1.5)
+        y = easeInQuintic(t, 640, 400, 1.5)
         o:setFloat("elapsedSeconds", t)
     end
 

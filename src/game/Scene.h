@@ -88,7 +88,7 @@ namespace Acidrain {
 
         void shakeCamera(float amount);
 
-        void setBrain(GameObject* pObject, char const* const string);
+        void changeObjectBrain(GameObject* pObject, char const* const string);
 
     private:
 
