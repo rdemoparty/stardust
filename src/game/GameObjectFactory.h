@@ -1,80 +1,32 @@
 #pragma once
 
 #include <memory>
-#include <glm/vec2.hpp>
-#include <GameObject.h>
-#include <Weapon.h>
 
 namespace Acidrain {
 
     using namespace std;
-    using namespace glm;
 
     class GameObject;
 
-    struct CollisionHullRecipe {
-        float radius;
-        vec2 center;
-    };
-
-    struct WeaponEmitterRecipe {
-        string bulletName;
-        vec2 mountingPoint;
-    };
-
-    struct WeaponRecipe {
-        int shotsPerSecond;
-        string soundWhenFired;
-        vector<WeaponEmitterRecipe> emitters;
-    };
-
-    struct GameObjectRecipe {
-        string name;
-        string animation;
-        string brain;
-        bool removeOnDeath;
-        bool killIfOutside;
-        float damageProvidedOnCollision;
-        bool collidable;
-        float maxLife;
-        EntityType type;
-        EntitySide team;
-        vector<WeaponRecipe> weapons;
-        vector<CollisionHullRecipe> hull;
-    };
+    class ScriptedBrain;
 
     class GameObjectFactory {
     public:
 
-        GameObjectFactory();
+        explicit GameObjectFactory();
 
-        ~GameObjectFactory();
+        virtual ~GameObjectFactory();
 
         void initialize(string repository);
 
         GameObject* createByName(const string& name);
 
-        shared_ptr <ScriptedBrain> getBrain(char const* const brainName);
+        shared_ptr<ScriptedBrain> getBrain(const string& brainName);
 
     private:
+        class impl;
 
-        long NEXT_ID = 1;
-
-        GameObject* cookGameObject(GameObjectRecipe& recipe);
-
-        Weapon* cookWeapon(WeaponRecipe recipe);
-
-        Circle cookHullPart(CollisionHullRecipe recipe);
-
-        shared_ptr<ScriptedBrain> cookBrain(string brainFilename);
-
-        // --- internal state
-
-        map<string, GameObjectRecipe> recipes;
-
-        map<string, shared_ptr<ScriptedBrain>> brains;
-
-        void addRecipe(GameObjectRecipe recipe);
+        unique_ptr<impl> pimpl;
     };
 
-}
+} // namespace Acidrain

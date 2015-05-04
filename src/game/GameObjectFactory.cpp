@@ -1,20 +1,73 @@
 #include <easylogging++.h>
 #include <GameObjectFactory.h>
+#include <GameObject.h>
 #include <Animation.h>
 #include <SpriteAnimationRepository.h>
+#include <Weapon.h>
 #include <FileSystem.h>
 #include <json11.hpp>
-#include <stdexcept>
 
 namespace Acidrain {
 
     using namespace json11;
+    using namespace glm;
+
+    struct CollisionHullRecipe {
+        float radius;
+        vec2 center;
+    };
+
+    struct WeaponEmitterRecipe {
+        string bulletName;
+        vec2 mountingPoint;
+    };
+
+    struct WeaponRecipe {
+        int shotsPerSecond;
+        string soundWhenFired;
+        vector<WeaponEmitterRecipe> emitters;
+    };
+
+    struct GameObjectRecipe {
+        string name;
+        string animation;
+        string brain;
+        bool removeOnDeath;
+        bool killIfOutside;
+        float damageProvidedOnCollision;
+        bool collidable;
+        float maxLife;
+        EntityType type;
+        EntitySide team;
+        vector<WeaponRecipe> weapons;
+        vector<CollisionHullRecipe> hull;
+    };
+
+    class GameObjectFactory::impl {
+    public:
+
+        map<string, GameObjectRecipe> recipes;
+        map<string, shared_ptr<ScriptedBrain>> brains;
+
+        long NEXT_ID = 1;
+
+        GameObject* cookGameObject(GameObjectRecipe& recipe);
+
+        Weapon* cookWeapon(WeaponRecipe recipe);
+
+        Circle cookHullPart(CollisionHullRecipe recipe);
+
+        shared_ptr<ScriptedBrain> cookBrain(string brainFilename);
+
+        void addRecipe(GameObjectRecipe recipe);
+    };
 
     inline bool icompare(const string& a, const string& b) {
         return a == b;
     }
 
-    GameObjectFactory::GameObjectFactory() {
+    GameObjectFactory::GameObjectFactory()
+            : pimpl(new impl()) {
         initialize("recipes.json");
     }
 
@@ -23,15 +76,15 @@ namespace Acidrain {
 
     GameObject* GameObjectFactory::createByName(const string& name) {
         GameObject* result = nullptr;
-        if (recipes.find(name) != recipes.end()) {
-            result = cookGameObject(recipes[name]);
+        if (pimpl->recipes.find(name) != pimpl->recipes.end()) {
+            result = pimpl->cookGameObject(pimpl->recipes[name]);
         } else {
             LOG(ERROR) << "Wanting to create object of type \"" << name << "\" but not such a recipe registered";
         }
         return result;
     }
 
-    GameObject* GameObjectFactory::cookGameObject(GameObjectRecipe& recipe) {
+    GameObject* GameObjectFactory::impl::cookGameObject(GameObjectRecipe& recipe) {
         LOG(TRACE) << "Cooking game object of type " << recipe.name;
         GameObject* result = new GameObject();
         result->setId(NEXT_ID++);
@@ -62,31 +115,31 @@ namespace Acidrain {
         return result;
     }
 
-    Weapon* GameObjectFactory::cookWeapon(WeaponRecipe recipe) {
+    Weapon* GameObjectFactory::impl::cookWeapon(WeaponRecipe recipe) {
         Weapon* result = new Weapon(recipe.shotsPerSecond, recipe.soundWhenFired);
         for (auto& emitterRecipe : recipe.emitters)
             result->addEmitter({emitterRecipe.bulletName, emitterRecipe.mountingPoint});
         return result;
     }
 
-    Circle GameObjectFactory::cookHullPart(CollisionHullRecipe recipe) {
+    Circle GameObjectFactory::impl::cookHullPart(CollisionHullRecipe recipe) {
         return Circle(recipe.radius, recipe.center);
     }
 
-    shared_ptr<ScriptedBrain> GameObjectFactory::cookBrain(string brainFilename) {
+    shared_ptr<ScriptedBrain> GameObjectFactory::impl::cookBrain(string brainFilename) {
         if (brains.find(brainFilename) == brains.end()) {
             brains[brainFilename] = make_shared<ScriptedBrain>(brainFilename);
         }
         return brains[brainFilename];
     }
 
-    void GameObjectFactory::addRecipe(GameObjectRecipe recipe) {
+    void GameObjectFactory::impl::addRecipe(GameObjectRecipe recipe) {
         LOG(INFO) << "Registering entity recipe \"" << recipe.name << "\"";
         recipes[recipe.name] = recipe;
     }
 
-    shared_ptr<ScriptedBrain> GameObjectFactory::getBrain(char const* const brainName) {
-        return cookBrain(brainName);
+    shared_ptr<ScriptedBrain> GameObjectFactory::getBrain(const string& brainName) {
+        return pimpl->cookBrain(brainName.c_str());
     }
 
     EntitySide entitySideFromString(const string& param) {
@@ -214,8 +267,8 @@ namespace Acidrain {
     }
 
     void GameObjectFactory::initialize(string filename) {
-        recipes.clear();
-        brains.clear();
+        pimpl->recipes.clear();
+        pimpl->brains.clear();
 
         LOG(INFO) << "Loading game objects repository from " << filename;
         string content = FILESYS.getFileContent(filename);
@@ -224,10 +277,9 @@ namespace Acidrain {
         auto json = Json::parse(content, parseError);
         if (parseError.empty()) {
             for (auto& k : json["recipes"].array_items()) {
-                addRecipe(readGameObjectRecipe(k));
+                pimpl->addRecipe(readGameObjectRecipe(k));
             }
         } else {
-            LOG(INFO) << "Error while parsing JSON content from " << filename << ". Error: " << parseError;
             LOG(FATAL) << "Error while parsing JSON content from " << filename << ". Error: " << parseError;
         }
     }
