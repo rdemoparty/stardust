@@ -7,6 +7,8 @@
 #include <AudioSystem.h>
 #include <GameStatePlayLevel.h>
 #include <Version.h>
+#include <GameSession.h>
+
 
 namespace Acidrain {
     GameStateMenu& GameStateMenu::instance() {
@@ -145,6 +147,7 @@ namespace Acidrain {
         switch (selectedIndex) {
             case 0:
                 AUDIOSYS.playSound(SOUND_OPTION_ACCEPTED, AudioGroup::byName("UI"));
+                game->gameSession->reset();
                 game->fsm->changeState(&GameStatePlayLevel::instance());
                 break;
             case 6:

@@ -49,6 +49,7 @@ namespace Acidrain {
         map<string, GameObjectRecipe> recipes;
         map<string, shared_ptr<ScriptedBrain>> brains;
 
+        // TODO: introduce an id generator perhaps? Do we need to reset IDs when starting up a new level?
         long NEXT_ID = 1;
 
         GameObject* cookGameObject(GameObjectRecipe& recipe);
