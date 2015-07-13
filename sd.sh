@@ -90,7 +90,7 @@ function build_project {
 		fi
 		
 		echo -e "Building cross-compiled solution...$CMAKE_EXTRA_ARGUMENTS\n"
-		CMAKE_EXTRA_ARGUMENTS="$CMAKE_EXTRA_ARGUMENTS -DCMAKE_TOOLCHAIN_FILE=../cmake/win32.cmake"
+		CMAKE_EXTRA_ARGUMENTS="$CMAKE_EXTRA_ARGUMENTS -DCMAKE_TOOLCHAIN_FILE=../cmake/win64.cmake"
 	else
 		if [ "$1" == "debug" ]; then
 			CMAKE_EXTRA_ARGUMENTS="$CMAKE_EXTRA_ARGUMENTS -DCMAKE_BUILD_TYPE=Debug"
