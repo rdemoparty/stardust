@@ -130,7 +130,7 @@
       "damageProvidedOnCollision": 10000,
       "removeOnDeath": true,
       "killIfOutside": false,
-      "maxLife": 50,
+      "maxLife": 2,
       "team": "Friendly",
       "type": "Ship",
       "hull": [
