@@ -164,6 +164,7 @@ var Editor = {
 
 	populateRecipeList: function() {
 		$('#recipe-list').empty();
+		Editor.assets.sortRecipes();
 		for (var i in Editor.assets.recipes)
 			Editor.addRecipeToList(Editor.assets.recipes[i]);
 	},

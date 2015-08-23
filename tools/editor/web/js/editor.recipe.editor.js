@@ -74,7 +74,10 @@ function RecipeEditor(assetsInstance, animationEditorInstance) {
 			assets.addRecipe(recipe);
 			var brainContent = $('#recipe-brain-code').data('ace').editor.ace.getSession().getValue();
 			assets.saveRecipes(function() {
-				Utils.saveContentAsFile(brainContent, recipe.brain, 'text/plain');
+				Utils.saveContentAsFile(brainContent, recipe.brain, 'text/plain', function() {
+					// now that we saved the entity descriptor and its brain, let's refresh the entity editor list
+					Editor.populateRecipeList();
+				});
 			});
 			return true;
 		} else if (editMode == EDITING_MODE.EDIT_EXISTING) {
@@ -304,6 +307,8 @@ function RecipeEditor(assetsInstance, animationEditorInstance) {
 	}
 
 	var fillInScripts = function(selectedBrainName) {
+		console.log('fillInScripts() with selected brain: ');
+		console.log(selectedBrainName);
 		var $list = $('#recipe-brain').empty();
 		$('<option>')
 			.val("")
@@ -314,6 +319,7 @@ function RecipeEditor(assetsInstance, animationEditorInstance) {
 			.text("--- New Brain ---")
 			.appendTo($list);	
 		for (var i in assets.scripts) {
+			console.log('- adding option for brain ' + assets.scripts[i].uri);
 			$('<option>')
 				.val(assets.scripts[i].uri)
 				.text(assets.scripts[i].name)
@@ -445,7 +451,9 @@ function RecipeEditor(assetsInstance, animationEditorInstance) {
 				if (brainName.trim() != "") {
 					var brainURI = 'scripts/' + brainName;
 					Utils.saveContentAsFile(defaultBrainContent, brainURI, 'text/plain', function() {
-						fillInScripts(brainURI);
+						assets.loadScripts(function() {
+							fillInScripts(brainURI);
+						});
 					});
 				} else {
 					$(this).val(""); // if we escape from brain editor without saving, we want to reset state

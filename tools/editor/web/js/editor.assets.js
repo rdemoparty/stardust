@@ -157,10 +157,10 @@ Assets.prototype.initialize = function(callback) {
 	this.waitForResourcesToLoad();
 }
 
-Assets.prototype.loadResources = function() {
+Assets.prototype.loadAnimations = function(successCallback) {
 	this.descriptorsLoaded = false;
-	this.recipesLoade = false;
 	var self = this;
+	var callbackWhenDone = successCallback;
 	$.getJSON("/data/animations.json", function(data) {
 		console.log('Loaded animation descriptors');
 		self.spritesheets = data.spriteSheets;
@@ -168,7 +168,18 @@ Assets.prototype.loadResources = function() {
 		self.preloadTextures();
 		self.preprocessAnimations();
 		self.descriptorsLoaded = true;
+
+		if (typeof callbackWhenDone !== 'undefined') {
+			callbackWhenDone();			
+		}
 	});
+
+}
+
+Assets.prototype.loadRecipes = function(successCallback) {
+	this.recipesLoaded = false;
+	var self = this;
+	var callbackWhenDone = successCallback;
 
 	$.getJSON("/data/recipes.json", function(data) {
 		console.log('Loaded game object descriptors');
@@ -181,7 +192,17 @@ Assets.prototype.loadResources = function() {
 
 		self.sortRecipes();
 		self.recipesLoaded = true;
+
+		if (typeof callbackWhenDone !== 'undefined') {
+			callbackWhenDone();			
+		}
 	});
+}
+
+Assets.prototype.loadScripts = function(successCallback) {
+	this.scriptsLoaded = false;
+	var self = this;
+	var callbackWhenDone = successCallback;
 
 	$.getJSON("/browse/scripts", function(data) {
 		console.log('Loaded scripts');
@@ -196,7 +217,17 @@ Assets.prototype.loadResources = function() {
 			}
 		}
 		self.scriptsLoaded = true;
+
+		if (typeof callbackWhenDone !== 'undefined') {
+			callbackWhenDone();			
+		}
 	});
+}
+
+Assets.prototype.loadLevels = function(successCallback) {
+	this.levelsLoaded = false;
+	var self = this;
+	var callbackWhenDone = successCallback;
 
 	$.getJSON("/browse/levels", function(data) {
 		console.log('Loaded levels');
@@ -212,6 +243,21 @@ Assets.prototype.loadResources = function() {
 		}
 		self.sortLevels();
 		self.levelsLoaded = true;
+
+		if (typeof callbackWhenDone !== 'undefined') {
+			callbackWhenDone();			
+		}
+	});
+}
+
+Assets.prototype.loadResources = function() {
+	var self = this;
+	self.loadAnimations(function() {
+		self.loadRecipes(function() {
+			self.loadScripts(function() {
+				self.loadLevels();
+			});
+		});
 	});
 }
 

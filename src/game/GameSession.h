@@ -30,14 +30,17 @@ namespace Acidrain {
         int getRemainingLives();
         int getScore();
         bool isGameCompleted();
+        string getLevelUri();
+        AttributeBag& getSessionAttributes() { return sessionAttributes; }
 
+        /**
+         * Events that change the state of the game session
+         */
         void notifyIncrementScore(int amount);
+        void notifySessionStarted();
         void notifyPlayerDeath();
         void notifyLevelFinish();
 
-        string getLevelUri();
-
-        void notifySessionStarted();
 
     private:
         int currentLevel;
