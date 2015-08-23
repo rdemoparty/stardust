@@ -6,6 +6,8 @@
 #include <InputProvider.h>
 #include <Camera.h>
 #include <AudioSystem.h>
+#include <GameSession.h>
+#include <GameEvent.h>
 
 namespace Acidrain {
 
@@ -226,6 +228,12 @@ namespace Acidrain {
         return 0; // arguments pushed on stack
     }
 
+    static int endLevel(lua_State* L) {
+        Scene* scene = (Scene*) lua_topointer(L, 1);
+        scene->queueEvent(GameEvent::LEVEL_END);
+        return 0; // arguments pushed on stack
+    }
+
     static int shakeCamera(lua_State* L) {
         Scene* scene = (Scene*) lua_topointer(L, 1);
         scene->shakeCamera((float) lua_tonumber(L, 2));
@@ -305,6 +313,7 @@ namespace Acidrain {
         lua_register(L, "rightPressed", rightPressed);
         lua_register(L, "confineToPlayingArea", confineToPlayingArea);
         lua_register(L, "dumpEntities", dumpEntities);
+        lua_register(L, "endLevel", endLevel);
         lua_register(L, "shakeCamera", shakeCamera);
         lua_register(L, "setBrain", setBrain);
         lua_register(L, "playSound", playSound);

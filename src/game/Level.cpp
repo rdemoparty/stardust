@@ -51,6 +51,7 @@ namespace Acidrain {
     void Level::start() {
         scene->clear();
         levelScript->reset();
+        finished = false;
     }
 
     void Level::addPlayerToScene() const {
@@ -100,7 +101,7 @@ namespace Acidrain {
     }
 
     bool Level::isFinished() const {
-        return levelScript->isFinished() && scene->countObjects() == 1 && playerExists();
+        return finished;
     }
 
     int Level::objectsCount() const {
@@ -121,5 +122,9 @@ namespace Acidrain {
         auto platformBottom = gameObjectFactory->createByName("platform_bottom");
         platformBottom->currentState.position = platformPosition;
         scene->add(platformBottom, -1);
+    }
+
+    void Level::finish() {
+        finished = true;
     }
 }

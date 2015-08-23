@@ -291,6 +291,10 @@ namespace Acidrain {
         objects.clear();
         newlyCreatedObjects.clear();
         collisions.clear();
+
+        while (!eventQueue.empty()) {
+            eventQueue.pop();
+        }
     }
 
     void Scene::changeObjectBrain(GameObject* object, char const* const brainName) {
@@ -310,5 +314,19 @@ namespace Acidrain {
                 return o;
 
         return nullptr;
+    }
+
+    void Scene::queueEvent(GameEvent event) {
+        eventQueue.push(event);
+    }
+
+    GameEvent Scene::pollEvent() {
+        if (eventQueue.size() > 0) {
+            GameEvent result = eventQueue.front();
+            eventQueue.pop();
+            return result;
+        } else {
+            return GameEvent::NO_EVENT;
+        }
     }
 }

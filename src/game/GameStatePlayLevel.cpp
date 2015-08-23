@@ -8,34 +8,39 @@
 #include <AudioSystem.h>
 #include <GameSession.h>
 #include <LevelScript.h>
+#include <GameEvent.h>
+#include <Scene.h>
 
 namespace Acidrain {
 
-    GameStatePlayLevel& GameStatePlayLevel::instance() {
+    GameStatePlayLevel &GameStatePlayLevel::instance() {
         static GameStatePlayLevel instance;
         return instance;
     }
 
-    void GameStatePlayLevel::onEnter(Stardust* game) {
+    void GameStatePlayLevel::onEnter(Stardust *game) {
         GFXSYS.setClearColor(vec3(0.1f, 0.0f, 0.1f));
     }
 
-    void GameStatePlayLevel::onExit(Stardust* game) {
+    void GameStatePlayLevel::onExit(Stardust *game) {
     }
 
-    void GameStatePlayLevel::update(Stardust* game, float elapsedSeconds) {
+    void GameStatePlayLevel::update(Stardust *game, float elapsedSeconds) {
         if (INPUT.isKeyDown(SDL_SCANCODE_ESCAPE)) {
             AUDIOSYS.stopSounds({"PLAYER", "EXPLOSIONS"});
             game->fsm->changeState(&GameStateMenu::instance());
             return;
         }
 
-        GameSession* gameSession = game->gameSession.get();
-        Level* level = game->level.get();
-        LevelScript* levelScript = level->levelScript.get();
+        GameSession *gameSession = game->gameSession.get();
+        Level *level = game->level.get();
+        LevelScript *levelScript = level->levelScript.get();
 
         // TODO: create individual states for both game over and game completed states
         if (gameSession != nullptr) {
+
+            handleGameEvents(game);
+
             switch (gameSession->getState()) {
                 case GameSessionState::GAME_OVER:
                 case GameSessionState::GAME_FINISHED:
@@ -77,7 +82,19 @@ namespace Acidrain {
         }
     }
 
-    void GameStatePlayLevel::render(Stardust* game, float alpha) {
+    void GameStatePlayLevel::handleGameEvents(const Stardust *game) const {
+        GameEvent event;
+        while ((event = game->level->scene->pollEvent()) != GameEvent::NO_EVENT) {
+            switch (event) {
+                case GameEvent::LEVEL_END:
+                    game->level->finish();
+                    break;
+                default:break;
+            };
+        }
+    }
+
+    void GameStatePlayLevel::render(Stardust *game, float alpha) {
         GFXSYS.clearScreen();
 
         if (game->gameSession) {

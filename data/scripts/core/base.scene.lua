@@ -23,3 +23,7 @@ end
 function Scene.dump()
     dumpEntities(SCENE)
 end
+
+function Scene.endLevel()
+    endLevel(SCENE)
+end

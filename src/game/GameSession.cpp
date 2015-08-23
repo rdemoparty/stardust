@@ -15,7 +15,6 @@ namespace Acidrain {
 
     GameSession::GameSession() {
         // Search for the last level. Levels' filenames must be in order, e.g: level1.json, level2.json, level3.json
-        stringstream levelNameUri;
         lastLevel = 1;
         for (int i = 1; i <= MAX_LEVELS; i++) {
             string&& levelName = getLevelPath(i);

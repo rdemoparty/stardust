@@ -11,21 +11,16 @@ namespace Acidrain {
     using namespace std;
 
     class Font;
-
     class FpsCounter;
-
     class Level;
-
     class GameSession;
 
     class Stardust : public EventListener {
     public:
         explicit Stardust();
-
         virtual ~Stardust();
 
         void update(float elapsedSeconds);
-
         void render(float alpha);
 
         bool shouldQuit();
@@ -42,6 +37,6 @@ namespace Acidrain {
     private:
         shared_ptr<Font> statsFont;
 
-        virtual void onEvent(SDL_Event const& param);
+        virtual void onEvent(SDL_Event const& param) override;
     };
 }

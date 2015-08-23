@@ -3,6 +3,7 @@ set(HEADERS
    ${CMAKE_CURRENT_SOURCE_DIR}/AttributeBag.h
    ${CMAKE_CURRENT_SOURCE_DIR}/Camera.h
    ${CMAKE_CURRENT_SOURCE_DIR}/Entity.h
+   ${CMAKE_CURRENT_SOURCE_DIR}/GameEvent.h
    ${CMAKE_CURRENT_SOURCE_DIR}/GameObject.h
    ${CMAKE_CURRENT_SOURCE_DIR}/GameObjectFactory.h
    ${CMAKE_CURRENT_SOURCE_DIR}/GameSession.h

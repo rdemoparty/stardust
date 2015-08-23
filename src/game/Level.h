@@ -33,6 +33,8 @@ namespace Acidrain {
 
         void render(float frameAlpha);
 
+        void finish();
+
         bool isFinished() const;
 
         int objectsCount() const;
@@ -59,5 +61,7 @@ namespace Acidrain {
         void drawPlayerLife();
 
         void addPlatformsToScene();
+
+        bool finished = false;
     };
 }

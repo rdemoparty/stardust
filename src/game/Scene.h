@@ -5,6 +5,8 @@
 #include <glm/vec2.hpp>
 #include <memory>
 #include <GameObject.h>
+#include <queue>
+#include <GameEvent.h>
 
 namespace Acidrain {
 
@@ -12,13 +14,9 @@ namespace Acidrain {
     using namespace glm;
 
     class GameObject;
-
     class GameObjectFactory;
-
     class SpritePool;
-
     class GpuProgram;
-
     class Camera;
 
     struct CollisionInfo {
@@ -80,6 +78,10 @@ namespace Acidrain {
 
         bool confineEntityInVisibleArea(GameObject* object);
 
+        void queueEvent(GameEvent event);
+
+        GameEvent pollEvent();
+
         void dumpEntities();
 
         int countObjects() const;
@@ -111,6 +113,7 @@ namespace Acidrain {
         vector<GameObject*> objects;
         vector<GameObject*> newlyCreatedObjects;
         shared_ptr<SpritePool> spritePool;
+        queue<GameEvent> eventQueue;
         GameObjectFactory* objectFactory;
         vec2 visibleArea;
 

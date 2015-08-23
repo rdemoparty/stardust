@@ -24,6 +24,7 @@ namespace Acidrain {
         virtual void render(Stardust* game, float alpha) override;
 
     private:
+        void handleGameEvents(const Stardust *game) const;
     };
 
 } // namespace Acidrain

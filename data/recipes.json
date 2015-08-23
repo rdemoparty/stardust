@@ -311,6 +311,19 @@
           "radius": 32
         }
       ]
+    },
+    {
+      "name": "event.end_level",
+      "animation": "beacon",
+      "brain": "scripts/event.end_level.lua",
+      "damageProvidedOnCollision": 0,
+      "collidable": false,
+      "removeOnDeath": false,
+      "killIfOutside": false,
+      "maxLife": 0,
+      "team": "Neutral",
+      "type": "Scenery",
+      "hull": []
     }
   ]
 }
