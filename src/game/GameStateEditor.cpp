@@ -217,7 +217,7 @@ namespace Acidrain {
             game->quitGame = true;
         }
 
-        mg_poll_server(server, 1);
+        mg_poll_server(server, 50);
     }
 
     void GameStateEditor::render(Stardust* game, float alpha) {
@@ -227,6 +227,7 @@ namespace Acidrain {
             GFXSYS.setTransparencyMode(TransparencyMode::Additive);
             font->print(100, 100, "Editor mode. Waiting for commands", vec4(1, 1, 1, 0.8f));
             font->print(100, 132, (string("Version ") + STARDUST_VERSION).c_str() , vec4(1, 1, 1, 0.8f));
+
             GFXSYS.show();
         }
     }
