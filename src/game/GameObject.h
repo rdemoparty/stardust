@@ -7,15 +7,11 @@
 #include <vector>
 
 namespace Acidrain {
-
     using namespace std;
 
     class Animation;
-
     class Weapon;
-
     class Scene;
-
     class ScriptedBrain;
 
     enum EntitySide {
@@ -44,16 +40,13 @@ namespace Acidrain {
         float damageProvidedOnCollision;
         bool isToBeRemovedOnDeath;
         bool killIfOutsideOfVisibleArea;
+        bool isHidden;
         float maxLife;
         float life;
         bool isDead;
         EntityDeathReason deathReason;
         EntityType type;
         EntitySide side;
-
-        bool shouldRemove() {
-            return isToBeRemovedOnDeath && isDead;
-        }
 
         void inflictDamage(float amount) {
             life -= amount;

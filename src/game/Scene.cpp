@@ -149,21 +149,22 @@ namespace Acidrain {
         int currentZOrder = -9999999;
 
         for (auto& gameObject : objects) {
+            if (!gameObject->state.isHidden) {
+                TransparencyMode transparencyMode = transparencyModeByObjectType(gameObject->state.type);
+                bool transparencyModeChanged = transparencyMode != currentTransparencyMode;
+                bool zOrderChanged = gameObject->state.zOrder > currentZOrder;
 
-            TransparencyMode transparencyMode = transparencyModeByObjectType(gameObject->state.type);
-            bool transparencyModeChanged = transparencyMode != currentTransparencyMode;
-            bool zOrderChanged = gameObject->state.zOrder > currentZOrder;
+                if (transparencyModeChanged || zOrderChanged) {
+                    GFXSYS.setTransparencyMode(currentTransparencyMode);
+                    spritePool->draw(gpuProgram);
+                    spritePool->clear();
+                    currentTransparencyMode = transparencyMode;
+                    currentZOrder = gameObject->state.zOrder;
+                }
 
-            if (transparencyModeChanged || zOrderChanged) {
-                GFXSYS.setTransparencyMode(currentTransparencyMode);
-                spritePool->draw(gpuProgram);
-                spritePool->clear();
-                currentTransparencyMode = transparencyMode;
-                currentZOrder = gameObject->state.zOrder;
+                gameObject->setRenderStateAt(frameAlpha);
+                gameObject->addTo(*spritePool);
             }
-
-            gameObject->setRenderStateAt(frameAlpha);
-            gameObject->addTo(*spritePool);
         }
 
         // draw the last batch

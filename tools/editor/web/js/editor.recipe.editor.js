@@ -186,6 +186,7 @@ function RecipeEditor(assetsInstance, animationEditorInstance) {
 		$('#recipe-collidable').attr('checked', true);
 		$('#recipe-remove-on-death').attr('checked', true);
 		$('#recipe-kill-if-outside').attr('checked', true);
+		$('#recipe-hidden').attr('checked', false);
 		$('#recipe-max-life').val('');
 		$('#recipe-team').val('');
 		$('#recipe-type').val('');
@@ -209,6 +210,7 @@ function RecipeEditor(assetsInstance, animationEditorInstance) {
 		$('#recipe-collidable').attr('checked', recipe.collidable);
 		$('#recipe-remove-on-death').attr('checked', recipe.removeOnDeath);
 		$('#recipe-kill-if-outside').attr('checked', recipe.killIfOutside);
+		$('#recipe-hidden').attr('checked', recipe.hidden);
 		$('#recipe-max-life').val(recipe.maxLife);
 		$('#recipe-team').val(recipe.team);
 		$('#recipe-type').val(recipe.type);
@@ -232,6 +234,7 @@ function RecipeEditor(assetsInstance, animationEditorInstance) {
 			'collidable': $('#recipe-collidable').is(':checked'),
 			'removeOnDeath': $('#recipe-remove-on-death').is(':checked'),
 			'killIfOutside': $('#recipe-kill-if-outside').is(':checked'),
+			'hidden': $('#recipe-hidden').is(':checked'),
 			'maxLife': Utils.toInt($('#recipe-max-life').val(), 0),
 			'team': $('#recipe-team').val(),
 			'type': $('#recipe-type').val(),
@@ -346,6 +349,7 @@ function RecipeEditor(assetsInstance, animationEditorInstance) {
 							"<input type=\"checkbox\" id=\"recipe-collidable\" /><label for=\"recipe-collidable\">Collidable</label>" +
 							"<input type=\"checkbox\" id=\"recipe-remove-on-death\" /><label for=\"recipe-remove-on-death\">Remove on death</label>" +
 							"<input type=\"checkbox\" id=\"recipe-kill-if-outside\" /><label for=\"recipe-kill-if-outside\">Kill if outside</label>" +
+							"<input type=\"checkbox\" id=\"recipe-hidden\" /><label for=\"recipe-hidden\">Hidden</label>" +
 						"</div>" +
 					"</div>" + 
 					"<div class=\"row\">" +

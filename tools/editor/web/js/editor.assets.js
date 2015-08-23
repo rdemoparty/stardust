@@ -424,6 +424,7 @@ Assets.prototype.copyRecipeDataFrom = function(recipe, name) {
 		existingRecipe.collidable = recipe.collidable;
 		existingRecipe.removeOnDeath = recipe.removeOnDeath;
 		existingRecipe.killIfOutside = recipe.killIfOutside;
+		existingRecipe.hidden = recipe.hidden;
 		existingRecipe.maxLife = recipe.maxLife;
 		existingRecipe.team = recipe.team;
 		existingRecipe.type = recipe.type;

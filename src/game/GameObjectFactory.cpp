@@ -32,10 +32,11 @@ namespace Acidrain {
         string name;
         string animation;
         string brain;
-        bool removeOnDeath;
-        bool killIfOutside;
+        bool removeOnDeath = true;
+        bool killIfOutside = true;
+        bool hidden = false;
         float damageProvidedOnCollision;
-        bool collidable;
+        bool collidable = false;
         float maxLife;
         EntityType type;
         EntitySide team;
@@ -101,11 +102,14 @@ namespace Acidrain {
         result->state.killIfOutsideOfVisibleArea = recipe.killIfOutside;
         result->state.damageProvidedOnCollision = recipe.damageProvidedOnCollision;
         result->state.isCollidable = recipe.collidable;
+        result->state.isHidden = recipe.hidden;
         result->state.isDead = false;
         result->state.life = recipe.maxLife;
         result->state.maxLife = recipe.maxLife;
         result->state.type = recipe.type;
         result->state.side = recipe.team;
+
+        LOG(INFO) << "Cooking entity for recipe with name " << recipe.name << " where hidden flag is " << recipe.hidden;
 
         for (auto weaponRecipe : recipe.weapons)
             result->addWeapon(cookWeapon(weaponRecipe));
@@ -247,6 +251,8 @@ namespace Acidrain {
                 result.removeOnDeath = e.second.bool_value();
             else if (icompare(param, "killIfOutside"))
                 result.killIfOutside = e.second.bool_value();
+            else if (icompare(param, "hidden"))
+                result.hidden = e.second.bool_value();
             else if (icompare(param, "maxLife"))
                 result.maxLife = (float) e.second.number_value();
             else if (icompare(param, "team"))
