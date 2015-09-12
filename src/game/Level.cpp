@@ -67,9 +67,12 @@ namespace Acidrain {
         camera->update(elapsedSeconds);
         gpuProgramConstantBundle->add("cameraShakeMatrix", GpuProgramConstant(camera->getShakeMatrix()));
 
-        levelScript->update(elapsedSeconds);
+        if (!paused) {
+            levelScript->update(elapsedSeconds);
+            starfield->update(elapsedSeconds);
+        }
+
         scene->update(elapsedSeconds);
-        starfield->update(elapsedSeconds);
     }
 
     void Level::render(float frameAlpha) {
@@ -126,5 +129,13 @@ namespace Acidrain {
 
     void Level::finish() {
         finished = true;
+    }
+
+    void Level::pause() {
+        paused = true;
+    }
+
+    void Level::resume() {
+        paused = false;
     }
 }

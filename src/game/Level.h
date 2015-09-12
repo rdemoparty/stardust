@@ -35,6 +35,10 @@ namespace Acidrain {
 
         void finish();
 
+        void pause();
+
+        void resume();
+
         bool isFinished() const;
 
         int objectsCount() const;
@@ -63,5 +67,7 @@ namespace Acidrain {
         void addPlatformsToScene();
 
         bool finished = false;
+
+        bool paused = false;
     };
 }

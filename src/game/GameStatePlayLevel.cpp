@@ -89,7 +89,14 @@ namespace Acidrain {
                 case GameEvent::LEVEL_END:
                     game->level->finish();
                     break;
-                default:break;
+                case GameEvent::LEVEL_SCROLL_PAUSE:
+                    game->level->pause();
+                    break;
+                case GameEvent::LEVEL_SCROLL_RESUME:
+                    game->level->resume();
+                    break;
+                default:
+                    break;
             };
         }
     }

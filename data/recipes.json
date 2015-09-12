@@ -86,6 +86,39 @@
       "type": "Explosion"
     },
     {
+      "name": "event.end_level",
+      "animation": "beacon",
+      "brain": "scripts/event.end_level.lua",
+      "damageProvidedOnCollision": 0,
+      "collidable": false,
+      "removeOnDeath": false,
+      "killIfOutside": false,
+      "maxLife": 0,
+      "team": "Neutral",
+      "type": "Scenery",
+      "hull": []
+    },
+    {
+      "name": "level-pauser",
+      "animation": "dancing.star",
+      "brain": "scripts/brain.level-pauser.lua",
+      "damageProvidedOnCollision": 0,
+      "collidable": true,
+      "removeOnDeath": true,
+      "killIfOutside": true,
+      "hidden": false,
+      "maxLife": 1,
+      "team": "Adverse",
+      "type": "Ship",
+      "hull": [
+        {
+          "x": 1,
+          "y": -9,
+          "radius": 10
+        }
+      ]
+    },
+    {
       "name": "missile",
       "animation": "missile",
       "brain": "scripts/brain.bonus.lua",
@@ -311,19 +344,6 @@
           "radius": 32
         }
       ]
-    },
-    {
-      "name": "event.end_level",
-      "animation": "beacon",
-      "brain": "scripts/event.end_level.lua",
-      "damageProvidedOnCollision": 0,
-      "collidable": false,
-      "removeOnDeath": false,
-      "killIfOutside": false,
-      "maxLife": 0,
-      "team": "Neutral",
-      "type": "Scenery",
-      "hull": []
     }
   ]
 }
