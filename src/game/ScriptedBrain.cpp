@@ -6,8 +6,9 @@
 #include <InputProvider.h>
 #include <Camera.h>
 #include <AudioSystem.h>
-#include <GameSession.h>
 #include <GameEvent.h>
+#include <ScriptExporterRegistry.h>
+#include <GameSession.h>
 
 namespace Acidrain {
 
@@ -180,6 +181,34 @@ namespace Acidrain {
         return 0; // arguments pushed on stack
     }
 
+    static int getSessionIntAttribute(lua_State* L) {
+        GameSession* session = (GameSession*) lua_topointer(L, 1);
+        const char* const key = lua_tostring(L, 2);
+        lua_pushnumber(L, session->getSessionAttributes().getInt(key));
+        return 1; // arguments pushed on stack
+    }
+
+    static int setSessionIntAttribute(lua_State* L) {
+        GameSession* session = (GameSession*) lua_topointer(L, 1);
+        const char* const key = lua_tostring(L, 2);
+        session->getSessionAttributes().setInt(key, (int) lua_tonumber(L, 3));
+        return 0; // arguments pushed on stack
+    }
+
+    static int getSessionFloatAttribute(lua_State* L) {
+        GameSession* session = (GameSession*) lua_topointer(L, 1);
+        const char* const key = lua_tostring(L, 2);
+        lua_pushnumber(L, session->getSessionAttributes().getFloat(key));
+        return 1; // arguments pushed on stack
+    }
+
+    static int setSessionFloatAttribute(lua_State* L) {
+        GameSession* session = (GameSession*) lua_topointer(L, 1);
+        const char* const key = lua_tostring(L, 2);
+        session->getSessionAttributes().setFloat(key, (float) lua_tonumber(L, 3));
+        return 0; // arguments pushed on stack
+    }
+
     static int tildaJustPressed(lua_State* L) {
         lua_pushboolean(L, INPUT.isKeyJustPressed(SDL_SCANCODE_GRAVE));
         return 1; // arguments pushed on stack
@@ -275,6 +304,7 @@ namespace Acidrain {
         luaL_openlibs(L);
 
         registerExports();
+        ScriptExporterRegistry::exportTo(L);
 
         loadAndInterpret(L, "scripts/base.lua");
         loadAndInterpret(L, brainFilename.c_str());
@@ -302,6 +332,10 @@ namespace Acidrain {
         lua_register(L, "setInt", setIntAttribute);
         lua_register(L, "getFloat", getFloatAttribute);
         lua_register(L, "setFloat", setFloatAttribute);
+        lua_register(L, "getSessionInt", getSessionIntAttribute);
+        lua_register(L, "setSessionInt", setSessionIntAttribute);
+        lua_register(L, "getSessionFloat", getSessionFloatAttribute);
+        lua_register(L, "setSessionFloat", setSessionFloatAttribute);
         lua_register(L, "createEntity", createEntity);
         lua_register(L, "addEntity", addEntity);
         lua_register(L, "tildaJustPressed", tildaJustPressed);
@@ -318,11 +352,6 @@ namespace Acidrain {
         lua_register(L, "setBrain", setBrain);
         lua_register(L, "playSound", playSound);
         lua_register(L, "playSong", playSong);
-    }
-
-    void ScriptedBrain::injectScene(Scene* scene) {
-        lua_pushlightuserdata(L, scene);
-        lua_setglobal(L, "SCENE");
     }
 
     ScriptedBrain::~ScriptedBrain() {

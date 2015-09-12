@@ -28,8 +28,6 @@ namespace Acidrain {
 
     void GameObject::setScene(Scene* scene) {
         this->scene = scene;
-        if (brain)
-            brain->injectScene(scene);
     }
 
     void GameObject::setBrain(shared_ptr<ScriptedBrain> brain) {

@@ -8,7 +8,6 @@
 #include <json11.hpp>
 
 namespace Acidrain {
-
     using namespace json11;
     using namespace glm;
 
@@ -54,11 +53,8 @@ namespace Acidrain {
         long NEXT_ID = 1;
 
         GameObject* cookGameObject(GameObjectRecipe& recipe);
-
         Weapon* cookWeapon(WeaponRecipe recipe);
-
         Circle cookHullPart(CollisionHullRecipe recipe);
-
         shared_ptr<ScriptedBrain> cookBrain(string brainFilename);
 
         void addRecipe(GameObjectRecipe recipe);

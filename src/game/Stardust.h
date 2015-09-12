@@ -5,6 +5,7 @@
 #include <map>
 #include <string>
 #include <GameState.h>
+#include <ScriptExporter.h>
 
 namespace Acidrain {
 
@@ -15,7 +16,7 @@ namespace Acidrain {
     class Level;
     class GameSession;
 
-    class Stardust : public EventListener {
+    class Stardust : public EventListener, public ScriptExporter {
     public:
         explicit Stardust();
         virtual ~Stardust();
@@ -24,6 +25,8 @@ namespace Acidrain {
         void render(float alpha);
 
         bool shouldQuit();
+
+        void exportToScript(lua_State *L) const override;
 
         shared_ptr<GameStateMachine<Stardust>> fsm;
         shared_ptr<GameSession> gameSession;

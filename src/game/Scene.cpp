@@ -302,7 +302,7 @@ namespace Acidrain {
         auto brain = objectFactory->getBrain(brainName);
         object->setBrain(brain);
         object->setScene(this);
-        brain->onSpawn(object);
+        object->spawned();
     }
 
     GameObject* Scene::getById(long id) {
@@ -322,12 +322,11 @@ namespace Acidrain {
     }
 
     GameEvent Scene::pollEvent() {
-        if (eventQueue.size() > 0) {
-            GameEvent result = eventQueue.front();
-            eventQueue.pop();
-            return result;
-        } else {
+        if (eventQueue.empty())
             return GameEvent::NO_EVENT;
-        }
+
+        GameEvent result = eventQueue.front();
+        eventQueue.pop();
+        return result;
     }
 }

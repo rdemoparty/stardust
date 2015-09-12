@@ -9,6 +9,7 @@
 #include <Level.h>
 #include <GameStateIntro.h>
 #include <GameSession.h>
+#include <ScriptExporterRegistry.h>
 
 namespace Acidrain {
 
@@ -27,6 +28,8 @@ namespace Acidrain {
         fpsCounter = make_shared<FpsCounter>();
         gameSession = make_shared<GameSession>();
         level = make_shared<Level>();
+
+        ScriptExporterRegistry::add(this);
     }
 
     Stardust::~Stardust() {
@@ -65,5 +68,14 @@ namespace Acidrain {
 
     bool Stardust::shouldQuit() {
         return quitGame;
+    }
+
+    void Stardust::exportToScript(lua_State *L) const {
+        // injecting instances of scene, game session attributes
+        lua_pushlightuserdata(L, level->scene.get());
+        lua_setglobal(L, "SCENE");
+
+        lua_pushlightuserdata(L, gameSession.get());
+        lua_setglobal(L, "GAME_SESSION");
     }
 } // namespace Acidrain

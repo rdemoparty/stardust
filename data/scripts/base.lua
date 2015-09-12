@@ -1,6 +1,7 @@
 include("scripts/core/base.scene.lua")
 include("scripts/core/base.entity.lua")
 include("scripts/core/base.math.lua")
+include("scripts/core/base.session.lua")
 
 -- default brain implementations. feel free to override
 function onSpawn(objectPointer)

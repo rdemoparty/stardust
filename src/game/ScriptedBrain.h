@@ -1,15 +1,14 @@
 #pragma once
 
 #include <string>
-#include <lua.hpp>
 #include <memory>
+#include <lua.hpp>
 
 namespace Acidrain {
 
     using namespace std;
 
     class GameObject;
-
     class Scene;
 
     class ScriptedBrain {
@@ -18,8 +17,6 @@ namespace Acidrain {
         explicit ScriptedBrain(const string& brainFilename);
 
         virtual ~ScriptedBrain();
-
-        void injectScene(Scene* scene);
 
         /**
         * Callback invoked when the game object is added to the scene. Do care to note that
