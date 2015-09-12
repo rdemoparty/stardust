@@ -2,6 +2,7 @@
 
 #include <string>
 #include <glm/mat4x4.hpp>
+#include <glm/vec2.hpp>
 #include <GpuProgram.h>
 
 namespace Acidrain {
@@ -13,7 +14,9 @@ namespace Acidrain {
 
     enum class GpuProgramConstantType {
         Matrix4,
-        Integer
+        Integer,
+        Vec2,
+        Float
     };
 
     class GpuProgramConstant {
@@ -21,6 +24,8 @@ namespace Acidrain {
         GpuProgramConstantType type;
         mat4 matrix4Value;
         int intValue;
+        vec2 vec2Value;
+        float floatValue;
 
         GpuProgramConstant() {
         }
@@ -40,6 +45,16 @@ namespace Acidrain {
             type = GpuProgramConstantType::Integer;
             intValue = value;
         }
+
+        explicit GpuProgramConstant(float value) {
+            type = GpuProgramConstantType::Float;
+            floatValue = value;
+        }
+
+        explicit GpuProgramConstant(vec2 value) {
+            type = GpuProgramConstantType::Vec2;
+            vec2Value = value;
+        }
     };
 
     class GpuProgramConstantBundle {
@@ -57,6 +72,12 @@ namespace Acidrain {
                         break;
                     case GpuProgramConstantType::Integer:
                         program->setIntUniform(kv.second.intValue, kv.first.c_str());
+                        break;
+                    case GpuProgramConstantType::Float:
+                        program->setFloatUniform(kv.second.floatValue, kv.first.c_str());
+                        break;
+                    case GpuProgramConstantType::Vec2:
+                        program->setVec2Uniform(&kv.second.vec2Value[0], kv.first.c_str());
                         break;
                 }
             }

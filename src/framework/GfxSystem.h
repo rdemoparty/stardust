@@ -53,6 +53,8 @@ namespace Acidrain {
 
         void show();
 
+        void setViewport();
+
         void raiseWindow() const;
 
         int windowWidth() const;
@@ -63,10 +65,19 @@ namespace Acidrain {
 
         int drawableHeight() const;
 
+        int logicalWidth() const;
+
+        int logicalHeight() const;
+
+        int getOffsetX() const;
+
+        int getOffsetY() const;
     private:
         shared_ptr<Window> window;
         int width, height;
         int offsetX, offsetY;
+        int desiredWidth, desiredHeight;
+
         vec3 clearScreenColor = vec3(0);
 
         SDL_DisplayMode establishDisplayMode();

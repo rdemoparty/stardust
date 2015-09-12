@@ -98,6 +98,12 @@ namespace Acidrain {
             glUniformMatrix4fv(location, 1, false, matrix);
     }
 
+    void GpuProgram::setVec2Uniform(float* value, const char* uniformName) {
+        GLint location = getUniform(uniformName);
+        if (location != -1)
+            glUniform2fv(location, 1, value);
+    }
+
     void GpuProgram::setVec3Uniform(float* value, const char* uniformName) {
         GLint location = getUniform(uniformName);
         if (location != -1)

@@ -60,11 +60,18 @@ namespace Acidrain {
         offsetX = (windowWidth - width) / 2;
         offsetY = (windowHeight - height) / 2;
 
-        // clear screen before setting scissors so we remove the possible garbage
+        this->desiredWidth = desiredWidth;
+        this->desiredHeight = desiredHeight;
+
         glClearColor(0, 0, 0, 1);
         setClearColor(vec3(0));
         clearScreen();
 
+        setViewport();
+    }
+
+    void GfxSystem::setViewport() {
+        // clear screen before setting scissors so we remove the possible garbage
         glViewport(offsetX, offsetY, width, height);
         glScissor(offsetX, offsetY, width, height);
 
@@ -72,6 +79,7 @@ namespace Acidrain {
         glDisable(GL_DEPTH_TEST);
 
         glMatrixMode(GL_PROJECTION);
+        glLoadIdentity();
         glOrtho(0, desiredWidth, desiredHeight, 0, 0, 1);
 
         glMatrixMode(GL_MODELVIEW);
@@ -258,5 +266,21 @@ namespace Acidrain {
 
     GfxSystem::~GfxSystem() {
         LOG(INFO) << "Shutting down graphics system";
+    }
+
+    int GfxSystem::logicalWidth() const {
+        return desiredWidth;
+    }
+
+    int GfxSystem::logicalHeight() const {
+        return desiredHeight;
+    }
+
+    int GfxSystem::getOffsetX() const {
+        return offsetX;
+    }
+
+    int GfxSystem::getOffsetY() const {
+        return offsetY;
     }
 } // namespace Acidrain
