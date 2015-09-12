@@ -130,16 +130,22 @@ function LevelEditor(assetsInstance) {
 	var editLevel = function(levelName) {
 		console.log('Editing level ' + levelName);
 		var levelInfo = assets.levelByName(levelName);
-		$.getJSON('data/' + levelInfo.uri, function(data) {
-			level = data;
-            console.log("Loaded level " + levelName);
-			levelFilename = levelName;
-            setSelectedLayer(0);
-            initializeCurrentLevelLayers();
-			levelToDesign();
-			scrollLevelToBottom();
-			markLevelAsSaved();
-			enablePreviewing();
+
+		$.ajax({
+			cache: false,
+			url: 'data/' + levelInfo.uri,
+			dataType: 'json',
+			success: function(data) {
+				level = data;
+				console.log("Loaded level " + levelName);
+				levelFilename = levelName;
+				setSelectedLayer(0);
+				initializeCurrentLevelLayers();
+				levelToDesign();
+				scrollLevelToBottom();
+				markLevelAsSaved();
+				enablePreviewing();
+			}
 		});
 	};
 
