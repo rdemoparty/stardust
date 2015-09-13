@@ -4,14 +4,9 @@
 #include <Weapon.h>
 #include <Scene.h>
 #include <AudioSystem.h>
+#include <GameServiceLocator.h>
 
 namespace Acidrain {
-
-    GameObject::GameObject() {
-    };
-
-    GameObject::~GameObject() {
-    };
 
     void GameObject::fireWeapons(bool shouldFire) {
         for (auto weapon : weapons) {
@@ -56,7 +51,7 @@ namespace Acidrain {
 
                 const vector<WeaponEmitter>& bulletEmitters = weapon->getEmitters();
                 for (auto& emitter : bulletEmitters) {
-                    auto bullet = scene->createByName(emitter.bulletType);
+                    auto bullet = GameServiceLocator::gameObjectFactory()->createByName(emitter.bulletType);
                     bullet->currentState.position = position + emitter.mountingPoint;
                     scene->add(bullet);
                 }

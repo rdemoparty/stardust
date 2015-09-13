@@ -7,22 +7,15 @@ namespace Acidrain {
     using namespace std;
 
     class GpuProgramConstantBundle;
-
     class GpuProgram;
-
     class Camera;
-
     class Scene;
-
     class GameObjectFactory;
-
     class Starfield;
-
     class LevelScript;
 
     class Level {
     public:
-
         Level();
 
         virtual ~Level();

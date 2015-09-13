@@ -9,6 +9,7 @@
 #include <LevelScript.h>
 #include <GfxSystem.h>
 #include <AudioSystem.h>
+#include <GameServiceLocator.h>
 
 namespace Acidrain {
 
@@ -25,7 +26,8 @@ namespace Acidrain {
         starfield = make_shared<Starfield>(40, vec2(1024, 768));
 
         gameObjectFactory = make_shared<GameObjectFactory>();
-        scene = make_shared<Scene>(gameObjectFactory.get(), vec2(1024, 768));
+        GameServiceLocator::gameObjectFactory(gameObjectFactory);
+        scene = make_shared<Scene>(vec2(1024, 768));
 
         // create camera
         camera = make_shared<Camera>();

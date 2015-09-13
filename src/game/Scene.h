@@ -14,7 +14,6 @@ namespace Acidrain {
     using namespace glm;
 
     class GameObject;
-    class GameObjectFactory;
     class SpritePool;
     class GpuProgram;
 
@@ -32,12 +31,12 @@ namespace Acidrain {
         CollidableDiscriminator(EntityType type, EntitySide side) {
             id = side * 10 + type;
         }
+
         int id;
     };
 
     class CollisionMatrix {
     public:
-
         void registerCollidables(const CollidableDiscriminator& from, const CollidableDiscriminator& to) {
             matrix[from.id][to.id] = true;
             matrix[to.id][from.id] = true;
@@ -55,14 +54,11 @@ namespace Acidrain {
 
     class Scene {
     public:
-
-        Scene(GameObjectFactory* objectFactory, const vec2& visibleArea);
+        Scene(const vec2& visibleArea);
 
         ~Scene();
 
         void add(GameObject* object, int zOrder = 0);
-
-        GameObject* createByName(string name);
 
         GameObject* getById(long id);
 
@@ -85,10 +81,7 @@ namespace Acidrain {
 
         int countObjects() const;
 
-        void changeObjectBrain(GameObject* pObject, char const* const string);
-
     private:
-
         void addNewObjectsToScene();
 
         void flagEntitiesOutOfVisibleArea();
@@ -108,7 +101,6 @@ namespace Acidrain {
         vector<GameObject*> newlyCreatedObjects;
         shared_ptr<SpritePool> spritePool;
         queue<GameEvent> eventQueue;
-        GameObjectFactory* objectFactory;
         vec2 visibleArea;
 
         vector<CollisionInfo> collisions;

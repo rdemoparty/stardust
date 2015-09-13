@@ -20,7 +20,6 @@ namespace Acidrain {
 
     class LevelScript {
     public:
-
         LevelScript(Scene* scene);
 
         virtual ~LevelScript();
@@ -42,6 +41,7 @@ namespace Acidrain {
 
         vector<LevelScriptEntry> events;
         queue<LevelScriptEntry> remainingEvents;
+
         void addEvent(LevelScriptEntry entry);
     };
 } // namespace Acidrain

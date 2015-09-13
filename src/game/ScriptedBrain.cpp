@@ -9,6 +9,7 @@
 #include <GameEvent.h>
 #include <ScriptExporterRegistry.h>
 #include <GameSession.h>
+#include <GameServiceLocator.h>
 
 namespace Acidrain {
 
@@ -50,10 +51,11 @@ namespace Acidrain {
     }
 
     static int createEntity(lua_State* L) {
+        // TODO Adrian: remove the superfluous scene reference
         Scene* scene = (Scene*) lua_topointer(L, 1);
         const char* const key = lua_tostring(L, 2);
 
-        GameObject* object = scene->createByName(key);
+        GameObject* object = GameServiceLocator::gameObjectFactory()->createByName(key);
         lua_pushlightuserdata(L, object);
         return 1; // arguments pushed on stack
     }
@@ -285,7 +287,12 @@ namespace Acidrain {
         Scene* scene = (Scene*) lua_topointer(L, 1);
         GameObject* object = (GameObject*) lua_topointer(L, 2);
         const char* const brainName = lua_tostring(L, 3);
-        scene->changeObjectBrain(object, brainName);
+
+        auto brain = GameServiceLocator::gameObjectFactory()->getBrain(brainName);
+        object->setBrain(brain);
+        object->setScene(scene);
+        object->spawned();
+
         return 0; // arguments pushed on stack
     }
 

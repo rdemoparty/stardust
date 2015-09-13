@@ -59,9 +59,7 @@ namespace Acidrain {
 
     class GameObject : public DrawableEntity {
     public:
-        explicit GameObject();
-
-        virtual ~GameObject();
+        virtual ~GameObject() {};
 
         long getId() const {
             return id;

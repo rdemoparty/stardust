@@ -3,6 +3,7 @@
 #include <Scene.h>
 #include <FileSystem.h>
 #include <json11.hpp>
+#include <GameServiceLocator.h>
 
 namespace Acidrain {
 
@@ -40,7 +41,7 @@ namespace Acidrain {
             }
             remainingEvents.pop();
 
-            GameObject* entity = scene->createByName(e.recipeName);
+            GameObject* entity = GameServiceLocator::gameObjectFactory()->createByName(e.recipeName);
             entity->currentState.position.x = e.position.x;
             entity->currentState.position.y = e.position.y - offset;
             entity->previousState = entity->currentState;

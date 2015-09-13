@@ -13,7 +13,6 @@ namespace Acidrain {
 
     class ScriptedBrain {
     public:
-
         explicit ScriptedBrain(const string& brainFilename);
 
         virtual ~ScriptedBrain();

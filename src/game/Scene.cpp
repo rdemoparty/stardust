@@ -7,8 +7,8 @@
 
 namespace Acidrain {
 
-    Scene::Scene(GameObjectFactory* objFactory, const vec2& visibleAreaSize)
-            : objectFactory(objFactory), visibleArea(visibleAreaSize) {
+    Scene::Scene(const vec2& visibleAreaSize)
+            : visibleArea(visibleAreaSize) {
         spritePool = make_shared<SpritePool>();
 
         collisionMatrix.registerCollidables(
@@ -42,10 +42,6 @@ namespace Acidrain {
     void Scene::addNewObjectsToScene() {
         objects.insert(objects.end(), newlyCreatedObjects.begin(), newlyCreatedObjects.end());
         newlyCreatedObjects.clear();
-    }
-
-    GameObject* Scene::createByName(string name) {
-        return objectFactory->createByName(name);
     }
 
     int Scene::countObjects() const {
@@ -286,13 +282,6 @@ namespace Acidrain {
         while (!eventQueue.empty()) {
             eventQueue.pop();
         }
-    }
-
-    void Scene::changeObjectBrain(GameObject* object, char const* const brainName) {
-        auto brain = objectFactory->getBrain(brainName);
-        object->setBrain(brain);
-        object->setScene(this);
-        object->spawned();
     }
 
     GameObject* Scene::getById(long id) {

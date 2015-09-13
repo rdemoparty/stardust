@@ -6,7 +6,6 @@ namespace Acidrain {
 
     class LevelScriptPreviewEntity : public LevelScript {
     public:
-
         LevelScriptPreviewEntity(string entityName, Scene* scene);
 
         virtual ~LevelScriptPreviewEntity();
