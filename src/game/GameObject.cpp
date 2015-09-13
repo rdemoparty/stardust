@@ -21,10 +21,6 @@ namespace Acidrain {
         weapons.push_back(shared_ptr<Weapon>(weapon));
     }
 
-    void GameObject::setScene(Scene* scene) {
-        this->scene = scene;
-    }
-
     void GameObject::setBrain(shared_ptr<ScriptedBrain> brain) {
         this->brain = brain;
     }
@@ -53,7 +49,7 @@ namespace Acidrain {
                 for (auto& emitter : bulletEmitters) {
                     auto bullet = GameServiceLocator::gameObjectFactory()->createByName(emitter.bulletType);
                     bullet->currentState.position = position + emitter.mountingPoint;
-                    scene->add(bullet);
+                    GameServiceLocator::scene()->add(bullet);
                 }
 
                 if (!weapon->getFireSound().empty())

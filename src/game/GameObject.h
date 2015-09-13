@@ -71,8 +71,6 @@ namespace Acidrain {
 
         void fireWeapons(bool shouldFire);
 
-        void setScene(Scene* scene);
-
         void setBrain(shared_ptr<ScriptedBrain> brain);
 
         void addWeapon(Weapon* weapon);
@@ -103,7 +101,6 @@ namespace Acidrain {
 
         void updateWeapons(float elapsedSeconds);
 
-        Scene* scene;
         Animation* animation;
         vector<shared_ptr<Weapon>> weapons;
     };
