@@ -77,5 +77,8 @@ namespace Acidrain {
 
         lua_pushlightuserdata(L, gameSession.get());
         lua_setglobal(L, "GAME_SESSION");
+
+        lua_pushlightuserdata(L, level->camera.get());
+        lua_setglobal(L, "CAMERA");
     }
 } // namespace Acidrain

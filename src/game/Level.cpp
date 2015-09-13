@@ -29,7 +29,6 @@ namespace Acidrain {
 
         // create camera
         camera = make_shared<Camera>();
-        scene->setCamera(camera);
 
         // initialize some gpuProgram constants
         gpuProgramConstantBundle = make_shared<GpuProgramConstantBundle>();
@@ -52,6 +51,7 @@ namespace Acidrain {
         scene->clear();
         levelScript->reset();
         finished = false;
+        paused = false;
     }
 
     void Level::addPlayerToScene() const {

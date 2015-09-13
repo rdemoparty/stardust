@@ -276,8 +276,8 @@ namespace Acidrain {
     }
 
     static int shakeCamera(lua_State* L) {
-        Scene* scene = (Scene*) lua_topointer(L, 1);
-        scene->shakeCamera((float) lua_tonumber(L, 2));
+        Camera* camera = (Camera*) lua_topointer(L, 1);
+        camera->shake((float) lua_tonumber(L, 2));
         return 0; // arguments pushed on stack
     }
 

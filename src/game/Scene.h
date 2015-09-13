@@ -86,10 +86,6 @@ namespace Acidrain {
 
         int countObjects() const;
 
-        void setCamera(shared_ptr<Camera> camera);
-
-        void shakeCamera(float amount);
-
         void changeObjectBrain(GameObject* pObject, char const* const string);
 
     private:

@@ -75,15 +75,6 @@ namespace Acidrain {
         }
     }
 
-    void Scene::setCamera(shared_ptr<Camera> camera) {
-        this->camera = camera;
-    }
-
-    void Scene::shakeCamera(float amount) {
-        if (camera)
-            camera->shake(amount);
-    }
-
     bool Scene::isObjectOutOfVisibleArea(GameObject* object) {
         const float SIZE_FACTOR_TO_ALLOW = 1.0f;
         const float objectHalfWidth = object->currentState.size.x / 2.0f;

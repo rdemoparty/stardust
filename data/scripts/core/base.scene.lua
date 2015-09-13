@@ -16,10 +16,6 @@ function Scene.confineToPlayingArea(entity)
     return confineToPlayingArea(SCENE, entity:getPointer())
 end
 
-function Scene.shake(amount)
-    shakeCamera(SCENE, amount)
-end
-
 function Scene.dump()
     dumpEntities(SCENE)
 end
