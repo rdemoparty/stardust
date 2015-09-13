@@ -51,22 +51,13 @@ namespace Acidrain {
     }
 
     static int createEntity(lua_State* L) {
-        // TODO Adrian: remove the superfluous scene reference
-        Scene* scene = (Scene*) lua_topointer(L, 1);
-        const char* const key = lua_tostring(L, 2);
+        const char* const key = lua_tostring(L, 1);
 
         GameObject* object = GameServiceLocator::gameObjectFactory()->createByName(key);
+        GameServiceLocator::scene()->add(object);
+
         lua_pushlightuserdata(L, object);
         return 1; // arguments pushed on stack
-    }
-
-    static int addEntity(lua_State* L) {
-        Scene* scene = (Scene*) lua_topointer(L, 1);
-        GameObject* object = (GameObject*) lua_topointer(L, 2);
-
-        scene->add(object);
-
-        return 0; // arguments pushed on stack
     }
 
     static int getPosition(lua_State* L) {
@@ -290,7 +281,6 @@ namespace Acidrain {
 
         auto brain = GameServiceLocator::gameObjectFactory()->getBrain(brainName);
         object->setBrain(brain);
-        object->setScene(scene);
         object->spawned();
 
         return 0; // arguments pushed on stack
@@ -356,7 +346,6 @@ namespace Acidrain {
         lua_register(L, "getSessionFloat", getSessionFloatAttribute);
         lua_register(L, "setSessionFloat", setSessionFloatAttribute);
         lua_register(L, "createEntity", createEntity);
-        lua_register(L, "addEntity", addEntity);
         lua_register(L, "tildaJustPressed", tildaJustPressed);
         lua_register(L, "fireJustPressed", fireJustPressed);
         lua_register(L, "fireJustReleased", fireJustReleased);

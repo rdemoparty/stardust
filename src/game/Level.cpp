@@ -27,7 +27,9 @@ namespace Acidrain {
 
         gameObjectFactory = make_shared<GameObjectFactory>();
         GameServiceLocator::gameObjectFactory(gameObjectFactory);
+
         scene = make_shared<Scene>(vec2(1024, 768));
+        GameServiceLocator::scene(scene);
 
         // create camera
         camera = make_shared<Camera>();

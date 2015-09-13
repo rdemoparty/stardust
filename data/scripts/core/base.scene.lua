@@ -4,12 +4,8 @@
 
 Scene = {}
 function Scene.create(type)
-    local entityPointer = createEntity(SCENE, type);
+    local entityPointer = createEntity(type);
     return Entity.from(entityPointer)
-end
-
-function Scene.add(entity)
-    addEntity(SCENE, entity:getPointer())
 end
 
 function Scene.confineToPlayingArea(entity)

@@ -33,7 +33,6 @@ namespace Acidrain {
     }
 
     void Scene::add(GameObject* object, int zOrder) {
-        object->setScene(this);
         object->state.zOrder = zOrder;
         newlyCreatedObjects.push_back(object);
         object->spawned();

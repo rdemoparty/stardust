@@ -60,6 +60,5 @@ function onDeath(objectPointer, reason)
 
     local beacon = Scene.create("beacon")
     beacon:setPosition(killedEntity:getPosition())
-    Scene.add(beacon)
 end
 

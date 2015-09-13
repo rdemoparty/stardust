@@ -21,7 +21,6 @@ function onDeath(objectPointer, reason)
     if reason == DeathReason.Killed then
         local explosion = Scene.create("enemy.bullet.hit")
         explosion:setPosition(killedEntity:getPosition())
-        Scene.add(explosion)
         Camera.shake(10)
     end
 end
