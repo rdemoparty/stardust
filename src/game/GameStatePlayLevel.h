@@ -31,6 +31,7 @@ namespace Acidrain {
 
         void handleGameEvents(const Stardust *game) const;
         float totalElapsedTime = 0;
+        int renderMode = 0;
         shared_ptr<Fbo> fbo;
         shared_ptr<Texture> fboTexture;
         shared_ptr<GpuProgram> gpuProgram;

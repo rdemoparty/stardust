@@ -59,6 +59,12 @@ namespace Acidrain {
             return;
         }
 
+        if (INPUT.isKeyJustPressed(SDL_SCANCODE_F9)) {
+            renderMode++;
+            renderMode = renderMode % 5;
+            gpuProgramConstantBundle->add("renderMode", GpuProgramConstant(renderMode));
+        }
+
         GameSession *gameSession = game->gameSession.get();
         Level *level = game->level.get();
         LevelScript *levelScript = level->levelScript.get();
