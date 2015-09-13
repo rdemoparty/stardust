@@ -17,7 +17,6 @@ namespace Acidrain {
     class GameObjectFactory;
     class SpritePool;
     class GpuProgram;
-    class Camera;
 
     struct CollisionInfo {
         GameObject* from;
@@ -105,7 +104,6 @@ namespace Acidrain {
         void detectCollisionBetweenGameObjects(GameObject* a, GameObject* b);
 
         CollisionMatrix collisionMatrix;
-        shared_ptr<Camera> camera;
         vector<GameObject*> objects;
         vector<GameObject*> newlyCreatedObjects;
         shared_ptr<SpritePool> spritePool;

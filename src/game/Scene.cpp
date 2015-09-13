@@ -3,7 +3,6 @@
 #include <GfxSystem.h>
 #include <iostream>
 #include <Randomizer.h>
-#include <Camera.h>
 #include <algorithm>
 
 namespace Acidrain {
