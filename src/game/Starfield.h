@@ -31,23 +31,29 @@ namespace Acidrain {
 
     class Starfield {
     public:
-
         Starfield(int howMany, vec2 terrainSize);
 
         virtual ~Starfield();
+
+        void pause();
+
+        void resume();
 
         void update(float dt);
 
         void draw(shared_ptr<GpuProgram> shader, float frameAlpha);
 
     private:
-
         void spawn(const shared_ptr<StarParticle>& particle);
 
         bool isOutOfTerrain(const shared_ptr<StarParticle>& particle);
 
         int spriteWidth;
         int spriteHeight;
+
+        float speed = 0.001;
+        float maxSpeed = 100;
+        bool paused = false;
 
         Box textCoords;
         Vbo vbo;

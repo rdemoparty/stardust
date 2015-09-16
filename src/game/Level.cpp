@@ -54,6 +54,7 @@ namespace Acidrain {
     void Level::start() {
         scene->clear();
         levelScript->reset();
+        starfield->resume();
         finished = false;
         paused = false;
     }
@@ -73,9 +74,9 @@ namespace Acidrain {
 
         if (!paused) {
             levelScript->update(elapsedSeconds);
-            starfield->update(elapsedSeconds);
         }
 
+        starfield->update(elapsedSeconds);
         scene->update(elapsedSeconds);
     }
 
@@ -137,9 +138,11 @@ namespace Acidrain {
 
     void Level::pause() {
         paused = true;
+        starfield->pause();
     }
 
     void Level::resume() {
         paused = false;
+        starfield->resume();
     }
 }

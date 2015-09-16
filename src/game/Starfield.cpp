@@ -14,7 +14,9 @@ namespace Acidrain {
 
         textCoords.centerAround(vec2(0.5, 0.5));
 
-        flareTexture = TextureGenerator(spriteWidth, spriteHeight).lens(0, spriteWidth / 4).getTexture(0);
+        flareTexture = TextureGenerator(spriteWidth, spriteHeight)
+                .lens(0, (unsigned char) (spriteWidth / 4))
+                .getTexture(0);
 
         for (int i = 0; i < howMany; i++) {
             auto particle = make_shared<StarParticle>();
@@ -38,8 +40,8 @@ namespace Acidrain {
             particle->firstSpawn = false;
         } else {
             particle->position = glm::vec2(
-                    rnd.randomUnit() * terrainSize.x,0
-                    -spriteHeight / 2.f
+                    rnd.randomUnit() * terrainSize.x, 0
+                                                      - spriteHeight / 2.f
             );
         }
         particle->previousPosition = particle->position;
@@ -52,9 +54,18 @@ namespace Acidrain {
     }
 
     void Starfield::update(float dt) {
+        if (paused) {
+            if (speed > 0.001)
+                speed *= 0.97;
+        } else {
+            speed *= 1.2;
+            if (speed > maxSpeed)
+                speed = maxSpeed;
+        }
+
         for (auto& particle : particles) {
             particle->previousPosition = particle->position;
-            particle->position += particle->direction * dt * 50.0f;
+            particle->position += particle->direction * dt * speed;
 
             if (isOutOfTerrain(particle))
                 spawn(particle);
@@ -95,5 +106,13 @@ namespace Acidrain {
             vbo.draw();
         }
         shader->unuse();
+    }
+
+    void Starfield::pause() {
+        paused = true;
+    }
+
+    void Starfield::resume() {
+        paused = false;
     }
 } // namespace Acidrain
