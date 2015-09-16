@@ -28,6 +28,8 @@ namespace Acidrain {
 
     void Camera::shake(float strength) {
         shakeFactor += strength;
+        if (shakeFactor > maxShakeFactor)
+            shakeFactor = maxShakeFactor;
     }
 
     const mat4 Camera::getShakeMatrix() const {

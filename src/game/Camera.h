@@ -8,7 +8,6 @@ namespace Acidrain {
 
     class Camera {
     public:
-
         void shake(float strength);
 
         void update(float elapsedSeconds);
@@ -17,6 +16,7 @@ namespace Acidrain {
 
     private:
         float shakeFactor;
+        float maxShakeFactor = 40;
         mat4 shakeMatrix;
     };
 

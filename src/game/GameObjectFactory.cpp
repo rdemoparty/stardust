@@ -105,7 +105,7 @@ namespace Acidrain {
         result->state.type = recipe.type;
         result->state.side = recipe.team;
 
-        LOG(INFO) << "Cooking entity for recipe with name " << recipe.name << " where hidden flag is " << recipe.hidden;
+        LOG(TRACE) << "Cooking entity for recipe with name " << recipe.name << " where hidden flag is " << recipe.hidden;
 
         for (auto weaponRecipe : recipe.weapons)
             result->addWeapon(cookWeapon(weaponRecipe));
