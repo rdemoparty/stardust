@@ -1,2 +1,0 @@
-call win_build_x64_release.cmd
-call win_run_x64.cmd
