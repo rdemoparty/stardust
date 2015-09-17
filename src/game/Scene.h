@@ -37,6 +37,12 @@ namespace Acidrain {
 
     class CollisionMatrix {
     public:
+        CollisionMatrix() {
+            for (int i = 0; i < SIZE; i++)
+                for (int j = 0; j < SIZE; j++)
+                    matrix[i][j] = false;
+        }
+
         void registerCollidables(const CollidableDiscriminator& from, const CollidableDiscriminator& to) {
             matrix[from.id][to.id] = true;
             matrix[to.id][from.id] = true;
