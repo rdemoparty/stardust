@@ -163,11 +163,13 @@
       "damageProvidedOnCollision": 10000,
       "removeOnDeath": true,
       "killIfOutside": false,
-      "maxLife": 2,
+      "maxLife": 1000,
       "team": "Friendly",
       "type": "Ship",
       "hull": [
         {
+          "x": 0,
+          "y": 0,
           "radius": 12
         }
       ],
@@ -188,7 +190,8 @@
             }
           ]
         }
-      ]
+      ],
+      "hidden": false
     },
     {
       "name": "player.bullet",

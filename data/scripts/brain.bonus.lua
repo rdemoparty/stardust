@@ -38,6 +38,8 @@ end
 
 -- We have been touched by player
 function onDamage(objectPointer, amount, inflicterPointer)
+    inflictDamage(objectPointer, amount, inflicterPointer)
+
     local o = Entity.from(objectPointer)
     local player = Entity.from(inflicterPointer)
 

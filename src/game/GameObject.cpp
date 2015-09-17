@@ -59,7 +59,6 @@ namespace Acidrain {
     }
 
     void GameObject::inflictDamage(float amount, GameObject* inflicter) {
-        state.inflictDamage(amount);
         if (brain)
             brain->onDamage(this, amount, inflicter);
 

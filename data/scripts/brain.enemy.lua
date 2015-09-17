@@ -56,6 +56,8 @@ function onUpdate(objectPointer, elapsedSeconds)
 end
 
 function onDamage(objectPointer, amount, inflicterPointer)
+    inflictDamage(objectPointer, amount, inflicterPointer)
+
     local hurtEntity = Entity.from(objectPointer)
     local inflictedEntity = Entity.from(inflicterPointer)
 

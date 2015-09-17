@@ -47,14 +47,6 @@ namespace Acidrain {
         EntityDeathReason deathReason;
         EntityType type;
         EntitySide side;
-
-        void inflictDamage(float amount) {
-            life -= amount;
-            if (life < 0) {
-                isDead = true;
-                deathReason = EntityDeathReason::Killed;
-            }
-        }
     };
 
     class GameObject : public DrawableEntity {
