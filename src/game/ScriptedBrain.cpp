@@ -44,6 +44,13 @@ namespace Acidrain {
         return 0; // arguments pushed on stack
     }
 
+    static int killAllChildren(lua_State* L) {
+        GameObject* object = (GameObject*) lua_topointer(L, 1);
+        EntityDeathReason deathReason = (EntityDeathReason) lua_tointeger(L, 2);
+        object->killAllChildren(deathReason);
+        return 0; // arguments pushed on stack
+    }
+
     static int provideDamage(lua_State* L) {
         GameObject* object = (GameObject*) lua_topointer(L, 1);
         float amount = (float) lua_tonumber(L, 2);
@@ -352,6 +359,7 @@ namespace Acidrain {
         lua_register(L, "include", includeScriptFile);
         lua_register(L, "fireWeapons", fireWeapons);
         lua_register(L, "kill", kill);
+        lua_register(L, "killAllChildren", killAllChildren);
         lua_register(L, "provideDamage", provideDamage);
         lua_register(L, "isAnimationFinished", isAnimationFinished);
         lua_register(L, "getId", getId);

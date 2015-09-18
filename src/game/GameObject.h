@@ -75,6 +75,8 @@ namespace Acidrain {
 
         void kill(EntityDeathReason deathReason);
 
+        void killAllChildren(EntityDeathReason deathReason);
+
         AttributeBag& attributes();
 
         EntityState state;

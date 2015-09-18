@@ -118,4 +118,10 @@ namespace Acidrain {
             children.erase(it);
         }
     }
+
+    void GameObject::killAllChildren(EntityDeathReason deathReason) {
+        for (auto child : children) {
+            child->kill(deathReason);
+        }
+    }
 }
