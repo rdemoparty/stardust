@@ -44,6 +44,17 @@ namespace Acidrain {
         return 0; // arguments pushed on stack
     }
 
+    static int provideDamage(lua_State* L) {
+        GameObject* object = (GameObject*) lua_topointer(L, 1);
+        float amount = (float) lua_tonumber(L, 2);
+        GameObject* inflicter = (GameObject*) lua_topointer(L, 3);
+
+        if (object != nullptr)
+            object->inflictDamage(amount, inflicter);
+
+        return 0; // arguments pushed on stack
+    }
+
     static int fireWeapons(lua_State* L) {
         GameObject* object = (GameObject*) lua_topointer(L, 1);
         object->fireWeapons((bool) lua_toboolean(L, 2));
@@ -52,11 +63,29 @@ namespace Acidrain {
 
     static int createEntity(lua_State* L) {
         const char* const key = lua_tostring(L, 1);
+        GameObject* parent = (GameObject*) lua_topointer(L, 2);
 
         GameObject* object = GameServiceLocator::gameObjectFactory()->createByName(key);
         GameServiceLocator::scene()->add(object);
 
+        if (parent != nullptr) {
+            object->setParent(parent);
+            parent->addChild(object);
+        }
+
         lua_pushlightuserdata(L, object);
+        return 1; // arguments pushed on stack
+    }
+
+    static int getParent(lua_State* L) {
+        GameObject* object = (GameObject*) lua_topointer(L, 1);
+        lua_pushlightuserdata(L, object->getParent());
+        return 1; // arguments pushed on stack
+    }
+
+    static int hasParent(lua_State* L) {
+        GameObject* object = (GameObject*) lua_topointer(L, 1);
+        lua_pushboolean(L, !(object->getParent() == nullptr));
         return 1; // arguments pushed on stack
     }
 
@@ -323,6 +352,7 @@ namespace Acidrain {
         lua_register(L, "include", includeScriptFile);
         lua_register(L, "fireWeapons", fireWeapons);
         lua_register(L, "kill", kill);
+        lua_register(L, "provideDamage", provideDamage);
         lua_register(L, "isAnimationFinished", isAnimationFinished);
         lua_register(L, "getId", getId);
         lua_register(L, "getPosition", getPosition);
@@ -335,6 +365,8 @@ namespace Acidrain {
         lua_register(L, "setLife", setLife);
         lua_register(L, "getMaxLife", getMaxLife);
         lua_register(L, "setMaxLife", setMaxLife);
+        lua_register(L, "getParent", getParent);
+        lua_register(L, "hasParent", hasParent);
         lua_register(L, "getColor", getColor);
         lua_register(L, "setColor", setColor);
         lua_register(L, "getInt", getIntAttribute);

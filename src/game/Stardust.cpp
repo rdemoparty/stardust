@@ -80,5 +80,8 @@ namespace Acidrain {
 
         lua_pushlightuserdata(L, level->camera.get());
         lua_setglobal(L, "CAMERA");
+
+        lua_pushlightuserdata(L, nullptr);
+        lua_setglobal(L, "NULL_POINTER");
     }
 } // namespace Acidrain

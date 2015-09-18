@@ -51,7 +51,7 @@ namespace Acidrain {
 
     class GameObject : public DrawableEntity {
     public:
-        virtual ~GameObject() {};
+        virtual ~GameObject();
 
         long getId() const {
             return id;
@@ -83,11 +83,23 @@ namespace Acidrain {
 
         bool isAnimationFinished();
 
+        void addChild(GameObject* child);
+
+        void removeChild(GameObject* child);
+
+        vector<GameObject*> getChildren();
+
+        void setParent(GameObject* object);
+
+        GameObject* getParent() const;
+
     protected:
         long id;
 
         AttributeBag attrs;
         shared_ptr<ScriptedBrain> brain;
+        GameObject* parent = nullptr;
+        vector<GameObject*> children;
 
         friend class GameObjectFactory;
 

@@ -85,4 +85,37 @@ namespace Acidrain {
         if (brain)
             brain->onDeath(this);
     }
+
+    void GameObject::setParent(GameObject* object) {
+        this->parent = object;
+    }
+
+    GameObject* GameObject::getParent() const {
+        return this->parent;
+    }
+
+    void GameObject::addChild(GameObject* child) {
+        children.push_back(child);
+    }
+
+    vector<GameObject*> GameObject::getChildren() {
+        return children;
+    }
+
+    GameObject::~GameObject() {
+        if (parent != nullptr) {
+            parent->removeChild(this);
+        }
+
+        for (auto child : children) {
+            child->setParent(nullptr);
+        }
+    }
+
+    void GameObject::removeChild(GameObject* child) {
+        auto it = find(children.begin(), children.end(), child);
+        if (it != children.end()) {
+            children.erase(it);
+        }
+    }
 }
