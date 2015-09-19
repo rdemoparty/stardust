@@ -5,6 +5,7 @@
 #include <Scene.h>
 #include <AudioSystem.h>
 #include <GameServiceLocator.h>
+#include <algorithm>
 
 namespace Acidrain {
 

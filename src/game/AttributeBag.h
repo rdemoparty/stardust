@@ -2,6 +2,7 @@
 
 #include <map>
 #include <iostream>
+#include <cstring>
 
 namespace Acidrain {
 
@@ -21,7 +22,17 @@ namespace Acidrain {
         void clear();
 
     private:
-        map<const char*, int> integerMap;
-        map<const char*, float> floatMap;
+
+        // We need this otherwise the map will compare the pointers themselves and not the
+        // text they point to. The effect in this case is having multiple entries for the same
+        // parameter name. Check issue #6 for more details.
+        struct StringComparator {
+            bool operator()(char const* a, char const* b) {
+                return std::strcmp(a, b) < 0;
+            }
+        };
+
+        map<const char*, int, StringComparator> integerMap;
+        map<const char*, float, StringComparator> floatMap;
     };
 }
