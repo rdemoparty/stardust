@@ -92,7 +92,7 @@ namespace Acidrain {
 
     static int hasParent(lua_State* L) {
         GameObject* object = (GameObject*) lua_topointer(L, 1);
-        lua_pushboolean(L, !(object->getParent() == nullptr));
+        lua_pushboolean(L, object->getParent() != nullptr);
         return 1; // arguments pushed on stack
     }
 

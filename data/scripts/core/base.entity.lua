@@ -21,6 +21,10 @@ function Entity:kill(reason)
     kill(self.pointer, reason)
 end
 
+function Entity:killAllChildren(reason)
+    killAllChildren(self.pointer, reason)
+end
+
 function Entity:provideDamage(amount, inflicterPointer)
     provideDamage(self.pointer, amount, inflicterPointer)
 end
@@ -30,7 +34,7 @@ function Entity:isAnimationFinished()
 end
 
 function Entity:hasParent()
-    return getParent(self.pointer)
+    return hasParent(self.pointer)
 end
 
 function Entity:getParent()
