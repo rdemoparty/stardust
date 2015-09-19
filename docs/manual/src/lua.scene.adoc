@@ -1,0 +1,21 @@
+Here is the list of functions currently offered by the lua `Scene` table:
+
+'''
+
+===== Scene.create(type, parent)
+'''
+
+===== Scene.confineToPlayingArea(entity)
+'''
+
+===== Scene.dump()
+'''
+
+===== Scene.endLevel()
+'''
+
+===== Scene.pauseLevel()
+'''
+
+===== Scene.resumeLevel()
+'''

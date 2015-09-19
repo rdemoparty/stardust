@@ -1,0 +1,73 @@
+Backfire Editor Manual
+======================
+Adrian Scripcă <benishor@gmail.com>
+v1.0, 2015-04
+:source-highlighter: coderay
+:sectlinks:
+:toc: left
+:toclevels: 4
+:icons: font
+:imagesdir: assets
+
+:numbered!:
+[abstract]
+Abstract
+--------
+This manual contains information pertaining to using the functionality exposed by Backfire into the lua shell that is being used to interpret entities' brains.
+
+:numbered:
+
+
+== General idea
+
+== Editor components
+
+=== Sprite editor
+include::sprite.editor.adoc[]
+
+=== Recipe editor
+include::recipe.editor.adoc[]
+
+=== Level editor
+include::level.editor.adoc[]
+
+== Brain Scripting
+=== Lua function reference
+
+==== Entity object
+include::lua.entity.adoc[]
+
+==== Scene object
+include::lua.scene.adoc[]
+
+==== Camera object
+include::lua.camera.adoc[]
+
+==== Session object
+include::lua.session.adoc[]
+
+==== Math functions
+include::lua.math.adoc[]
+
+[glossary]
+Backfire Glossary
+-----------------
+Throughout the document we use several terms specific to the domain of Backfire. Here's a list of them:
+
+[glossary]
+Recipe::
+  A template for building a game entity.
+
+Entity::
+  An instance of a game object created from a recipe.
+
+ifdef::backend-docbook[]
+[index]
+Example Index
+-------------
+////////////////////////////////////////////////////////////////
+The index is normally left completely empty, it's contents being
+generated automatically by the DocBook toolchain.
+////////////////////////////////////////////////////////////////
+endif::backend-docbook[]
+

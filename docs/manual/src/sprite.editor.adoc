@@ -1,0 +1,1 @@
+Since Backfire is a 2D game in the end everything boils down to drawing sprites on the screen.

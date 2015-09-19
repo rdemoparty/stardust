@@ -1,0 +1,1 @@
+Now that we are able to define <<Recipe editor,recipes>> we need some means to place entities in a way that will enable us to actually design the game. Say hello to the Level Editor!

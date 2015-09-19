@@ -1,0 +1,15 @@
+Here is the list of math related functions currently exposed to script:
+
+'''
+
+===== easeInCubic(time, startValue, changeInValue, duration)
+'''
+
+===== easeOutCubic(time, startValue, changeInValue, duration)
+'''
+
+===== easeInQuintic(time, startValue, changeInValue, duration)
+'''
+
+===== easeOutQuintic(time, startValue, changeInValue, duration)
+'''

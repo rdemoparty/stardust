@@ -1,0 +1,50 @@
+// :coderay-linenums-mode: inline
+
+We may be able to <<Sprite editor,draw sprites>> but a game object is much more than a simple drawing. Time to meet *Recipes*!
+
+Here is an example of a brain script for an entity that scrolls top to bottom in a swinging pattern. Let's use this as a reference for the type of event handlers that should be implemented by an entity.
+
+[source,lua]
+----
+function onSpawn(objectPointer) <1>
+end
+
+function onUpdate(objectPointer, elapsedSeconds) <2>
+end
+
+function onDamage(objectPointer, amount, inflicterPointer) <3>
+end
+
+function onDeath(objectPointer, reason) <4>
+end
+----
+<1> The function called upon spawning 
+<2> The function called each time an entity is required to update
+<3> The function called whenever an entity receives damage
+<4> The function called when an entity changes its state into dead
+
+
+The first thing to notice here is that all handlers receive as first argument a parameter called `objectPointer`. This reference can be used to obtain a lua wrapper around the actual entity in the game. Once we have a lua `Entity` wrapper, we can use <<Entity object,its interface>> to query or modify the entity attributes. Let us take a closer look at the spawning handler. 
+
+[source,lua]
+----
+function onSpawn(objectPointer)
+    local o = Entity.from(objectPointer) <1>
+    local x, y = o:getPosition() <2>
+
+    o:setFloat("center", x)
+    o:setFloat("speed", 200)
+    o:setFloat("aperture", 200)
+    o:setFloat("phase", 0.0)
+    o:setFloat("hitTimer", 0)
+    o:setFloat("hitDuration", 0.05)
+
+    o:fire(true)
+end
+----
+<1> obtaining an `Entity` wrapper used to handle the real in-game object
+<2> using the wrapper to retrieve the position of the in-game object
+
+[[img-sweet-gen]]
+.Sweep generator
+image::sweep-generator.svg[sweep-gen-schematic, 100%, , link="http://blog.scene.ro"]

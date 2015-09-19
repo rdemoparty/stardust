@@ -1,0 +1,227 @@
+Here is the list of functions currently offered by the lua `Entity` wrapper:
+
+===== Entity.from(pointer)
+Creates a lua wrapper from a C++ pointer and returns it to the caller.
+
+[IMPORTANT]
+====
+Please note that this is a static method invoked on the `Entity` class so you must use a single dot, such as in the following example:
+
+[source,lua]
+----
+local o = Entity.from(pointer)
+----
+====
+
+===== Entity:fire(shouldFire)
+Determines whether the wrapped entity should pull the trigger or not. The `shouldFire` argument must be a boolean value, either `true` or `false`.
+
+===== Entity:kill(reason)
+Triggers the kill of the wrapped entity with the specified reason. Reason must be one of the following:
+
+|===
+| `DeathReason.OutOfVisibleArea` | Usually signals that the entity has crossed the borders of the visible screen space
+| `DeathReason.Killed` | Signals that the entity has taken damage until it was killed.
+| `DeathReason.JobFinished` | Specifies that the entity completed it's life cycle in a clean manner.
+|===
+
+NOTE: This in turn will call the `onDeath()` brain handler so do mind any side effects when using this.
+
+===== Entity:killAllChildren(reason)
+Triggers the killing of all entities which are children of the current entity. In order to see what the effect of this call is, head over to <<Entity:kill(reason)>>
+
+===== Entity:provideDamage(amount, inflicterPointer)
+Provides damage to the current entity with the given `amount` and acting as if being inflicted by the entity specified by `inflicterPointer`. This will in turn call the specified entity's `onDamage()` brain handling.
+Usages include boss minions routing the damage they receive to their parent, namely the boss head. This way you can have a creature composed of many parts that act as a single entity.
+
+Example that shows how to route the damage we receive to our parent:
+[source,lua]
+----
+function onDamage(selfPtr, amount, inflicterPtr)
+    local o = Entity.from(selfPtr)
+    if o:hasParent() then
+        local parent = o:getParent()
+        parent:provideDamage(amount, inflicterPtr)
+    end 
+end
+----
+
+===== Entity:isAnimationFinished()
+Returns `true` if the animation currently playing for the wrapped entity has finished, `false` otherwise. The folloiwing example shows the typical implementation of an __Explosion__ entity which does not interact with the scenery and whose only purpose in life is to die after its animation is finished:
+
+[source,lua]
+----
+function updateEntity(objectPointer)
+    local o = Entity.from(objectPointer)
+    if o:isAnimationFinished() then
+        o:kill(DeathReason.JobFinished)
+    end
+end
+----
+
+===== Entity:hasParent()
+Returns `true` if the entity has a living parent, `false` otherwise.
+
+===== Entity:getParent()
+Returns the entity's parent as another `Entity` object.
+
+===== Entity:getId()
+Returns the entity's numeric `id` as provided by the game. This identifier is unique for every entity.
+
+===== Entity:getPosition()
+Returns the `x`,`y` components of the current entity's position.
+
+[source,lua]
+----
+function updateEntity(objectPointer, elapsedSeconds)
+    local o = Entity.from(objectPointer)
+    local x, y = o:getPosition()
+end
+----
+
+===== Entity:setPosition(x, y)
+Sets the entity's position on the screen. Here's an example of how to make an entity's `y` position increase with 100 pixels per second:
+
+[source,lua]
+----
+function updateEntity(objectPointer, elapsedSeconds)
+    local o = Entity.from(objectPointer)
+    local x, y = o:getPosition()
+
+    y += 100*elapsedTime
+
+    o:setPosition(x, y)
+end
+----
+
+===== Entity:setRotation(amount)
+Sets the entity's orientation. The `amount` is in https://en.wikipedia.org/wiki/Radian[radians], ranging from `0` to `2 * math.pi` for a full clockwise rotation. Here are the rotation values of some wide encountered orientations:
+
+|===
+| `0` | Original orientation, nothing changed
+| `math.pi/2` | The entity is turned 90 degrees clockwise
+| `math.pi` | The entity is turned 180 degrees clockwise, or in other words upside down
+| `3*math.pi/2` | The entity is turned 270 degrees clockwise
+|===
+
+NOTE: When you rotate an entity, not only its visual representation will be affected but its collision hull as well.
+
+===== Entity:getRotation()
+Returns the entity's orientation in https://en.wikipedia.org/wiki/Radian[radians]. This is useful in case you want to incrementally rotate an entity in time, like in the following example:
+
+[source,lua]
+----
+function updateEntity(objectPointer, elapsedSeconds)
+    local o = Entity.from(objectPointer)
+
+    local rotationsPerSecond = 2
+    local rotation = o:getRotation()
+    rotation += rotationsPerSecond*(2*math.pi)*elapsedSeconds
+
+    o:setRotation(rotation)
+end
+----
+
+===== Entity:getLife()
+Returns the entity's current life value.
+
+===== Entity:setLife(value)
+Sets the entity's life amount to the provided `value`.
+
+===== Entity:getMaxLife()
+Returns the entity's maximum life value. This may be affected by picking up bonus items and such.
+
+===== Entity:setMaxLife(value)
+Sets the entity's maximum life value. 
+
+===== Entity:setColor(r, g, b, a)
+Sets the entity's modulating color. At rendering, this color will be multiplied to the entity's sprite texture allowing the implementation of interesting visual notifications for the player.
+
+The following example modulates the entity color, making it pulsate from totally visible to totally not visible once per second:
+
+[source,lua]
+----
+function updateEntity(objectPointer, elapsedSeconds)
+    local o = Entity.from(objectPointer)
+
+    local time = o:getFloat("time")+elapsedSeconds
+    local alpha = (math.sin(2*math.pi*time)/2)+0.5
+
+    o:setFloat("time", time)
+    o:setColor(alpha, alpha, alpha, alpha)
+end
+----
+
+===== Entity:setScale(amount)
+Scales the entity with the provided `amount`. The default scale factor is `1`. If the provided `amount` is less than 1 the entity's size will appear to be decreasing whereas values greater than 1 make the entity bigger.
+
+NOTE: When scaling an entity, not only its visual representation is being scaled but its collision hull as well.
+
+Here's an example for time dependent scaling which has the effect of making the entity appear to be go below and above its _normal_ level due to scaling:
+
+[source,lua]
+----
+function updateEntity(objectPointer, elapsedSeconds)
+    local o = Entity.from(objectPointer)
+
+    local time = o:getFloat("time")+elapsedSeconds -- <1>
+
+    local scaleFactor = math.sin(2*math.pi*time) -- <2>
+    scaleFactor = scaleFactor/2 + 0.5 -- <3>
+    scaleFactor = scaleFactor*0.4 + 0.8 -- <4>
+
+    o:setScale(scaleFactor) -- <5>
+    o:setFloat("time", time) -- <6>
+end
+----
+<1> Make sure the _**time**_ entity attribute holds the time of it being alive
+<2> Calculate the scale factor for the current time. The output of this line will be a value oscillating from `-1` to `1` once per second
+<3> Translate the previous value from the `[-1, 1]` domain to the `[0, 1]` domain
+<4> Compress the value oscillation from the `[0, 1]` domain into the `[0, 0.4]` domain and add `0.8` to it. This will make our `scaleFactor` oscillate from `0.8 + 0` to `0.8 + 0.4` or `[0.8, 1.2]`
+<5> Finally sets the scale factor for this entity
+<6> Saves the _**time**_ value as an entity attribute
+
+===== Entity:getScale()
+Returns the entity's scale factor. 
+
+===== Entity:getPointer()
+Returns the C++ pointer to this entity.
+
+===== Entity:setFloat(name, value)
+Sets a float attribute for this entity with name `name` and value `value`. This attribute will be available for the whole lifetime of the entity or until it is being changed by another call to `setFloat()`
+
+===== Entity:getFloat(name)
+Returns entity's value for float attribute with name `name`. If no such attribute has been previously set, a default `0` value is returned.
+
+===== Entity:setInt(name, value)
+Sets an integer attribute for this entity with name `name` and value `value`. This attribute will be available for the whole lifetime of the entity or until it is being changed by another call to `setInt()`
+
+===== Entity:getInt(name)
+Returns entity's value for integer attribute with name `name`. If no such attribute has been previously set, a default `0` value is returned.
+
+===== Entity:setBrain(name)
+Changes the brain of this entity to an instance of the brain corresponding to the specified `name`. This allows constructing complex behaviour, such as multiple phases for a boss as the following example demonstrates:
+
+[source,lua]
+.boss.normal.lua
+----
+function updateEntity(objectPointer, elapsedSeconds)
+    local o = Entity.from(objectPointer)
+
+    if o:getLife() < 100 then
+        o:setBrain("boss.angry.lua")
+    end
+end
+----
+
+[source,lua]
+.boss.angry.lua
+----
+function updateEntity(objectPointer, elapsedSeconds)
+    local o = Entity.from(objectPointer)
+
+    if o:getLife() < 10 then
+        o:setBrain("boss.desperate.lua")
+    end
+end
+----

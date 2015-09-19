@@ -1,0 +1,1 @@
+This describes the lifecycle of an entity from its inception to its destruction.

@@ -1,0 +1,15 @@
+Here is the list of functions currently offered by the lua `Session` table:
+
+'''
+
+===== Session.setFloat(name, value)
+'''
+
+===== Session.getFloat(name)
+'''
+
+===== Session.setInt(name, value)
+'''
+
+===== Session.getInt(name)
+'''

@@ -1,0 +1,10 @@
+Here is the list of functions currently offered by the lua `Camera` wrapper:
+
+===== Camera.shake(amount)
+Adds the provided `amount` shake to the camera, simulating the viewer being hit by something. The shaking amount decreases in time if no more shaking amount is added.
+
+[NOTE]
+====
+Subsequent calls to `Camera.shake()` do not replace the existing camera shaking amount but rather add together for a cumulative effect. In other words, the more damage you take, the more shaky things become.
+====
+'''
