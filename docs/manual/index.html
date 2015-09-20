@@ -1129,26 +1129,71 @@ When scaling an entity, not only its visual representation is being scaled but i
 <hr>
 <div class="sect4">
 <h5 id="_scene_create_type_parent"><a class="link" href="#_scene_create_type_parent">Scene.create(type, parent)</a></h5>
+<div class="paragraph">
+<p>Creates an entity of given <code>type</code>, adds it to the scene and returns it to the caller in the form of a lua wrapped <code>Entity</code>. If <code>parent</code> is present, the new born entity will be configured as one of its children.</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">type</dt>
+<dd>
+<p>the name of the entity to be created. string</p>
+</dd>
+<dt class="hdlist1">parent</dt>
+<dd>
+<p>the parent the new entity will be attached to. <code>Entity</code>, optional</p>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p>Here&#8217;s an example of how a bonus item leaves a beacon behind when being touched by the player and thus dying:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="lua"><span class="keyword">function</span> <span class="function">onDeath</span>(objectPointer, reason)
+    <span class="keyword">local</span> <span class="local-variable">self</span> = Entity.from(objectPointer)
+    <span class="keyword">local</span> <span class="local-variable">beacon</span> = Scene.create(<span class="string"><span class="delimiter">&quot;</span><span class="content">beacon</span><span class="delimiter">&quot;</span></span>)
+    beacon:setPosition(self:getPosition())
+<span class="keyword">end</span></code></pre>
+</div>
+</div>
 <hr>
 </div>
 <div class="sect4">
 <h5 id="_scene_confinetoplayingarea_entity"><a class="link" href="#_scene_confinetoplayingarea_entity">Scene.confineToPlayingArea(entity)</a></h5>
+<div class="paragraph">
+<p>Makes sure the provided entity remains inside the visible area and returns <code>true</code> if the entity&#8217;s position had to be corrected, <code>false</code> otherwise.</p>
+</div>
 <hr>
 </div>
 <div class="sect4">
 <h5 id="_scene_dump"><a class="link" href="#_scene_dump">Scene.dump()</a></h5>
+<div class="paragraph">
+<p>Dumps the list of active entities to stdout. This is used mainly for debugging purposes.</p>
+</div>
 <hr>
 </div>
 <div class="sect4">
 <h5 id="_scene_endlevel"><a class="link" href="#_scene_endlevel">Scene.endLevel()</a></h5>
+<div class="paragraph">
+<p>Triggers the end of the current playing level.</p>
+</div>
 <hr>
 </div>
 <div class="sect4">
 <h5 id="_scene_pauselevel"><a class="link" href="#_scene_pauselevel">Scene.pauseLevel()</a></h5>
+<div class="paragraph">
+<p>Pauses the flow of the current level. This will have the effect of effectively stopping the advance of the level script <em>and</em> smoothly stop the scrolling of the background starfield. The current active entities will remain however active.</p>
+</div>
+<div class="paragraph">
+<p>This state will persist until the level is resumed.</p>
+</div>
 <hr>
 </div>
 <div class="sect4">
 <h5 id="_scene_resumelevel"><a class="link" href="#_scene_resumelevel">Scene.resumeLevel()</a></h5>
+<div class="paragraph">
+<p>Resumes the flow of the current level which was previously paused with a call to <a href="#_scene_pauselevel">Scene.pauseLevel()</a>. The level script will resume its advance and the background starfield will smoothly resume its scrolling.</p>
+</div>
 <hr>
 </div>
 </div>

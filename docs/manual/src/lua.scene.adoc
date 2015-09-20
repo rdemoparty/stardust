@@ -3,19 +3,47 @@ Here is the list of functions currently offered by the lua `Scene` table:
 '''
 
 ===== Scene.create(type, parent)
+Creates an entity of given `type`, adds it to the scene and returns it to the caller in the form of a lua wrapped `Entity`. If `parent` is present, the new born entity will be configured as one of its children.
+
+type:: the name of the entity to be created. string
+parent:: the parent the new entity will be attached to. `Entity`, optional
+
+Here's an example of how a bonus item leaves a beacon behind when being touched by the player and thus dying:
+
+[source,lua]
+----
+function onDeath(objectPointer, reason)
+    local self = Entity.from(objectPointer)
+    local beacon = Scene.create("beacon")
+    beacon:setPosition(self:getPosition())
+end
+----
+
 '''
 
 ===== Scene.confineToPlayingArea(entity)
+Makes sure the provided entity remains inside the visible area and returns `true` if the entity's position had to be corrected, `false` otherwise.
+
 '''
 
 ===== Scene.dump()
+Dumps the list of active entities to stdout. This is used mainly for debugging purposes.
+
 '''
 
 ===== Scene.endLevel()
+Triggers the end of the current playing level.
+
 '''
 
 ===== Scene.pauseLevel()
+Pauses the flow of the current level. This will have the effect of effectively stopping the advance of the level script _and_ smoothly stop the scrolling of the background starfield. The current active entities will remain however active.
+
+This state will persist until the level is resumed.
+
 '''
 
 ===== Scene.resumeLevel()
+Resumes the flow of the current level which was previously paused with a call to <<Scene.pauseLevel()>>. The level script will resume its advance and the background starfield will smoothly resume its scrolling.
+
 '''
