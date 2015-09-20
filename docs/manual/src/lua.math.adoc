@@ -1,15 +1,69 @@
+__{project}__ also exposes a list of easing functions as described by http://robertpenner.com/easing/penner_chapter7_tweening.pdf[Robert Penner]. Easing equations should be used to smooth out parameter changes in order to make them feel more _human_.
+
 Here is the list of math related functions currently exposed to script:
 
 '''
 
 ===== easeInCubic(time, startValue, changeInValue, duration)
+[[img-easeInCubic]]
+.easeInCubic
+image::easing/easeInCubic.png[easeInCubic, , ,float="right"]
+
+Returns the current value smoothed by cubic easing according to the given parameters.
+
+time:: the time at which the parameter must be evaluated
+startValue:: the value that the parameter must have when time is 0
+changeInValue:: the difference that will be applied to `startValue` when _done_
+duration:: the amount of time the transition will take
+
+Both `time` and `duration` parameters may use any measurement unit as long as it is consistent for both. This means you can safely use _seconds_ for all time dependent easing parameters since that is what `onUpdate()` offers.
+
 '''
 
 ===== easeOutCubic(time, startValue, changeInValue, duration)
+[[img-easeOutCubic]]
+.easeOutCubic
+image::easing/easeOutCubic.png[easeOutCubic, , ,float="right"]
+
+Returns the current value smoothed by cubic easing according to the given parameters.
+
+time:: the time at which the parameter must be evaluated
+startValue:: the value that the parameter must have when time is 0
+changeInValue:: the difference that will be applied to `startValue` when _done_
+duration:: the amount of time the transition will take
+
+Both `time` and `duration` parameters may use any measurement unit as long as it is consistent for both. This means you can safely use _seconds_ for all time dependent easing parameters since that is what `onUpdate()` offers.
+
 '''
 
 ===== easeInQuintic(time, startValue, changeInValue, duration)
+[[img-easeInQuintic]]
+.easeInQuintic
+image::easing/easeInQuintic.png[easeInQuintic, , ,float="right"]
+
+Returns the current value smoothed by cubic easing according to the given parameters.
+
+time:: the time at which the parameter must be evaluated
+startValue:: the value that the parameter must have when time is 0
+changeInValue:: the difference that will be applied to `startValue` when _done_
+duration:: the amount of time the transition will take
+
+Both `time` and `duration` parameters may use any measurement unit as long as it is consistent for both. This means you can safely use _seconds_ for all time dependent easing parameters since that is what `onUpdate()` offers.
+
 '''
 
 ===== easeOutQuintic(time, startValue, changeInValue, duration)
+[[img-easeOutQuintic]]
+.easeOutQuintic
+image::easing/easeOutQuintic.png[easeOutQuintic, , ,float="right"]
+
+Returns the current value smoothed by cubic easing according to the given parameters.
+
+time:: the time at which the parameter must be evaluated
+startValue:: the value that the parameter must have when time is 0
+changeInValue:: the difference that will be applied to `startValue` when _done_
+duration:: the amount of time the transition will take
+
+Both `time` and `duration` parameters may use any measurement unit as long as it is consistent for both. This means you can safely use _seconds_ for all time dependent easing parameters since that is what `onUpdate()` offers.
+
 '''

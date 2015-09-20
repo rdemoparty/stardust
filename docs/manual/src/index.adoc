@@ -8,6 +8,7 @@ v1.0, 2015-04
 :toclevels: 4
 :icons: font
 :imagesdir: assets
+:project: Backfire
 
 :numbered!:
 [abstract]

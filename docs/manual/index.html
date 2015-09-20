@@ -1205,23 +1205,154 @@ When scaling an entity, not only its visual representation is being scaled but i
 <div class="sect3">
 <h4 id="_math_functions"><a class="link" href="#_math_functions">3.1.5. Math functions</a></h4>
 <div class="paragraph">
+<p><em>Backfire</em> also exposes a list of easing functions as described by <a href="http://robertpenner.com/easing/penner_chapter7_tweening.pdf">Robert Penner</a>. Easing equations should be used to smooth out parameter changes in order to make them feel more <em>human</em>.</p>
+</div>
+<div class="paragraph">
 <p>Here is the list of math related functions currently exposed to script:</p>
 </div>
 <hr>
 <div class="sect4">
 <h5 id="_easeincubic_time_startvalue_changeinvalue_duration"><a class="link" href="#_easeincubic_time_startvalue_changeinvalue_duration">easeInCubic(time, startValue, changeInValue, duration)</a></h5>
+<div id="img-easeInCubic" class="imageblock" style="float: right">
+<div class="content">
+<img src="assets/easing/easeInCubic.png" alt="easeInCubic" width="">
+</div>
+<div class="title">Figure 2. easeInCubic</div>
+</div>
+<div class="paragraph">
+<p>Returns the current value smoothed by cubic easing according to the given parameters.</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">time</dt>
+<dd>
+<p>the time at which the parameter must be evaluated</p>
+</dd>
+<dt class="hdlist1">startValue</dt>
+<dd>
+<p>the value that the parameter must have when time is 0</p>
+</dd>
+<dt class="hdlist1">changeInValue</dt>
+<dd>
+<p>the difference that will be applied to <code>startValue</code> when <em>done</em></p>
+</dd>
+<dt class="hdlist1">duration</dt>
+<dd>
+<p>the amount of time the transition will take</p>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p>Both <code>time</code> and <code>duration</code> parameters may use any measurement unit as long as it is consistent for both. This means you can safely use <em>seconds</em> for all time dependent easing parameters since that is what <code>onUpdate()</code> offers.</p>
+</div>
 <hr>
 </div>
 <div class="sect4">
 <h5 id="_easeoutcubic_time_startvalue_changeinvalue_duration"><a class="link" href="#_easeoutcubic_time_startvalue_changeinvalue_duration">easeOutCubic(time, startValue, changeInValue, duration)</a></h5>
+<div id="img-easeOutCubic" class="imageblock" style="float: right">
+<div class="content">
+<img src="assets/easing/easeOutCubic.png" alt="easeOutCubic" width="">
+</div>
+<div class="title">Figure 3. easeOutCubic</div>
+</div>
+<div class="paragraph">
+<p>Returns the current value smoothed by cubic easing according to the given parameters.</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">time</dt>
+<dd>
+<p>the time at which the parameter must be evaluated</p>
+</dd>
+<dt class="hdlist1">startValue</dt>
+<dd>
+<p>the value that the parameter must have when time is 0</p>
+</dd>
+<dt class="hdlist1">changeInValue</dt>
+<dd>
+<p>the difference that will be applied to <code>startValue</code> when <em>done</em></p>
+</dd>
+<dt class="hdlist1">duration</dt>
+<dd>
+<p>the amount of time the transition will take</p>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p>Both <code>time</code> and <code>duration</code> parameters may use any measurement unit as long as it is consistent for both. This means you can safely use <em>seconds</em> for all time dependent easing parameters since that is what <code>onUpdate()</code> offers.</p>
+</div>
 <hr>
 </div>
 <div class="sect4">
 <h5 id="_easeinquintic_time_startvalue_changeinvalue_duration"><a class="link" href="#_easeinquintic_time_startvalue_changeinvalue_duration">easeInQuintic(time, startValue, changeInValue, duration)</a></h5>
+<div id="img-easeInQuintic" class="imageblock" style="float: right">
+<div class="content">
+<img src="assets/easing/easeInQuintic.png" alt="easeInQuintic" width="">
+</div>
+<div class="title">Figure 4. easeInQuintic</div>
+</div>
+<div class="paragraph">
+<p>Returns the current value smoothed by cubic easing according to the given parameters.</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">time</dt>
+<dd>
+<p>the time at which the parameter must be evaluated</p>
+</dd>
+<dt class="hdlist1">startValue</dt>
+<dd>
+<p>the value that the parameter must have when time is 0</p>
+</dd>
+<dt class="hdlist1">changeInValue</dt>
+<dd>
+<p>the difference that will be applied to <code>startValue</code> when <em>done</em></p>
+</dd>
+<dt class="hdlist1">duration</dt>
+<dd>
+<p>the amount of time the transition will take</p>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p>Both <code>time</code> and <code>duration</code> parameters may use any measurement unit as long as it is consistent for both. This means you can safely use <em>seconds</em> for all time dependent easing parameters since that is what <code>onUpdate()</code> offers.</p>
+</div>
 <hr>
 </div>
 <div class="sect4">
 <h5 id="_easeoutquintic_time_startvalue_changeinvalue_duration"><a class="link" href="#_easeoutquintic_time_startvalue_changeinvalue_duration">easeOutQuintic(time, startValue, changeInValue, duration)</a></h5>
+<div id="img-easeOutQuintic" class="imageblock" style="float: right">
+<div class="content">
+<img src="assets/easing/easeOutQuintic.png" alt="easeOutQuintic" width="">
+</div>
+<div class="title">Figure 5. easeOutQuintic</div>
+</div>
+<div class="paragraph">
+<p>Returns the current value smoothed by cubic easing according to the given parameters.</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">time</dt>
+<dd>
+<p>the time at which the parameter must be evaluated</p>
+</dd>
+<dt class="hdlist1">startValue</dt>
+<dd>
+<p>the value that the parameter must have when time is 0</p>
+</dd>
+<dt class="hdlist1">changeInValue</dt>
+<dd>
+<p>the difference that will be applied to <code>startValue</code> when <em>done</em></p>
+</dd>
+<dt class="hdlist1">duration</dt>
+<dd>
+<p>the amount of time the transition will take</p>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p>Both <code>time</code> and <code>duration</code> parameters may use any measurement unit as long as it is consistent for both. This means you can safely use <em>seconds</em> for all time dependent easing parameters since that is what <code>onUpdate()</code> offers.</p>
+</div>
 <hr>
 </div>
 </div>
@@ -1252,7 +1383,7 @@ When scaling an entity, not only its visual representation is being scaled but i
 <div id="footer">
 <div id="footer-text">
 Version 1.0<br>
-Last updated 2015-09-19 12:49:41 EEST
+Last updated 2015-09-20 09:59:32 EEST
 </div>
 </div>
 </body>
