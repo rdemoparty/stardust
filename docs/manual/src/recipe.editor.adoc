@@ -45,6 +45,3 @@ end
 <1> obtaining an `Entity` wrapper used to handle the real in-game object
 <2> using the wrapper to retrieve the position of the in-game object
 
-[[img-sweet-gen]]
-.Sweep generator
-image::sweep-generator.svg[sweep-gen-schematic, 100%, , link="http://blog.scene.ro"]

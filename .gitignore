@@ -44,4 +44,4 @@ src/game/Version.h
 tools/editor/web/js/editor.version.js
 
 data/scripts/__preview_brain.lua
-
+docs/manual/_old_
