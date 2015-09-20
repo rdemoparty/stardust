@@ -1,15 +1,25 @@
-Here is the list of functions currently offered by the lua `Session` table:
+`Session` is the scripting exposed class that allows us to query or change the current game session instance. Game session attributes are persisted for the entire lifetime of the game session, across  levels and respawns. 
+
+Session attributes can be used to track global things like achievements, in-game decisions the player has made and so on. Here is the list of functions currently offered by the lua `Session` table:
 
 '''
 
 ===== Session.setFloat(name, value)
+Sets a float attribute for this game session with name `name` and value `value`. This attribute will be available for the whole lifetime of the game session or until it is being changed by another call to `Session.setFloat()` with the same `name`.
+
 '''
 
 ===== Session.getFloat(name)
+Returns the game session's value for float attribute with name `name`. If no such attribute has been previously set, a default `0` is returned.
+
 '''
 
 ===== Session.setInt(name, value)
+Sets an integer attribute for this game session with name `name` and value `value`. This attribute will be available for the whole lifetime of the game session or until it is being changed by another call to `Session.setInt()` with the same `name`.
+
 '''
 
 ===== Session.getInt(name)
+Returns the game session's value for int attribute with name `name`. If no such attribute has been previously set, a default `0` is returned.
+
 '''
