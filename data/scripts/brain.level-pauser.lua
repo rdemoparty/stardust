@@ -3,7 +3,7 @@
 ---------------------------------------------------------------------
 
 function onSpawn(objectPointer)
-    Scene.pauseLevel()
+    Level.pause()
 end
 
 function onUpdate(objectPointer, elapsedSeconds)
@@ -16,6 +16,6 @@ end
 
 
 function onDeath(objectPointer, reason)
-    Scene.resumeLevel()
+    Level.resume()
 end
 

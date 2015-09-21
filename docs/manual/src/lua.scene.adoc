@@ -30,20 +30,3 @@ Makes sure the provided entity remains inside the visible area and returns `true
 Dumps the list of active entities to stdout. This is used mainly for debugging purposes.
 
 '''
-
-===== Scene.endLevel()
-Triggers the end of the current playing level.
-
-'''
-
-===== Scene.pauseLevel()
-Pauses the flow of the current level. This will have the effect of effectively stopping the advance of the level script _and_ smoothly stop the scrolling of the background starfield. The current active entities will remain however active.
-
-This state will persist until the level is resumed.
-
-'''
-
-===== Scene.resumeLevel()
-Resumes the flow of the current level which was previously paused with a call to <<Scene.pauseLevel()>>. The level script will resume its advance and the background starfield will smoothly resume its scrolling.
-
-'''

@@ -3,5 +3,5 @@
 ---------------------------------------------------------------------
 
 function onSpawn(objectPointer)
-    Scene.endLevel()
+    Level.finish()
 end

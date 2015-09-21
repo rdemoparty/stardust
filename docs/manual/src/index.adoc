@@ -41,6 +41,9 @@ include::lua.entity.adoc[]
 ==== Scene object
 include::lua.scene.adoc[]
 
+==== Level object
+include::lua.level.adoc[]
+
 ==== Camera object
 include::lua.camera.adoc[]
 

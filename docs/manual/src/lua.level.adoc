@@ -1,0 +1,20 @@
+Here is the list of functions currently offered by the lua `Level` table:
+
+'''
+
+===== Level.finish()
+Triggers the end of the current playing level.
+
+'''
+
+===== Level.pause()
+Pauses the flow of the current level. This will have the effect of effectively stopping the advance of the level script _and_ smoothly stop the scrolling of the background starfield. The current active entities will remain however active.
+
+This state will persist until the level is resumed.
+
+'''
+
+===== Level.resume()
+Resumes the flow of the current level which was previously paused with a call to <<Level.pause()>>. The level script will resume its advance and the background starfield will smoothly resume its scrolling.
+
+'''

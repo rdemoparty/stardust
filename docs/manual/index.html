@@ -562,17 +562,21 @@ table.CodeRay td.code>pre{padding:0}
 <li><a href="#_scene_create_type_parent">Scene.create(type, parent)</a></li>
 <li><a href="#_scene_confinetoplayingarea_entity">Scene.confineToPlayingArea(entity)</a></li>
 <li><a href="#_scene_dump">Scene.dump()</a></li>
-<li><a href="#_scene_endlevel">Scene.endLevel()</a></li>
-<li><a href="#_scene_pauselevel">Scene.pauseLevel()</a></li>
-<li><a href="#_scene_resumelevel">Scene.resumeLevel()</a></li>
 </ul>
 </li>
-<li><a href="#_camera_object">3.1.3. Camera object</a>
+<li><a href="#_level_object">3.1.3. Level object</a>
+<ul class="sectlevel4">
+<li><a href="#_level_finish">Level.finish()</a></li>
+<li><a href="#_level_pause">Level.pause()</a></li>
+<li><a href="#_level_resume">Level.resume()</a></li>
+</ul>
+</li>
+<li><a href="#_camera_object">3.1.4. Camera object</a>
 <ul class="sectlevel4">
 <li><a href="#_camera_shake_amount">Camera.shake(amount)</a></li>
 </ul>
 </li>
-<li><a href="#_session_object">3.1.4. Session object</a>
+<li><a href="#_session_object">3.1.5. Session object</a>
 <ul class="sectlevel4">
 <li><a href="#_session_setfloat_name_value">Session.setFloat(name, value)</a></li>
 <li><a href="#_session_getfloat_name">Session.getFloat(name)</a></li>
@@ -580,7 +584,7 @@ table.CodeRay td.code>pre{padding:0}
 <li><a href="#_session_getint_name">Session.getInt(name)</a></li>
 </ul>
 </li>
-<li><a href="#_math_functions">3.1.5. Math functions</a>
+<li><a href="#_math_functions">3.1.6. Math functions</a>
 <ul class="sectlevel4">
 <li><a href="#_easeincubic_time_startvalue_changeinvalue_duration">easeInCubic(time, startValue, changeInValue, duration)</a></li>
 <li><a href="#_easeoutcubic_time_startvalue_changeinvalue_duration">easeOutCubic(time, startValue, changeInValue, duration)</a></li>
@@ -1166,15 +1170,22 @@ When scaling an entity, not only its visual representation is being scaled but i
 </div>
 <hr>
 </div>
+</div>
+<div class="sect3">
+<h4 id="_level_object"><a class="link" href="#_level_object">3.1.3. Level object</a></h4>
+<div class="paragraph">
+<p>Here is the list of functions currently offered by the lua <code>Level</code> table:</p>
+</div>
+<hr>
 <div class="sect4">
-<h5 id="_scene_endlevel"><a class="link" href="#_scene_endlevel">Scene.endLevel()</a></h5>
+<h5 id="_level_finish"><a class="link" href="#_level_finish">Level.finish()</a></h5>
 <div class="paragraph">
 <p>Triggers the end of the current playing level.</p>
 </div>
 <hr>
 </div>
 <div class="sect4">
-<h5 id="_scene_pauselevel"><a class="link" href="#_scene_pauselevel">Scene.pauseLevel()</a></h5>
+<h5 id="_level_pause"><a class="link" href="#_level_pause">Level.pause()</a></h5>
 <div class="paragraph">
 <p>Pauses the flow of the current level. This will have the effect of effectively stopping the advance of the level script <em>and</em> smoothly stop the scrolling of the background starfield. The current active entities will remain however active.</p>
 </div>
@@ -1184,15 +1195,15 @@ When scaling an entity, not only its visual representation is being scaled but i
 <hr>
 </div>
 <div class="sect4">
-<h5 id="_scene_resumelevel"><a class="link" href="#_scene_resumelevel">Scene.resumeLevel()</a></h5>
+<h5 id="_level_resume"><a class="link" href="#_level_resume">Level.resume()</a></h5>
 <div class="paragraph">
-<p>Resumes the flow of the current level which was previously paused with a call to <a href="#_scene_pauselevel">Scene.pauseLevel()</a>. The level script will resume its advance and the background starfield will smoothly resume its scrolling.</p>
+<p>Resumes the flow of the current level which was previously paused with a call to <a href="#_level_pause">Level.pause()</a>. The level script will resume its advance and the background starfield will smoothly resume its scrolling.</p>
 </div>
 <hr>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_camera_object"><a class="link" href="#_camera_object">3.1.3. Camera object</a></h4>
+<h4 id="_camera_object"><a class="link" href="#_camera_object">3.1.4. Camera object</a></h4>
 <div class="paragraph">
 <p>Here is the list of functions currently offered by the lua <code>Camera</code> wrapper:</p>
 </div>
@@ -1219,7 +1230,7 @@ When scaling an entity, not only its visual representation is being scaled but i
 </div>
 </div>
 <div class="sect3">
-<h4 id="_session_object"><a class="link" href="#_session_object">3.1.4. Session object</a></h4>
+<h4 id="_session_object"><a class="link" href="#_session_object">3.1.5. Session object</a></h4>
 <div class="paragraph">
 <p><code>Session</code> is the scripting exposed class that allows us to query or change the current game session instance. Game session attributes are persisted for the entire lifetime of the game session, across  levels and respawns.</p>
 </div>
@@ -1257,7 +1268,7 @@ When scaling an entity, not only its visual representation is being scaled but i
 </div>
 </div>
 <div class="sect3">
-<h4 id="_math_functions"><a class="link" href="#_math_functions">3.1.5. Math functions</a></h4>
+<h4 id="_math_functions"><a class="link" href="#_math_functions">3.1.6. Math functions</a></h4>
 <div class="paragraph">
 <p><em>Backfire</em> also exposes a list of easing functions as described by <a href="http://robertpenner.com/easing/penner_chapter7_tweening.pdf">Robert Penner</a>. Easing equations should be used to smooth out parameter changes in order to make them feel more <em>human</em>.</p>
 </div>
@@ -1437,7 +1448,7 @@ When scaling an entity, not only its visual representation is being scaled but i
 <div id="footer">
 <div id="footer-text">
 Version 1.0<br>
-Last updated 2015-09-20 09:59:32 EEST
+Last updated 2015-09-21 07:53:11 EEST
 </div>
 </div>
 </body>
