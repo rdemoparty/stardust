@@ -66,7 +66,7 @@ namespace Acidrain {
     }
 
     void GameStateMenu::onExit(Stardust* game) {
-        AUDIOSYS.stopSounds({"UI"});
+//        AUDIOSYS.stopSounds({"UI"});
     }
 
     static const float SECONDS_UNTIL_FIRST_REPEAT = 0.3f;
