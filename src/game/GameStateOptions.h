@@ -6,14 +6,12 @@ namespace Acidrain {
 
     using namespace std;
 
-    class Font;
     class Stardust;
+    class Menu;
 
-    class GameStateMenu : public GameState<Stardust> {
-
+    class GameStateOptions : public GameState<Stardust> {
     public:
-
-        static GameStateMenu& instance();
+        static GameStateOptions& instance();
 
         virtual void onEnter(Stardust* game) override;
 
@@ -24,11 +22,10 @@ namespace Acidrain {
         virtual void render(Stardust* game, float alpha) override;
 
     private:
-        shared_ptr<Font> menuFont;
+        GameStateOptions();
+        shared_ptr<Menu> menu;
 
-        shared_ptr<Font> versionFont;
-
-        void handleMenuSelection(Stardust* game, int selectedIndex);
+        void setupMenu() const;
     };
 
 } // namespace Acidrain
