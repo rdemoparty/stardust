@@ -12,17 +12,6 @@ namespace Acidrain {
         reset();
     }
 
-    void Menu::addItem(MenuItem item) {
-        item.pos.x = item.oldPos.x = 1100.0f;
-        items.push_back(item);
-    }
-
-    int Menu::getSelectedIndex() const { return selectedIndex; }
-
-    void Menu::addOnChangeListener(MenuOptionChangeListener* listener) {
-        listeners.push_back(listener);
-    };
-
     void Menu::update(float elapsedSeconds) {
         optionChanged = false;
         if (INPUT.isKeyJustPressed(SDL_SCANCODE_DOWN)) {
@@ -47,46 +36,65 @@ namespace Acidrain {
         }
 
         if (optionChanged) {
-            selectedIndex = (int) (selectedIndex % items.size());
             if (selectedIndex < 0)
-                selectedIndex += items.size();
+                selectedIndex += entries.size();
+            selectedIndex = (int) (selectedIndex % entries.size());
+            AUDIOSYS.playSound(config->SOUND_OPTION_CHANGE.c_str(), AudioGroup::byName("UI"), 80);
+        }
+
+        shared_ptr<MenuEntry> selectedEntry = entries.at(selectedIndex);
+        if (INPUT.isKeyJustPressed(SDL_SCANCODE_RIGHT)) {
+            selectedEntry->selectNextValue();
+            AUDIOSYS.playSound(config->SOUND_OPTION_CHANGE.c_str(), AudioGroup::byName("UI"), 80);
+        } else if (INPUT.isKeyJustPressed(SDL_SCANCODE_LEFT)) {
+            selectedEntry->selectPreviousValue();
             AUDIOSYS.playSound(config->SOUND_OPTION_CHANGE.c_str(), AudioGroup::byName("UI"), 80);
         }
 
         if (INPUT.isKeyJustPressed(SDL_SCANCODE_RETURN)) {
-//                handleMenuSelection(game, selectedIndex);
-        } else {
-            // menu animation
-            menuTime += elapsedSeconds;
-            const float MENU_INTRO_TIME = config->SECONDS_UNTIL_FIRST_REPEAT;
-            if (menuTime <= MENU_INTRO_TIME) {
-                float t = menuTime / MENU_INTRO_TIME;
-                for (auto& item : items) {
-                    item.oldPos.x = item.pos.x;
-                    item.pos.x = (1.0f - easeOutCubic(t)) * 1000.0f + 100;
-                }
-            } else {
-                for (auto& item : items) {
-                    item.oldPos.x = item.pos.x = 100;
-                }
-            }
+            selectedEntry->select();
         }
-    };
+
+        // menu animation
+        menuTime += elapsedSeconds;
+        const float MENU_INTRO_TIME = config->SECONDS_UNTIL_FIRST_REPEAT;
+        if (menuTime <= MENU_INTRO_TIME) {
+            float t = menuTime / MENU_INTRO_TIME;
+            for (auto& entry : entries) {
+                entry->oldPos.x = entry->pos.x;
+                entry->pos.x = (1.0f - easeOutCubic(t)) * 1000.0f + 100;
+            }
+        } else {
+            for (auto& entry : entries)
+                entry->oldPos.x = entry->pos.x = 100;
+        }
+    }
 
     void Menu::render(float alpha) {
         GFXSYS.setTransparencyMode(TransparencyMode::Additive);
         int i = 0;
-        for (auto& item : items) {
-            config->menuFont->print(
-                    glm::mix(item.oldPos.x, item.pos.x, alpha),
-                    80 * i + 100,
-                    item.title.c_str(),
-                    selectedIndex == i ? config->SELECTED_OPTION_COLOR : config->OPTION_COLOR
-            );
+        for (auto& entry : entries) {
+            bool isSelected = selectedIndex == i;
+            renderEntry(alpha, i, entry, isSelected);
             i++;
         }
 
         config->versionFont->print(800, 700, STARDUST_VERSION, vec4(1, 1, 1, 1));
+    }
+
+    void Menu::renderEntry(float alpha, int i, shared_ptr<MenuEntry>& entry, bool isSelected) const {
+        config->menuFont->print(
+                glm::mix(entry->oldPos.x, entry->pos.x, alpha),
+                80 * i + 100,
+                entry->getTitle().c_str(),
+                isSelected ? config->SELECTED_OPTION_COLOR : config->OPTION_COLOR
+        );
+        config->menuFont->print(
+                glm::mix(entry->oldPos.x, entry->pos.x, alpha) + 500,
+                80 * i + 100,
+                entry->getCurrentValue().c_str(),
+                isSelected ? config->SELECTED_OPTION_COLOR : config->OPTION_COLOR
+        );
     }
 
     void Menu::reset() {
@@ -97,8 +105,12 @@ namespace Acidrain {
         repeatCounter = config->SECONDS_UNTIL_FIRST_REPEAT;
         optionChanged = false;
 
-        for (auto& item : items)
-            item.oldPos.x = item.pos.x = 1100.0f;
+        for (auto& entry : entries)
+            entry->pos.x = entry->oldPos.x = 1100.0f;
     }
 
+    void Menu::addEntry(shared_ptr<MenuEntry> entry) {
+        entry->pos.x = entry->oldPos.x = 1100.0f;
+        entries.push_back(entry);
+    }
 } // namespace Acidrain

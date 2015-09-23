@@ -67,6 +67,26 @@ namespace Acidrain {
         SDL_DestroyWindow(displayWindow);
     }
 
+    void Window::resize(int width, int height, WindowType type) {
+        this->width_ = width;
+        this->height_ = height;
+        this->type = type;
+        SDL_DestroyWindow(displayWindow);
+
+        Uint32 windowFlags = SDL_WINDOW_OPENGL;
+        if (type == WindowType::Fullscreen)
+            windowFlags |= SDL_WINDOW_FULLSCREEN;
+
+        displayWindow = SDL_CreateWindow("Stardust",
+                                         SDL_WINDOWPOS_UNDEFINED,
+                                         SDL_WINDOWPOS_UNDEFINED,
+                                         width_,
+                                         height_,
+                                         windowFlags);
+
+        SDL_GL_MakeCurrent(displayWindow, glContext);
+    }
+
     void Window::present() {
         SDL_GL_SwapWindow(displayWindow);
     }
@@ -122,4 +142,5 @@ namespace Acidrain {
             SDL_RaiseWindow(displayWindow);
         #endif
     }
+
 } // namespace Acidrain

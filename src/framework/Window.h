@@ -15,6 +15,8 @@ namespace Acidrain {
 
         virtual ~Window();
 
+        void resize(int width, int height, WindowType type);
+
         void present();
 
         int width();

@@ -5,8 +5,44 @@
 #include <InputProvider.h>
 #include <GameStateMenu.h>
 #include <Menu.h>
+#include <easylogging++.h>
+#include <SDL_video.h>
 
 namespace Acidrain {
+
+    struct MenuEntryResolutionItem {
+        MenuEntryResolutionItem(int w, int h) {
+            this->width = w;
+            this->height = h;
+
+            stringstream ss;
+            ss << width << "x" << height;
+            description = ss.str();
+        }
+
+        int width;
+        int height;
+        string description;
+    };
+
+    class MenuEntryResolution : public MenuEntry {
+    public:
+        MenuEntryResolution();
+
+        virtual string getTitle() override;
+
+        virtual string getCurrentValue() override;
+
+        virtual void select() override;
+
+        virtual void selectNextValue() override;
+
+        virtual void selectPreviousValue() override;
+
+    private:
+        vector<MenuEntryResolutionItem> values;
+        int selectedValue = 0;
+    };
 
     GameStateOptions& GameStateOptions::instance() {
         static GameStateOptions instance;
@@ -22,17 +58,9 @@ namespace Acidrain {
         setupMenu();
     }
 
+
     void GameStateOptions::setupMenu() const {
-        MenuItem first;
-        first.title = "Resolution";
-        first.id = 1;
-
-        MenuItem second;
-        second.title = "Fullscreen";
-        second.id = 2;
-
-        menu->addItem(first);
-        menu->addItem(second);
+        menu->addEntry(make_shared<MenuEntryResolution>());
     }
 
     void GameStateOptions::onEnter(Stardust* game) {
@@ -55,5 +83,46 @@ namespace Acidrain {
         GFXSYS.clearScreen();
         menu->render(alpha);
         GFXSYS.show();
+    }
+
+    // -----------------------------------------------------------------------------------------
+
+    MenuEntryResolution::MenuEntryResolution() {
+        int displayIndex = 0;
+        int numModes = SDL_GetNumDisplayModes(displayIndex);
+        for (int modeIndex = 0; modeIndex < numModes; modeIndex++) {
+            SDL_DisplayMode mode;
+            if (SDL_GetDisplayMode(displayIndex, modeIndex, &mode) == 0) {
+                if (mode.w >= 1024) {
+                    values.push_back(MenuEntryResolutionItem(mode.w, mode.h));
+                }
+            } else {
+                LOG(ERROR) << "Failed to get display mode " << modeIndex << " for display index " << displayIndex;
+            }
+        }
+    }
+
+    string MenuEntryResolution::getTitle() {
+        return "Resolution";
+    }
+
+    string MenuEntryResolution::getCurrentValue() {
+        return values.at(selectedValue).description;
+    }
+
+    void MenuEntryResolution::select() {
+        MenuEntryResolutionItem selectedItem = values.at(selectedValue);
+        GFXSYS.resizeDisplayTo(selectedItem.width, selectedItem.height, false);
+    }
+
+    void MenuEntryResolution::selectNextValue() {
+        selectedValue++;
+        selectedValue %= values.size();
+    }
+
+    void MenuEntryResolution::selectPreviousValue() {
+        selectedValue--;
+        if (selectedValue < 0)
+            selectedValue += values.size();
     }
 } // namespace Acidrain

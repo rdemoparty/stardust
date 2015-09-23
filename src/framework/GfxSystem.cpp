@@ -283,4 +283,33 @@ namespace Acidrain {
     int GfxSystem::getOffsetY() const {
         return offsetY;
     }
+
+    void GfxSystem::resizeDisplayTo(int w, int h, bool fullscreen) {
+        if (window) {
+            window->resize(w, h, fullscreen ? WindowType::Fullscreen : WindowType::Windowed);
+
+            const int windowWidth = window->width();
+            const int windowHeight = window->height();
+
+            const float windowAspectRatio = windowWidth / static_cast<float>(windowHeight);
+            const float wantedAspectRatio = desiredWidth / static_cast<float>(desiredHeight);
+
+            if (wantedAspectRatio < windowAspectRatio) {
+                height = windowHeight;
+                width = (int) (height * wantedAspectRatio);
+            } else {
+                width = windowWidth;
+                height = (int) (width / wantedAspectRatio);
+            }
+
+            offsetX = (windowWidth - width) / 2;
+            offsetY = (windowHeight - height) / 2;
+
+            glClearColor(0, 0, 0, 1);
+            setClearColor(vec3(0));
+            clearScreen();
+
+            setViewport();
+        }
+    }
 } // namespace Acidrain

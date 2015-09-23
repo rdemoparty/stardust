@@ -33,45 +33,46 @@ namespace Acidrain {
         shared_ptr<Font> versionFont;
     };
 
-    struct MenuItem {
-        int id;
+    class MenuEntry {
+    public:
+        virtual string getTitle() = 0;
+
+        virtual string getCurrentValue() = 0;
+
+        virtual void select() = 0;
+
+        virtual void selectNextValue() = 0;
+
+        virtual void selectPreviousValue() = 0;
+
         vec2 pos;
         vec2 oldPos;
-        string title;
-        string value;
     };
 
-    class MenuOptionChangeListener {
-    public:
-        virtual void onChange(const MenuItem& item) = 0;
-    };
 
     class Menu {
     public:
         Menu(shared_ptr<MenuConfig> config);
 
-        void addItem(MenuItem item);
+        void addEntry(shared_ptr<MenuEntry> entry);
 
         void update(float elapsedSeconds);
 
         void render(float alpha);
 
-        int getSelectedIndex() const;
-
-        void addOnChangeListener(MenuOptionChangeListener* listener);
-
         void reset();
 
     private:
         shared_ptr<MenuConfig> config;
-        vector<MenuItem> items;
-        vector<MenuOptionChangeListener*> listeners;
+        vector<shared_ptr<MenuEntry>> entries;
         int selectedIndex;
         float menuTime;
 
         int repeatDirection;
         float repeatCounter;
         bool optionChanged;
+
+        void renderEntry(float alpha, int i, shared_ptr<MenuEntry>& entry, bool isSelected) const;
     };
 
 } // namespace Acidrain

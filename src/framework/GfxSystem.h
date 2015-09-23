@@ -33,6 +33,8 @@ namespace Acidrain {
 
         void init(const int desiredWidth, const int desiredHeight);
 
+        void resizeDisplayTo(int width, int height, bool fullscreen);
+
         shared_ptr<Texture> loadTexture(const char* filename);
 
         shared_ptr<Texture> loadTexture(const string& filename);
