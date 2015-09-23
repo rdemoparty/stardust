@@ -19,9 +19,11 @@ namespace Acidrain {
 
         void present();
 
-        int width();
+        int width() const;
 
-        int height();
+        int height() const;
+
+        WindowType type() const;
 
         void raise();
 
@@ -29,7 +31,7 @@ namespace Acidrain {
 
         int width_;
         int height_;
-        WindowType type;
+        WindowType type_;
 
         SDL_Window* displayWindow;
         SDL_GLContext glContext;

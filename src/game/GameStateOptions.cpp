@@ -40,9 +40,45 @@ namespace Acidrain {
         virtual void selectPreviousValue() override;
 
     private:
+        string title = "Resolution";
         vector<MenuEntryResolutionItem> values;
         int selectedValue = 0;
     };
+
+
+    struct MenuEntryFullscreenItem {
+        MenuEntryFullscreenItem(bool fullscreen) {
+            this->state = fullscreen;
+            description = fullscreen ? "on" : "off";
+        }
+
+        bool state;
+        string description;
+    };
+
+    class MenuEntryFullscreen : public MenuEntry {
+    public:
+        MenuEntryFullscreen();
+
+        virtual string getTitle() override;
+
+        virtual string getCurrentValue() override;
+
+        virtual void select() override;
+
+        virtual void selectNextValue() override;
+
+        virtual void selectPreviousValue() override;
+
+    private:
+        string title = "Fullscreen";
+        vector<MenuEntryFullscreenItem> values;
+        int selectedValue = 0;
+    };
+
+
+
+    // ----------------------------------------------------------------------
 
     GameStateOptions& GameStateOptions::instance() {
         static GameStateOptions instance;
@@ -61,6 +97,7 @@ namespace Acidrain {
 
     void GameStateOptions::setupMenu() const {
         menu->addEntry(make_shared<MenuEntryResolution>());
+        menu->addEntry(make_shared<MenuEntryFullscreen>());
     }
 
     void GameStateOptions::onEnter(Stardust* game) {
@@ -100,10 +137,19 @@ namespace Acidrain {
                 LOG(ERROR) << "Failed to get display mode " << modeIndex << " for display index " << displayIndex;
             }
         }
+
+        // set current value
+        for (size_t i = 0; i < values.size(); i++) {
+            MenuEntryResolutionItem entry = values.at(i);
+            if (entry.width == GFXSYS.windowWidth() && entry.height == GFXSYS.windowHeight()) {
+                selectedValue = i;
+                break;
+            }
+        }
     }
 
     string MenuEntryResolution::getTitle() {
-        return "Resolution";
+        return title;
     }
 
     string MenuEntryResolution::getCurrentValue() {
@@ -124,5 +170,37 @@ namespace Acidrain {
         selectedValue--;
         if (selectedValue < 0)
             selectedValue += values.size();
+    }
+
+    // ------------------------------------------------------------------------
+
+    MenuEntryFullscreen::MenuEntryFullscreen() {
+        values.push_back(MenuEntryFullscreenItem(true));
+        values.push_back(MenuEntryFullscreenItem(false));
+
+        selectedValue = GFXSYS.isFullscreen() ? 0 : 1;
+    }
+
+    string MenuEntryFullscreen::getTitle() {
+        return title;
+    }
+
+    string MenuEntryFullscreen::getCurrentValue() {
+        return values.at(selectedValue).description;
+    }
+
+    void MenuEntryFullscreen::selectNextValue() {
+        selectedValue++;
+        selectedValue %= values.size();
+    }
+
+    void MenuEntryFullscreen::selectPreviousValue() {
+        selectedValue--;
+        if (selectedValue < 0)
+            selectedValue += values.size();
+    }
+
+    void MenuEntryFullscreen::select() {
+        GFXSYS.resizeDisplayTo(GFXSYS.windowWidth(), GFXSYS.windowHeight(), values.at(selectedValue).state);
     }
 } // namespace Acidrain

@@ -74,6 +74,8 @@ namespace Acidrain {
         int getOffsetX() const;
 
         int getOffsetY() const;
+
+        bool isFullscreen() const;
     private:
         shared_ptr<Window> window;
         int width, height;

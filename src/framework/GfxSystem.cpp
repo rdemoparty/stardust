@@ -312,4 +312,8 @@ namespace Acidrain {
             setViewport();
         }
     }
+
+    bool GfxSystem::isFullscreen() const {
+        return window && (window->type() == WindowType::Fullscreen);
+    }
 } // namespace Acidrain

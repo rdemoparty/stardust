@@ -13,7 +13,7 @@
 namespace Acidrain {
 
     Window::Window(int w, int h, bool vsyncEnabled, WindowType t)
-            : width_(w), height_(h), type(t) {
+            : width_(w), height_(h), type_(t) {
 
         LOG(INFO) << "Attempting to create window of " << w << "x" << h << ". Vsync enabled: " << vsyncEnabled;
 
@@ -38,7 +38,7 @@ namespace Acidrain {
         // SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 2);
 
         Uint32 windowFlags = SDL_WINDOW_OPENGL;
-        if (type == WindowType::Fullscreen)
+        if (type_ == WindowType::Fullscreen)
             windowFlags |= SDL_WINDOW_FULLSCREEN;
 
         displayWindow = SDL_CreateWindow("Stardust",
@@ -70,7 +70,7 @@ namespace Acidrain {
     void Window::resize(int width, int height, WindowType type) {
         this->width_ = width;
         this->height_ = height;
-        this->type = type;
+        this->type_ = type;
         SDL_DestroyWindow(displayWindow);
 
         Uint32 windowFlags = SDL_WINDOW_OPENGL;
@@ -91,11 +91,11 @@ namespace Acidrain {
         SDL_GL_SwapWindow(displayWindow);
     }
 
-    int Window::width() {
+    int Window::width() const {
         return width_;
     }
 
-    int Window::height() {
+    int Window::height() const {
         return height_;
     }
 
@@ -143,4 +143,7 @@ namespace Acidrain {
         #endif
     }
 
+    WindowType Window::type() const {
+        return type_;
+    }
 } // namespace Acidrain
