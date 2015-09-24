@@ -251,4 +251,9 @@ namespace Acidrain {
         std::cout << std::endl;
         exit(1);
     }
+
+    bool CommandLineParser::isArgumentSpecified(string argument) {
+        CommandLineOption* option = optionByLongName(argument.c_str());
+        return option != false && option->isSpecified;
+    }
 }

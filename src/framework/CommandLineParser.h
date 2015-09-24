@@ -12,6 +12,8 @@
 #define DECLARE_bool(argument) extern bool FLAG_##argument;
 #define DECLARE_string(argument) extern string FLAG_##argument;
 
+#define IS_SPECIFIED(argument) Acidrain::CommandLineParser::instance().isArgumentSpecified(#argument)
+
 namespace Acidrain {
 
     using namespace std;
@@ -72,6 +74,8 @@ namespace Acidrain {
         int paramAsInt(string name);
 
         bool paramAsBool(string name);
+
+        bool isArgumentSpecified(string argument);
 
     private:
         vector<CommandLineOption> options;
