@@ -76,6 +76,10 @@ namespace Acidrain {
         int getOffsetY() const;
 
         bool isFullscreen() const;
+
+        bool isVSyncOn() const;
+
+        void setVSync(bool state);
     private:
         shared_ptr<Window> window;
         int width, height;

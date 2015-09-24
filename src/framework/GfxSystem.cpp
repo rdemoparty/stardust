@@ -316,4 +316,13 @@ namespace Acidrain {
     bool GfxSystem::isFullscreen() const {
         return window && (window->type() == WindowType::Fullscreen);
     }
+
+    bool GfxSystem::isVSyncOn() const {
+        return window && window->vSync();
+    }
+
+    void GfxSystem::setVSync(bool state) {
+        if (window)
+            window->vSync(state);
+    }
 } // namespace Acidrain

@@ -77,6 +77,36 @@ namespace Acidrain {
     };
 
 
+    struct MenuEntryVSyncItem {
+        MenuEntryVSyncItem(bool vsync) {
+            this->state = vsync;
+            description = vsync? "on" : "off";
+        }
+
+        bool state;
+        string description;
+    };
+
+    class MenuEntryVSync : public MenuEntry {
+    public:
+        MenuEntryVSync();
+
+        virtual string getTitle() override;
+
+        virtual string getCurrentValue() override;
+
+        virtual void select() override;
+
+        virtual void selectNextValue() override;
+
+        virtual void selectPreviousValue() override;
+
+    private:
+        string title = "VSync";
+        vector<MenuEntryVSyncItem> values;
+        int selectedValue = 0;
+    };
+
 
     // ----------------------------------------------------------------------
 
@@ -98,6 +128,7 @@ namespace Acidrain {
     void GameStateOptions::setupMenu() const {
         menu->addEntry(make_shared<MenuEntryResolution>());
         menu->addEntry(make_shared<MenuEntryFullscreen>());
+        menu->addEntry(make_shared<MenuEntryVSync>());
     }
 
     void GameStateOptions::onEnter(Stardust* game) {
@@ -158,7 +189,7 @@ namespace Acidrain {
 
     void MenuEntryResolution::select() {
         MenuEntryResolutionItem selectedItem = values.at(selectedValue);
-        GFXSYS.resizeDisplayTo(selectedItem.width, selectedItem.height, false);
+        GFXSYS.resizeDisplayTo(selectedItem.width, selectedItem.height, GFXSYS.isFullscreen());
     }
 
     void MenuEntryResolution::selectNextValue() {
@@ -202,5 +233,37 @@ namespace Acidrain {
 
     void MenuEntryFullscreen::select() {
         GFXSYS.resizeDisplayTo(GFXSYS.windowWidth(), GFXSYS.windowHeight(), values.at(selectedValue).state);
+    }
+
+    // ------------------------------------------------------------------------
+
+    MenuEntryVSync::MenuEntryVSync() {
+        values.push_back(MenuEntryVSyncItem(true));
+        values.push_back(MenuEntryVSyncItem(false));
+
+        selectedValue = GFXSYS.isVSyncOn() ? 0 : 1;
+    }
+
+    string MenuEntryVSync::getTitle() {
+        return title;
+    }
+
+    string MenuEntryVSync::getCurrentValue() {
+        return values.at(selectedValue).description;
+    }
+
+    void MenuEntryVSync::selectNextValue() {
+        selectedValue++;
+        selectedValue %= values.size();
+    }
+
+    void MenuEntryVSync::selectPreviousValue() {
+        selectedValue--;
+        if (selectedValue < 0)
+            selectedValue += values.size();
+    }
+
+    void MenuEntryVSync::select() {
+        GFXSYS.setVSync(values.at(selectedValue).state);
     }
 } // namespace Acidrain

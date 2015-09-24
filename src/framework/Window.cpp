@@ -57,7 +57,7 @@ namespace Acidrain {
         }
 #endif
 
-        SDL_GL_SetSwapInterval(vsyncEnabled ? 1 : 0);
+        vSync(vsyncEnabled);
     }
 
     Window::~Window() {
@@ -145,5 +145,14 @@ namespace Acidrain {
 
     WindowType Window::type() const {
         return type_;
+    }
+
+    bool Window::vSync() const {
+        return vSync_;
+    }
+
+    void Window::vSync(bool state) {
+        vSync_ = state;
+        SDL_GL_SetSwapInterval(vSync_ ? 1 : 0);
     }
 } // namespace Acidrain

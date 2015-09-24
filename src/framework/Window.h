@@ -25,6 +25,10 @@ namespace Acidrain {
 
         WindowType type() const;
 
+        bool vSync() const;
+
+        void vSync(bool state);
+
         void raise();
 
     private:
@@ -32,6 +36,7 @@ namespace Acidrain {
         int width_;
         int height_;
         WindowType type_;
+        bool vSync_;
 
         SDL_Window* displayWindow;
         SDL_GLContext glContext;
