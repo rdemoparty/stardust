@@ -31,7 +31,7 @@ namespace Acidrain {
 
         ~GfxSystem();
 
-        void init(const int desiredWidth, const int desiredHeight);
+        void init(const int windowWidth, const int windowHeight, bool fullscreen, bool vsync, const int desiredWidth, const int desiredHeight);
 
         void resizeDisplayTo(int width, int height, bool fullscreen);
 

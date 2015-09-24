@@ -9,8 +9,6 @@
 #include <FileSystem.h>
 #include <easylogging++.h>
 #include <CommandLineParser.h>
-// TODO Adrian: not cool. this makes framework package depend on the game package. fix this
-#include <UserPreferences.h>
 #include <SDL_video.h>
 
 namespace Acidrain {
@@ -20,7 +18,7 @@ namespace Acidrain {
         return instance;
     }
 
-    void GfxSystem::init(const int desiredWidth, const int desiredHeight) {
+    void GfxSystem::init(const int wWidth, const int wHeight, bool fullscreen, bool vsync, const int desiredWidth, const int desiredHeight) {
         LOG(INFO) << "Initializing graphics system";
 
         SDL_version compiled, linked;
@@ -33,16 +31,16 @@ namespace Acidrain {
         (int) linked.patch;
 
         window = make_shared<Window>(
-                USERPREFS.width,
-                USERPREFS.height,
-                USERPREFS.vsync,
-                USERPREFS.fullscreen ?
+                wWidth,
+                wHeight,
+                vsync,
+                fullscreen ?
                 WindowType::Fullscreen :
                 WindowType::Windowed
         );
 
-        const int windowWidth = window->width();
-        const int windowHeight = window->height();
+        const int windowWidth = wWidth;
+        const int windowHeight = wHeight;
 
         const float windowAspectRatio = windowWidth / static_cast<float>(windowHeight);
         const float wantedAspectRatio = desiredWidth / static_cast<float>(desiredHeight);

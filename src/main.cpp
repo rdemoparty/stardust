@@ -36,7 +36,12 @@ int main(int argc, char** argv) {
         USERPREFS.init();
         FILESYS.init(FLAG_data_dir);
         AUDIOSYS.init();
-        GFXSYS.init(GAME_LOGICAL_RESOLUTION_X, GAME_LOGICAL_RESOLUTION_Y);
+        GFXSYS.init(USERPREFS.width,
+                    USERPREFS.height,
+                    USERPREFS.fullscreen,
+                    USERPREFS.vsync,
+                    GAME_LOGICAL_RESOLUTION_X,
+                    GAME_LOGICAL_RESOLUTION_Y);
 
         Timer timer;
         Stardust game;
@@ -50,9 +55,7 @@ int main(int argc, char** argv) {
         double dt = 1.0 / 20.0;
         double accumulator = 0;
 
-        LOG(INFO) << "Starting up application at logical resolution " <<
-                GAME_LOGICAL_RESOLUTION_X << "x" << GAME_LOGICAL_RESOLUTION_Y
-                << " with physics time step of " << dt << " seconds";
+        LOG(INFO) << "Starting up application at logical resolution " << GAME_LOGICAL_RESOLUTION_X << "x" << GAME_LOGICAL_RESOLUTION_Y << " with physics time step of " << dt << " seconds";
 
         while (!game.shouldQuit()) {
             float frameTime = timer.lap();
