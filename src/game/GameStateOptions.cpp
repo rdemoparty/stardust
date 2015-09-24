@@ -7,6 +7,7 @@
 #include <Menu.h>
 #include <easylogging++.h>
 #include <SDL_video.h>
+#include <UserPreferences.h>
 
 namespace Acidrain {
 
@@ -190,6 +191,10 @@ namespace Acidrain {
     void MenuEntryResolution::select() {
         MenuEntryResolutionItem selectedItem = values.at(selectedValue);
         GFXSYS.resizeDisplayTo(selectedItem.width, selectedItem.height, GFXSYS.isFullscreen());
+        USERPREFS.width = selectedItem.width;
+        USERPREFS.height = selectedItem.height;
+        USERPREFS.save();
+
     }
 
     void MenuEntryResolution::selectNextValue() {
@@ -232,7 +237,11 @@ namespace Acidrain {
     }
 
     void MenuEntryFullscreen::select() {
-        GFXSYS.resizeDisplayTo(GFXSYS.windowWidth(), GFXSYS.windowHeight(), values.at(selectedValue).state);
+        bool fullscreen = values.at(selectedValue).state;
+        GFXSYS.resizeDisplayTo(GFXSYS.windowWidth(), GFXSYS.windowHeight(), fullscreen);
+        USERPREFS.fullscreen = fullscreen;
+        USERPREFS.save();
+
     }
 
     // ------------------------------------------------------------------------
@@ -264,6 +273,9 @@ namespace Acidrain {
     }
 
     void MenuEntryVSync::select() {
-        GFXSYS.setVSync(values.at(selectedValue).state);
+        bool state = values.at(selectedValue).state;
+        GFXSYS.setVSync(state);
+        USERPREFS.vSync = state;
+        USERPREFS.save();
     }
 } // namespace Acidrain
