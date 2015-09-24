@@ -9,11 +9,9 @@
 #include <FileSystem.h>
 #include <easylogging++.h>
 #include <CommandLineParser.h>
-
-DEFINE_int(width, w, "The physical window width", -1)
-DEFINE_int(height, h, "The physical window height", -1)
-DEFINE_bool(fullscreen, f, "Whether the window is fullscreen or not", true)
-DEFINE_bool(vsync, v, "Whether vsync is enabled or not", false)
+// TODO Adrian: not cool. this makes framework package depend on the game package. fix this
+#include <UserPreferences.h>
+#include <SDL_video.h>
 
 namespace Acidrain {
 
@@ -29,18 +27,18 @@ namespace Acidrain {
         SDL_VERSION(&compiled);
         SDL_GetVersion(&linked);
 
-        LOG(INFO) << "Compiled against SDL version " << (int)compiled.major << "." << (int)compiled.minor << "." << (int)compiled.patch;
-        LOG(INFO) << "Linking against SDL version " << (int)linked.major << "." << (int)linked.minor << "." << (int)linked.patch;
-
-        SDL_DisplayMode displayMode = establishDisplayMode();
+        LOG(INFO) << "Compiled against SDL version " << (int) compiled.major << "." << (int) compiled.minor << "." <<
+        (int) compiled.patch;
+        LOG(INFO) << "Linking against SDL version " << (int) linked.major << "." << (int) linked.minor << "." <<
+        (int) linked.patch;
 
         window = make_shared<Window>(
-                displayMode.w,
-                displayMode.h,
-                FLAG_vsync,
-                FLAG_fullscreen ?
-                        WindowType::Fullscreen :
-                        WindowType::Windowed
+                USERPREFS.width,
+                USERPREFS.height,
+                USERPREFS.vsync,
+                USERPREFS.fullscreen ?
+                WindowType::Fullscreen :
+                WindowType::Windowed
         );
 
         const int windowWidth = window->width();
@@ -89,23 +87,6 @@ namespace Acidrain {
 //        glTranslatef(0.375, 0.375, 0);
     }
 
-    SDL_DisplayMode GfxSystem::establishDisplayMode() {
-        SDL_DisplayMode displayMode;
-        displayMode.w = FLAG_width;
-        displayMode.h = FLAG_height;
-
-        if (displayMode.w == -1 || displayMode.h == -1) {
-            LOG(INFO) << "Window size not specified. Proceeding with autodetection";
-
-            if (SDL_GetCurrentDisplayMode(0, &displayMode) != 0)
-                LOG(FATAL) << "SDL_GetCurrentDisplayMode failed: " << SDL_GetError();
-
-            LOG(INFO) << "Got current display mode of " << displayMode.w << "x" << displayMode.h;
-        }
-
-        return displayMode;
-    }
-
     shared_ptr<Texture> GfxSystem::loadTexture(const string& filename) {
         return loadTexture(filename.c_str());
     }
@@ -113,7 +94,8 @@ namespace Acidrain {
     shared_ptr<Texture> GfxSystem::loadTexture(const char* filename) {
         string content = FILESYS.getFileContent(filename);
         int w, h, comp;
-        unsigned char* image = stbi_load_from_memory((stbi_uc const*) content.c_str(), (int) content.size(), &w, &h, &comp, STBI_rgb_alpha);
+        unsigned char* image = stbi_load_from_memory((stbi_uc const*) content.c_str(), (int) content.size(), &w, &h,
+                                                     &comp, STBI_rgb_alpha);
 
         // pre-multiply RGB with alpha
         for (int y = 0; y < h; y++)
@@ -165,7 +147,8 @@ namespace Acidrain {
         {
             glColor4f(color.r, color.g, color.b, color.a);
             for (int i = 0; i <= SEGMENTS; i++)
-                glVertex2d(sin(i * 2 * M_PI / SEGMENTS) * radius + center.x, cos(i * 2 * M_PI / SEGMENTS) * radius + center.y);
+                glVertex2d(sin(i * 2 * M_PI / SEGMENTS) * radius + center.x,
+                           cos(i * 2 * M_PI / SEGMENTS) * radius + center.y);
         }
         glEnd();
     }

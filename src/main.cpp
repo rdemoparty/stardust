@@ -9,6 +9,7 @@
 #include <GameStateEditor.h>
 #include <GameStateIntro.h>
 #include <Version.h>
+#include <UserPreferences.h>
 
 _INITIALIZE_EASYLOGGINGPP
 
@@ -32,6 +33,7 @@ int main(int argc, char** argv) {
         LOG(INFO) << "STARDUST " << STARDUST_VERSION << " (" << STARDUST_TIMESTAMP << ")";
 
         EVENTSYS.init();
+        USERPREFS.init();
         FILESYS.init(FLAG_data_dir);
         AUDIOSYS.init();
         GFXSYS.init(GAME_LOGICAL_RESOLUTION_X, GAME_LOGICAL_RESOLUTION_Y);

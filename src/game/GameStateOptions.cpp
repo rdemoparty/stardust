@@ -275,7 +275,7 @@ namespace Acidrain {
     void MenuEntryVSync::select() {
         bool state = values.at(selectedValue).state;
         GFXSYS.setVSync(state);
-        USERPREFS.vSync = state;
+        USERPREFS.vsync = state;
         USERPREFS.save();
     }
 } // namespace Acidrain

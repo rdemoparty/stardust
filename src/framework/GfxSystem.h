@@ -87,8 +87,6 @@ namespace Acidrain {
         int desiredWidth, desiredHeight;
 
         vec3 clearScreenColor = vec3(0);
-
-        SDL_DisplayMode establishDisplayMode();
     };
 } // namespace Acidrain
 

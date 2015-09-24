@@ -11,14 +11,15 @@ namespace Acidrain {
         int width;
         int height;
         bool fullscreen;
-        bool vSync;
+        bool vsync;
 
+        void init();
         void save();
     private:
         UserPreferences();
 
         void load();
-
+        void setDefaults();
     };
 
 } // end of namespace Acidrain
