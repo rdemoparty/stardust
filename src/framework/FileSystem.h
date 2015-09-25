@@ -20,9 +20,7 @@ namespace Acidrain {
 
     class FileSystem {
     public:
-
         static FileSystem& getInstance();
-
         ~FileSystem();
 
         void init(string rootDir);
@@ -31,9 +29,15 @@ namespace Acidrain {
 
         string absolutePath(string relativePath);
 
+        bool absolutePathExists(string path);
+
+        void makeDir(string path);
+
         static string getExePath();
 
         static string getExeDir(string fullPath);
+
+        static string getHomeDir();
 
         bool fileExists(const string& pathRelativeToRoot);
 
@@ -44,6 +48,8 @@ namespace Acidrain {
         vector<FileInfo> filesInDirectory(string directoryURI);
 
         vector<FileInfo> filesInDirectoryRecursive(string directoryURI, vector<FileInfo> filesSoFar = {});
+
+        static char PATH_SEPARATOR;
 
     private:
         string rootDir = "./";

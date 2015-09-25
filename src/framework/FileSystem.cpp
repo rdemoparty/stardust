@@ -5,9 +5,9 @@
 #include <sys/stat.h>
 
 #ifdef _WIN32
-	#include <windows.h> // getmodulefilename
-    #include <stdio.h>
-    #include <psapi.h>
+#include <windows.h> // getmodulefilename
+#include <stdio.h>
+#include <psapi.h>
 #else
 
 #include <libgen.h> // dirname
@@ -19,17 +19,25 @@
 #endif
 
 #ifdef _WIN32
-    #include <tchar.h>
+#include <tchar.h>
 #else
+
 #include <sys/types.h>
 #include <unistd.h>
 #include <dirent.h>
+
 #endif
 
 
 namespace Acidrain {
 
     DEFINE_string(data_dir, d, "Data dir relative to cwd", "../data")
+
+#ifdef _WIN32
+    char FileSystem::PATH_SEPARATOR = '\\';
+#else
+    char FileSystem::PATH_SEPARATOR = '/';
+#endif
 
     FileSystem& FileSystem::getInstance() {
         static FileSystem instance;
@@ -53,16 +61,16 @@ namespace Acidrain {
 
 #ifdef __APPLE__
 
-	#include <mach-o/dyld.h>
-	string FileSystem::getExePath() {
-		char path[1024];
-		uint32_t size = sizeof(path);
-		if (_NSGetExecutablePath(path, &size) == 0)
-			return string(path, size);
-		else
-			// throw exception("_NSGetExecutablePath buffer too small.");
+#include <mach-o/dyld.h>
+    string FileSystem::getExePath() {
+        char path[1024];
+        uint32_t size = sizeof(path);
+        if (_NSGetExecutablePath(path, &size) == 0)
+            return string(path, size);
+        else
+            // throw exception("_NSGetExecutablePath buffer too small.");
             return string("invalid-exe-path");
-	}
+    }
 
     string FileSystem::getExeDir(string fullPath) {
         char* path = strdup(fullPath.c_str());
@@ -75,21 +83,21 @@ namespace Acidrain {
     }
 
 #elif defined _WIN32 || defined _WIN64
-	string FileSystem::getExePath() {
+    string FileSystem::getExePath() {
         char strFileName[1024];
         GetModuleFileName(NULL, strFileName, 1024);
 
         string s = strFileName;
         return strFileName;
-	}
+    }
 
-	string FileSystem::getExeDir(string fullPath) {
+    string FileSystem::getExeDir(string fullPath) {
         size_t n = fullPath.rfind('\\');
         if (n == fullPath.npos) return "";
 
         fullPath.erase(n, fullPath.length() - n + 1);
         return fullPath;
-	}
+    }
 #elif defined __linux__
 
     string FileSystem::getExePath() {
@@ -152,30 +160,31 @@ namespace Acidrain {
 
 #if defined _WIN32 || defined _WIN64
 
-        vector<FileInfo> FileSystem::filesInDirectory(string directoryURI) {
-            vector<FileInfo> result;
+    vector<FileInfo> FileSystem::filesInDirectory(string directoryURI) {
+        vector<FileInfo> result;
 
-            HANDLE dir;
-            WIN32_FIND_DATA fileData;
-            string fileName;
-            if ((dir = FindFirstFile(_T((absolutePath(directoryURI) +  "/*").c_str()), &fileData)) == INVALID_HANDLE_VALUE) {
-                return result;
-            }
-
-            while (FindNextFile(dir, &fileData)) {
-                fileName = fileData.cFileName;
-                if (fileName !=  "." && fileName != "..") {
-                    FileInfo info;
-                    info.filename = fileName;
-                    info.uri = (directoryURI.empty() ? "" : directoryURI + "/") + info.filename;
-                    info.isDirectory = fileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY;
-                    result.push_back(info);
-                }
-            }
-
+        HANDLE dir;
+        WIN32_FIND_DATA fileData;
+        string fileName;
+        if ((dir = FindFirstFile(_T((absolutePath(directoryURI) +  "/*").c_str()), &fileData)) == INVALID_HANDLE_VALUE) {
             return result;
         }
-    #else
+
+        while (FindNextFile(dir, &fileData)) {
+            fileName = fileData.cFileName;
+            if (fileName !=  "." && fileName != "..") {
+                FileInfo info;
+                info.filename = fileName;
+                info.uri = (directoryURI.empty() ? "" : directoryURI + "/") + info.filename;
+                info.isDirectory = fileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY;
+                result.push_back(info);
+            }
+        }
+
+        return result;
+    }
+#else
+
     vector<FileInfo> FileSystem::filesInDirectory(string directoryURI) {
         vector<FileInfo> result;
 
@@ -194,6 +203,7 @@ namespace Acidrain {
 
         return result;
     }
+
 #endif
 
     vector<FileInfo> FileSystem::filesInDirectoryRecursive(string directoryURI, vector<FileInfo> filesSoFar) {
@@ -220,9 +230,31 @@ namespace Acidrain {
     }
 
     bool FileSystem::fileExists(const string& pathRelativeToRoot) {
-        string absoluteFilename = absolutePath(pathRelativeToRoot);
+        return absolutePathExists(absolutePath(pathRelativeToRoot));
+    }
 
+    string FileSystem::getHomeDir() {
+        string homeDir;
+#if defined _WIN32 || defined _WIN64
+        homeDir = getenv("HOMEDRIVE");
+        homeDir = homeDir + getenv("HOMEPATH");
+#else
+        homeDir = getenv("HOME");
+#endif
+        return homeDir;
+    }
+
+    bool FileSystem::absolutePathExists(string path) {
         struct stat buffer;
-        return (stat (absoluteFilename.c_str(), &buffer) == 0);
+        return (stat(path.c_str(), &buffer) == 0);
+    }
+
+    void FileSystem::makeDir(string path) {
+#if defined _WIN32 || defined _WIN64
+        #include <direct.h>
+        _mkdir(path.c_str());
+#else
+        mkdir(path.c_str(), 0777);
+#endif
     }
 } // namespace Acidrain

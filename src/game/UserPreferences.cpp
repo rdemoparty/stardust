@@ -1,10 +1,11 @@
+#include <easylogging++.h>
 #include <UserPreferences.h>
 #include <json11.hpp>
 #include <fstream>
-#include <easylogging++.h>
 #include <SDL.h>
 #include <SDL_video.h>
 #include <CommandLineParser.h>
+#include <FileSystem.h>
 
 DEFINE_int(width, w, "The physical window width", -1)
 DEFINE_int(height, h, "The physical window height", -1)
@@ -15,7 +16,8 @@ namespace Acidrain {
     using namespace std;
     using namespace json11;
 
-    const char* PATH_FROM_USER_HOME = "config.ini";
+    const char* PATH_FROM_USER_HOME = "config.json";
+    const char* PREFERENCES_FILE_FOLDER = ".backfire";
 
     UserPreferences& UserPreferences::getInstance() {
         static UserPreferences instance;
@@ -23,11 +25,14 @@ namespace Acidrain {
     }
 
     UserPreferences::UserPreferences() {
-        // TODO: create user preferences file with defaults if does not exist
+        if (!FILESYS.absolutePathExists(getFullPathToPreferencesFolder())) {
+            LOG(INFO) << "Creating preferences folder";
+            FILESYS.makeDir(getFullPathToPreferencesFolder());
+        }
     }
 
     void UserPreferences::load() {
-        std::ifstream file(PATH_FROM_USER_HOME);
+        std::ifstream file(getFullPathToPreferencesFile());
         if (file.good()) {
             string content((std::istreambuf_iterator<char>(file)),
                            std::istreambuf_iterator<char>());
@@ -71,7 +76,7 @@ namespace Acidrain {
     }
 
     void UserPreferences::save() {
-        LOG(INFO) << "Saving user preferences to " << PATH_FROM_USER_HOME;
+        LOG(INFO) << "Saving user preferences to " << getFullPathToPreferencesFile();
         Json preferences = Json::object({
                                                 {"width",      width},
                                                 {"height",     height},
@@ -80,13 +85,17 @@ namespace Acidrain {
                                         });
 
         ofstream file;
-        file.open(PATH_FROM_USER_HOME);
-        file << preferences.dump();
-        file.close();
+        file.open(getFullPathToPreferencesFile());
+        if (file.is_open()) {
+            file << preferences.dump();
+            file.close();
+        } else {
+            LOG(ERROR) << "Failed to open file for writing";
+        }
     }
 
     void UserPreferences::init() {
-        LOG(INFO) << "Initializing user preferences from file " << PATH_FROM_USER_HOME;
+        LOG(INFO) << "Initializing user preferences from file " << getFullPathToPreferencesFile();
         load();
     }
 
@@ -102,5 +111,13 @@ namespace Acidrain {
         height = displayMode.h;
         fullscreen = true;
         vsync = true;
+    }
+
+    string UserPreferences::getFullPathToPreferencesFile() {
+        return getFullPathToPreferencesFolder() + FILESYS.PATH_SEPARATOR + PATH_FROM_USER_HOME;
+    }
+
+    string UserPreferences::getFullPathToPreferencesFolder() {
+        return FILESYS.getHomeDir() + FILESYS.PATH_SEPARATOR + PREFERENCES_FILE_FOLDER;
     }
 } // end of namespace Acidrain

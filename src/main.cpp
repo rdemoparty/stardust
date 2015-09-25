@@ -27,6 +27,7 @@ int main(int argc, char** argv) {
         ParseCommandLineFlags(argc, argv);
         configureLogging();
 
+
         const int GAME_LOGICAL_RESOLUTION_X = 1024;
         const int GAME_LOGICAL_RESOLUTION_Y = 768;
 
