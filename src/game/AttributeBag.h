@@ -27,7 +27,7 @@ namespace Acidrain {
         // text they point to. The effect in this case is having multiple entries for the same
         // parameter name. Check issue #6 for more details.
         struct StringComparator {
-            bool operator()(char const* a, char const* b) {
+            bool operator()(char const* a, char const* b) const {
                 return std::strcmp(a, b) < 0;
             }
         };

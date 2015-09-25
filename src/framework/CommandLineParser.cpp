@@ -254,6 +254,6 @@ namespace Acidrain {
 
     bool CommandLineParser::isArgumentSpecified(string argument) {
         CommandLineOption* option = optionByLongName(argument.c_str());
-        return option != false && option->isSpecified;
+        return option != nullptr && option->isSpecified;
     }
 }
