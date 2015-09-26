@@ -7,18 +7,23 @@
 
 namespace Acidrain {
 
+    using namespace std;
+    using namespace glm;
+
     class Font {
     public:
-
-        Font(std::string fontFile, float fontSize = 32.0f);
+        Font(string fontFile, float fontSize = 32.0f);
 
         ~Font();
 
-        void print(float x, float y, const char* text, const glm::vec4& color);
+        void print(float x, float y, const char* text, const vec4& color = vec4(1, 1, 1, 1));
+
+        void print(float x, float y, string text, const vec4& color = vec4(1, 1, 1, 1));
 
     private:
         GLuint atlasId;
         float fontSize;
-        stbtt_bakedchar cdata[96];
+        stbtt_bakedchar characterData[96];
+        float HEIGHT_MAGIC_OFFSET;
     };
 } // namespace Acidrain

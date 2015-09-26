@@ -59,11 +59,11 @@ namespace Acidrain {
         GFXSYS.setTransparencyMode(TransparencyMode::Transparent);
         GFXSYS.drawFilledRectangle(vec2(-1), vec2(1024, 50), vec4(0, 0, 0, 0.7f));
 
-        std::stringstream s;
+        stringstream s;
         s << "FPS: " << fpsCounter->getFps() << "  . Objects in scene: " << level->objectsCount();
 
         GFXSYS.setTransparencyMode(TransparencyMode::Additive);
-        statsFont->print(10, 10, s.str().c_str(), vec4(1, 1, 1, 0.9f));
+        statsFont->print(10, 10, s.str(), vec4(1, 1, 1, 0.9f));
     }
 
     bool Stardust::shouldQuit() {

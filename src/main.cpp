@@ -10,6 +10,7 @@
 #include <GameStateIntro.h>
 #include <Version.h>
 #include <UserPreferences.h>
+#include <InputProvider.h>
 
 _INITIALIZE_EASYLOGGINGPP
 
@@ -43,6 +44,7 @@ int main(int argc, char** argv) {
                     USERPREFS.vsync,
                     GAME_LOGICAL_RESOLUTION_X,
                     GAME_LOGICAL_RESOLUTION_Y);
+        INPUT;
 
         Timer timer;
         Stardust game;

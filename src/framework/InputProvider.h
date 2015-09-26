@@ -6,6 +6,8 @@
 
 namespace Acidrain {
 
+    using namespace std;
+
     struct JoystickState {
         JoystickState() {
             for (int i = 0; i < 12; i++)
@@ -27,7 +29,6 @@ namespace Acidrain {
 
     class InputProvider : public EventListener {
     public:
-
         static InputProvider& getInstance();
 
         ~InputProvider();
@@ -65,6 +66,6 @@ namespace Acidrain {
 
         KeyboardState keyboardState, oldKeyboardState;
         JoystickState joystickState, oldJoystickState;
-        std::vector<SDL_Joystick*> joysticks;
+        vector<SDL_Joystick*> joysticks;
     };
 }

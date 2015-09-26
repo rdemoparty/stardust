@@ -86,13 +86,13 @@ namespace Acidrain {
         config->menuFont->print(
                 glm::mix(entry->oldPos.x, entry->pos.x, alpha),
                 80 * i + 100,
-                entry->getTitle().c_str(),
+                entry->getTitle(),
                 isSelected ? config->SELECTED_OPTION_COLOR : config->OPTION_COLOR
         );
         config->menuFont->print(
                 glm::mix(entry->oldPos.x, entry->pos.x, alpha) + 500,
                 80 * i + 100,
-                entry->getCurrentValue().c_str(),
+                entry->getCurrentValue(),
                 isSelected ? config->SELECTED_OPTION_COLOR : config->OPTION_COLOR
         );
     }
