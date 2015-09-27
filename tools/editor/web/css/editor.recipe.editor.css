@@ -50,3 +50,90 @@
 #recipe-editor-sidebar .row .flags {
 	margin-bottom: 1em;
 }
+
+.weapon {
+	float: left;
+	width: 100%;
+}
+
+.weapon-summary {
+	float: left;
+	width: 100%;
+	clear: both;
+	cursor: pointer;
+}
+
+.weapon-shots-per-second {
+	float: left;
+	font-weight: bold;
+	width: 100px;
+}
+
+.weapon-sound-when-fired {
+	float: left;
+	font-weight: bold;
+	color: yellow;
+}
+
+.weapon-editable-holder {
+	float: left;
+	width: 100%;
+	display: none;
+	/*background-color: gray;*/
+}
+
+#recipe-work-area .row {
+	width: 28em;
+	float: left;
+	clear: both;
+	margin-bottom: 0.2em;
+}
+
+#recipe-work-area .row .label {
+	width: 14em;
+	float: left;
+}
+
+#recipe-work-area .row .field {
+	/*width: 10em;*/
+	float: left;
+}
+
+#recipe-work-area .row input[type=text] {
+	width: 14em;
+}
+
+#recipe-work-area .row select {
+	width: 14em;
+}
+
+#recipe-work-area .row label {
+	cursor: pointer;
+}
+
+.weapon-emitter-x-holder {
+	float: left;
+}
+
+.weapon-emitter-y-holder {
+	float: left;
+}
+
+.weapon-emitter-bulletName-holder {
+	float: left;
+}
+
+.weapon-emitter-x {
+	width: 3em !important; 
+}
+
+.weapon-emitter-y {
+	width: 3em !important;
+}
+
+#recipe-tab-weapons {
+	float: left;
+	width: 100%;
+}
+
+

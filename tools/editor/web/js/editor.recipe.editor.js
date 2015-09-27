@@ -178,6 +178,62 @@ function RecipeEditor(assetsInstance, animationEditorInstance) {
 		}, 'text');
 	}
 
+	var showWeapons = function(weapons) {
+		var $holder = $('#recipe-weapons-holder');
+		$holder.empty();
+
+		for (var i in weapons)
+			$holder.append(renderWeaponEntry(weapons[i]));
+	}
+
+	var renderWeaponEntry = function(weapon) {
+		$weapon = $('<div>').addClass('weapon')
+					.append($('<div>').addClass('weapon-summary')
+									.append($('<div>')
+												.addClass('weapon-shots-per-second')
+												.text(weapon.shotsPerSecond + " fps"))
+									.append($('<div>')
+												.addClass('weapon-sound-when-fired')
+												.text(weapon.soundWhenFired))
+									.on('click', function() {
+													$('.weapon-editable-holder', $(this).parent()).toggle();
+												})
+					)
+					.append($('<div>').addClass('weapon-editable-holder'));
+
+		$weaponEditableHolder = $('.weapon-editable-holder', $weapon);
+		var editableContent = 
+			"<div class=\"row\">" + 
+				"<div class=\"label\">Shots per second</div>" + 
+				"<div class=\"field\"><input type=\"text\" value=\"" + weapon.shotsPerSecond + "\"/></div>" +
+			"</div>" +
+			"<div class=\"row\">" + 
+				"<div class=\"label\">Sound when fired</div>" + 
+				"<div class=\"field\"><input type=\"text\" value=\"" + weapon.soundWhenFired + "\"/></div>" +
+			"</div>";
+
+			for (var i = 0; i < 5; i++) {
+				var x = i in weapon.emitters ? weapon.emitters[i].x : "";
+				var y = i in weapon.emitters ? weapon.emitters[i].y : "";
+				var bulletName = i in weapon.emitters ? weapon.emitters[i].bulletName : "";
+				editableContent += 
+				"<div class=\"row\">" + 
+					"<div class=\"weapon-emitter-x-holder\"><input type=\"text\" value=\"" + x + "\" class=\"weapon-emitter-x\" /></div>" + 
+					"<div class=\"weapon-emitter-y-holder\"><input type=\"text\" value=\"" + y + "\" class=\"weapon-emitter-y\" /></div>" + 
+					"<div class=\"weapon-emitter-bulletName-holder\"><input type=\"text\" value=\"" + bulletName + "\" class=\"weapon-emitter-bullet-name\" /></div>" + 
+				"</div>";
+
+			}
+
+
+
+
+		$(editableContent).appendTo($weaponEditableHolder);
+		return $weapon;
+	}
+
+
+
 	var defaultRecipeToForm = function() {
 		fillInAnimations('');
 		fillInScripts('');
@@ -223,6 +279,7 @@ function RecipeEditor(assetsInstance, animationEditorInstance) {
 		$('#dlgRecipeEditor .flags').buttonset('refresh');
 
 		showBrainInEditor(recipe.brain);
+		showWeapons(recipe.weapons);
 	}
 
 	var recipeFromForm = function() {
@@ -415,7 +472,11 @@ function RecipeEditor(assetsInstance, animationEditorInstance) {
 						"<ul>" + 
 							"<li><a href=\"#recipe-tab-brain\">Brain</a></li>" + 
 							"<li><a href=\"#recipe-tab-collision-hull\">Collision Hull</a></li>" + 
+							"<li><a href=\"#recipe-tab-weapons\">Weapons</a></li>" + 
 						"</ul>" + 
+						"<div id=\"recipe-tab-weapons\" class=\"tab-holder\">" +
+							"<div id=\"recipe-weapons-holder\">&nbsp;</div>" + 
+						"</div>" +
 						"<div id=\"recipe-tab-collision-hull\" class=\"tab-holder\">" + 
 							"<canvas id=\"recipe-collision-hull-canvas\" width=\"480\" height=\"400\"></canvas>" +
 							"<div id=\"recipe-collision-hull-items\">" + 
@@ -423,7 +484,7 @@ function RecipeEditor(assetsInstance, animationEditorInstance) {
 						"</div>" + 
 						"<div id=\"recipe-tab-brain\" class=\"tab-holder\">" + 
 							"<textarea id=\"recipe-brain-code\" rows=\"20\"></textarea>"
-						"</div>" + 
+						"</div>" +
 					"</div>"
 				"</div>" + 
 			"</div>";
