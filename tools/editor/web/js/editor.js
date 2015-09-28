@@ -54,6 +54,9 @@ var Editor = {
 		"<div id=\"version-holder\">" +
 			"<div id=\"editor-version\"></div>" +
 			"<div id=\"editor-new-version\"></div>" +
+			"<div id=\"editor-help\">" +
+				"<a href=\"manual/index.html\" target=\"_blank\">Help</a>" +
+			"</div>" +
 		"</div>" +
 		"<div id=\"level-holder\">" +
 			"<div id=\"level\">" +

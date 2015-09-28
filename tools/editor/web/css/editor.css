@@ -13,7 +13,7 @@ body {
 	width: 100%;
 	float: left;
 	background-color: black;
-	padding: 4px;
+	padding: 8px;
 	margin-bottom: 10px;
 }
 
@@ -36,6 +36,21 @@ body {
 	color: inherit;
 	font-weight: bold;
 	text-decoration: none;
+}
+
+#editor-help {
+	float: right;
+}
+
+#editor-help a {
+	/*color: tomato;*/
+	font-weight: bold;
+	text-decoration: none;
+	background-color: tomato;
+	border-radius: 2px;
+	padding: 0.2em 1em 0.2em 1em;
+	cursor: pointer;
+	color: white;
 }
 
 #recipe-menu {
