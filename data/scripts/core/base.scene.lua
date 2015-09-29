@@ -15,9 +15,9 @@ function Scene.create(type, parent)
 end
 
 function Scene.confineToPlayingArea(entity)
-    return confineToPlayingArea(SCENE, entity:getPointer())
+    return confineToPlayingArea(entity:getPointer())
 end
 
 function Scene.dump()
-    dumpEntities(SCENE)
+    dumpEntities()
 end

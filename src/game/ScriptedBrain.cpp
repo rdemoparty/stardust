@@ -211,9 +211,8 @@ namespace Acidrain {
     }
 
     static int getSessionIntAttribute(lua_State* L) {
-        GameSession* session = (GameSession*) lua_topointer(L, 1);
-        const char* const key = lua_tostring(L, 2);
-        lua_pushnumber(L, session->getSessionAttributes().getInt(key));
+        const char* const key = lua_tostring(L, 1);
+        lua_pushnumber(L, GameServiceLocator::gameSession()->getSessionAttributes().getInt(key));
         return 1; // arguments pushed on stack
     }
 
@@ -274,46 +273,39 @@ namespace Acidrain {
     }
 
     static int confineToPlayingArea(lua_State* L) {
-        Scene* scene = (Scene*) lua_topointer(L, 1);
-        GameObject* object = (GameObject*) lua_topointer(L, 2);
-        lua_pushboolean(L, scene->confineEntityInVisibleArea(object));
+        GameObject* object = (GameObject*) lua_topointer(L, 1);
+        lua_pushboolean(L, GameServiceLocator::scene()->confineEntityInVisibleArea(object));
         return 1; // arguments pushed on stack
     }
 
     static int dumpEntities(lua_State* L) {
-        Scene* scene = (Scene*) lua_topointer(L, 1);
-        scene->dumpEntities();
+        GameServiceLocator::scene()->dumpEntities();
         return 0; // arguments pushed on stack
     }
 
     static int endLevel(lua_State* L) {
-        Scene* scene = (Scene*) lua_topointer(L, 1);
-        scene->queueEvent(GameEvent::LEVEL_END);
+        GameServiceLocator::scene()->queueEvent(GameEvent::LEVEL_END);
         return 0; // arguments pushed on stack
     }
 
     static int pauseLevel(lua_State* L) {
-        Scene* scene = (Scene*) lua_topointer(L, 1);
-        scene->queueEvent(GameEvent::LEVEL_SCROLL_PAUSE);
+        GameServiceLocator::scene()->queueEvent(GameEvent::LEVEL_SCROLL_PAUSE);
         return 0; // arguments pushed on stack
     }
 
     static int resumeLevel(lua_State* L) {
-        Scene* scene = (Scene*) lua_topointer(L, 1);
-        scene->queueEvent(GameEvent::LEVEL_SCROLL_RESUME);
+        GameServiceLocator::scene()->queueEvent(GameEvent::LEVEL_SCROLL_RESUME);
         return 0; // arguments pushed on stack
     }
 
     static int shakeCamera(lua_State* L) {
-        Camera* camera = (Camera*) lua_topointer(L, 1);
-        camera->shake((float) lua_tonumber(L, 2));
+        GameServiceLocator::camera()->shake((float) lua_tonumber(L, 1));
         return 0; // arguments pushed on stack
     }
 
     static int setBrain(lua_State* L) {
-        Scene* scene = (Scene*) lua_topointer(L, 1);
-        GameObject* object = (GameObject*) lua_topointer(L, 2);
-        const char* const brainName = lua_tostring(L, 3);
+        GameObject* object = (GameObject*) lua_topointer(L, 1);
+        const char* const brainName = lua_tostring(L, 2);
 
         auto brain = GameServiceLocator::gameObjectFactory()->getBrain(brainName);
         object->setBrain(brain);

@@ -5,13 +5,13 @@
 Level = {}
 
 function Level.finish()
-    endLevel(SCENE)
+    endLevel()
 end
 
 function Level.pause()
-    pauseLevel(SCENE)
+    pauseLevel()
 end
 
 function Level.resume()
-    resumeLevel(SCENE)
+    resumeLevel()
 end

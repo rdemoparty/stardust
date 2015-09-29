@@ -110,5 +110,5 @@ function Entity:getInt(name)
 end
 
 function Entity:setBrain(name)
-    setBrain(SCENE, self.pointer, name)
+    setBrain(self.pointer, name)
 end

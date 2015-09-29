@@ -33,6 +33,7 @@ namespace Acidrain {
 
         // create camera
         camera = make_shared<Camera>();
+        GameServiceLocator::camera(camera);
 
         // initialize some gpuProgram constants
         gpuProgramConstantBundle = make_shared<GpuProgramConstantBundle>();

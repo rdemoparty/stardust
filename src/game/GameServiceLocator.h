@@ -2,7 +2,9 @@
 
 #include <GameObjectFactory.h>
 #include <Scene.h>
+#include <GameSession.h>
 #include <memory>
+#include <Camera.h>
 
 namespace Acidrain {
 
@@ -17,6 +19,14 @@ namespace Acidrain {
         static void scene(shared_ptr<Scene> scene);
 
         static shared_ptr<Scene> scene();
+
+        static void gameSession(shared_ptr<GameSession> gameSession);
+
+        static shared_ptr<GameSession> gameSession();
+
+        static void camera(shared_ptr<Camera> camera);
+
+        static shared_ptr<Camera> camera();
     };
 
 } // end of namespace Acidrain

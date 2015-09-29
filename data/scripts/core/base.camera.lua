@@ -4,6 +4,6 @@
 
 Camera = {}
 function Camera.shake(amount)
-    shakeCamera(CAMERA, amount)
+    shakeCamera(amount)
 end
 

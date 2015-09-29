@@ -10,6 +10,7 @@
 #include <GameStateIntro.h>
 #include <GameSession.h>
 #include <ScriptExporterRegistry.h>
+#include <GameServiceLocator.h>
 
 namespace Acidrain {
 
@@ -28,6 +29,8 @@ namespace Acidrain {
         fpsCounter = make_shared<FpsCounter>();
         gameSession = make_shared<GameSession>();
         level = make_shared<Level>();
+
+        GameServiceLocator::gameSession(gameSession);
 
         ScriptExporterRegistry::add(this);
     }
