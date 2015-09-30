@@ -1,5 +1,6 @@
 set(HEADERS
         ${HEADERS}
+        ${CMAKE_CURRENT_SOURCE_DIR}/Application.h
         ${CMAKE_CURRENT_SOURCE_DIR}/AttributeBag.h
         ${CMAKE_CURRENT_SOURCE_DIR}/Camera.h
         ${CMAKE_CURRENT_SOURCE_DIR}/Entity.h
@@ -34,6 +35,7 @@ set(HEADERS
 )
 set(SOURCE
         ${SOURCE}
+        ${CMAKE_CURRENT_SOURCE_DIR}/Application.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/AttributeBag.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/Camera.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/Entity.cpp
