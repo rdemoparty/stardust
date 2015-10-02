@@ -36,6 +36,8 @@ namespace Acidrain {
 
         virtual void select() override;
 
+        virtual bool isCurrentValueApplied() override;
+
         virtual void selectNextValue() override;
 
         virtual void selectPreviousValue() override;
@@ -44,6 +46,7 @@ namespace Acidrain {
         string title = "Resolution";
         vector<MenuEntryResolutionItem> values;
         int selectedValue = 0;
+        int appliedValue = 0;
     };
 
 
@@ -67,6 +70,8 @@ namespace Acidrain {
 
         virtual void select() override;
 
+        virtual bool isCurrentValueApplied() override;
+
         virtual void selectNextValue() override;
 
         virtual void selectPreviousValue() override;
@@ -75,13 +80,14 @@ namespace Acidrain {
         string title = "Fullscreen";
         vector<MenuEntryFullscreenItem> values;
         int selectedValue = 0;
+        int appliedValue = 0;
     };
 
 
     struct MenuEntryVSyncItem {
         MenuEntryVSyncItem(bool vsync) {
             this->state = vsync;
-            description = vsync? "on" : "off";
+            description = vsync ? "on" : "off";
         }
 
         bool state;
@@ -98,6 +104,8 @@ namespace Acidrain {
 
         virtual void select() override;
 
+        virtual bool isCurrentValueApplied() override;
+
         virtual void selectNextValue() override;
 
         virtual void selectPreviousValue() override;
@@ -106,6 +114,7 @@ namespace Acidrain {
         string title = "VSync";
         vector<MenuEntryVSyncItem> values;
         int selectedValue = 0;
+        int appliedValue = 0;
     };
 
 
@@ -175,6 +184,7 @@ namespace Acidrain {
             MenuEntryResolutionItem entry = values.at(i);
             if (entry.width == GFXSYS.windowWidth() && entry.height == GFXSYS.windowHeight()) {
                 selectedValue = i;
+                appliedValue = i;
                 break;
             }
         }
@@ -189,12 +199,19 @@ namespace Acidrain {
     }
 
     void MenuEntryResolution::select() {
-        MenuEntryResolutionItem selectedItem = values.at(selectedValue);
-        GFXSYS.resizeDisplayTo(selectedItem.width, selectedItem.height, GFXSYS.isFullscreen());
-        USERPREFS.width = selectedItem.width;
-        USERPREFS.height = selectedItem.height;
-        USERPREFS.save();
+        if (appliedValue != selectedValue) {
+            MenuEntryResolutionItem selectedItem = values.at(selectedValue);
+            GFXSYS.resizeDisplayTo(selectedItem.width, selectedItem.height, GFXSYS.isFullscreen());
+            USERPREFS.width = selectedItem.width;
+            USERPREFS.height = selectedItem.height;
+            USERPREFS.save();
 
+            appliedValue = selectedValue;
+        }
+    }
+
+    bool MenuEntryResolution::isCurrentValueApplied() {
+        return appliedValue == selectedValue;
     }
 
     void MenuEntryResolution::selectNextValue() {
@@ -215,6 +232,7 @@ namespace Acidrain {
         values.push_back(MenuEntryFullscreenItem(false));
 
         selectedValue = GFXSYS.isFullscreen() ? 0 : 1;
+        appliedValue = selectedValue;
     }
 
     string MenuEntryFullscreen::getTitle() {
@@ -237,11 +255,18 @@ namespace Acidrain {
     }
 
     void MenuEntryFullscreen::select() {
-        bool fullscreen = values.at(selectedValue).state;
-        GFXSYS.resizeDisplayTo(GFXSYS.windowWidth(), GFXSYS.windowHeight(), fullscreen);
-        USERPREFS.fullscreen = fullscreen;
-        USERPREFS.save();
+        if (selectedValue != appliedValue) {
+            bool fullscreen = values.at(selectedValue).state;
+            GFXSYS.resizeDisplayTo(GFXSYS.windowWidth(), GFXSYS.windowHeight(), fullscreen);
+            USERPREFS.fullscreen = fullscreen;
+            USERPREFS.save();
 
+            appliedValue = selectedValue;
+        }
+    }
+
+    bool MenuEntryFullscreen::isCurrentValueApplied() {
+        return appliedValue == selectedValue;
     }
 
     // ------------------------------------------------------------------------
@@ -251,6 +276,7 @@ namespace Acidrain {
         values.push_back(MenuEntryVSyncItem(false));
 
         selectedValue = GFXSYS.isVSyncOn() ? 0 : 1;
+        appliedValue = selectedValue;
     }
 
     string MenuEntryVSync::getTitle() {
@@ -273,9 +299,18 @@ namespace Acidrain {
     }
 
     void MenuEntryVSync::select() {
-        bool state = values.at(selectedValue).state;
-        GFXSYS.setVSync(state);
-        USERPREFS.vsync = state;
-        USERPREFS.save();
+        if (selectedValue != appliedValue) {
+            bool state = values.at(selectedValue).state;
+            GFXSYS.setVSync(state);
+            USERPREFS.vsync = state;
+            USERPREFS.save();
+
+            appliedValue = selectedValue;
+        }
     }
+
+    bool MenuEntryVSync::isCurrentValueApplied() {
+        return appliedValue == selectedValue;
+    }
+
 } // namespace Acidrain

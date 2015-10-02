@@ -12,6 +12,8 @@ namespace Acidrain {
 
     class Font {
     public:
+        Font(const char* const fontFile, float fontSize = 32.0f);
+
         Font(string fontFile, float fontSize = 32.0f);
 
         ~Font();

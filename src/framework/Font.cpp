@@ -8,7 +8,7 @@
 #include <memory>
 
 namespace Acidrain {
-    Font::Font(string fontFile, float fontSize) {
+    Font::Font(const char* const fontFile, float fontSize) {
         HEIGHT_MAGIC_OFFSET = fontSize * 3.0f / 4.0f;
 
         string fontContent = FILESYS.getFileContent(fontFile);
@@ -29,6 +29,10 @@ namespace Acidrain {
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
         delete[] bitmap;
+    }
+
+    Font::Font(string fontFile, float fontSize) {
+        Font(fontFile.c_str(), fontSize);
     }
 
     Font::~Font() {

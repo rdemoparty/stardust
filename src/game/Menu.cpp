@@ -93,7 +93,7 @@ namespace Acidrain {
                 glm::mix(entry->oldPos.x, entry->pos.x, alpha) + 500,
                 80 * i + 100,
                 entry->getCurrentValue(),
-                isSelected ? config->SELECTED_OPTION_COLOR : config->OPTION_COLOR
+                entry->isCurrentValueApplied() ? config->APPLIED_VALUE_COLOR : config->NOT_APPLIED_VALUE_COLOR
         );
     }
 
