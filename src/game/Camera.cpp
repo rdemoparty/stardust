@@ -35,4 +35,8 @@ namespace Acidrain {
     const mat4 Camera::getShakeMatrix() const {
         return shakeMatrix;
     }
+
+    void Camera::resetShake() {
+        shakeFactor = 0;
+    }
 }

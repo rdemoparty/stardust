@@ -10,6 +10,8 @@ namespace Acidrain {
     public:
         void shake(float strength);
 
+        void resetShake();
+
         void update(float elapsedSeconds);
 
         const mat4 getShakeMatrix() const;

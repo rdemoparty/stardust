@@ -56,6 +56,7 @@ namespace Acidrain {
         scene->clear();
         levelScript->reset();
         starfield->resume();
+        camera->resetShake();
         finished = false;
         paused = false;
     }
