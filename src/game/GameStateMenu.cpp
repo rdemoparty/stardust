@@ -7,6 +7,7 @@
 #include <AudioSystem.h>
 #include <GameStatePlayLevel.h>
 #include <GameStateOptions.h>
+#include <GameStateCredits.h>
 #include <Version.h>
 #include <GameSession.h>
 
@@ -154,6 +155,10 @@ namespace Acidrain {
             case 4:
                 AUDIOSYS.playSound(SOUND_OPTION_ACCEPTED, AudioGroup::byName("UI"));
                 game->fsm->changeState(&GameStateOptions::instance());
+                break;
+            case 5:
+                AUDIOSYS.playSound(SOUND_OPTION_ACCEPTED, AudioGroup::byName("UI"));
+                game->fsm->changeState(&GameStateCredits::instance());
                 break;
             case 6:
                 AUDIOSYS.playSound(SOUND_OPTION_ACCEPTED, AudioGroup::byName("UI"));

@@ -10,6 +10,7 @@ set(HEADERS
         ${CMAKE_CURRENT_SOURCE_DIR}/GameServiceLocator.h
         ${CMAKE_CURRENT_SOURCE_DIR}/GameSession.h
         ${CMAKE_CURRENT_SOURCE_DIR}/GameState.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/GameStateCredits.h
         ${CMAKE_CURRENT_SOURCE_DIR}/GameStateEditor.h
         ${CMAKE_CURRENT_SOURCE_DIR}/GameStateIntro.h
         ${CMAKE_CURRENT_SOURCE_DIR}/GameStateMenu.h
@@ -43,6 +44,7 @@ set(SOURCE
         ${CMAKE_CURRENT_SOURCE_DIR}/GameObjectFactory.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/GameServiceLocator.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/GameSession.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/GameStateCredits.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/GameStateIntro.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/GameStateEditor.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/GameStateMenu.cpp
