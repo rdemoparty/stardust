@@ -45,7 +45,7 @@ namespace Acidrain {
             gpuProgramConstantBundle->add("resolution", GpuProgramConstant(vec2(GFXSYS.drawableWidth(), GFXSYS.drawableHeight())));
             gpuProgramConstantBundle->add("offset", GpuProgramConstant(vec2(GFXSYS.getOffsetX(), GFXSYS.getOffsetY())));
             gpuProgramConstantBundle->add("time", GpuProgramConstant(totalElapsedTime));
-            gpuProgramConstantBundle->add("renderMode", GpuProgramConstant((int)2));
+            gpuProgramConstantBundle->add("renderMode", GpuProgramConstant((int)0));
             gpuProgram->addConstants(gpuProgramConstantBundle.get());
         }
 
