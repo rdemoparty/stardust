@@ -10,9 +10,7 @@ namespace Acidrain {
     class Stardust;
 
     class GameStatePreviewEntity : public GameState<Stardust> {
-
     public:
-
         static GameStatePreviewEntity& instance();
 
         void previewEntity(string entityName);

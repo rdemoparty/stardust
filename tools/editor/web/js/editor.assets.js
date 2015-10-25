@@ -356,7 +356,13 @@ Assets.prototype.stashRecipes = function() {
 
 Assets.prototype.restoreRecipes = function() {
 	this.recipes = JSON.parse(this.recipesStash);
-	this.saveRecipes();
+	// We need to delay this since the web server processing happens on a different thread.
+	// If we don't the recipes will be saved before the main thread will get to load the previewed entity
+	var that = this;
+	setTimeout(function() {
+		that.saveRecipes();
+	}, 300);
+
 }
 
 Assets.prototype.saveRecipes = function(callback) {

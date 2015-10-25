@@ -82,7 +82,7 @@ namespace Acidrain {
         }
     }
 
-    static char* lines[] = {
+    static const char* const lines[] = {
             "               BACKFIRE         ",
             "",
             "",

@@ -11,13 +11,13 @@ float rand(vec2 co) {
 }
 
 void main(void) {
+  if (renderMode == 0) {
+    gl_FragColor = texture2D(diffuseSampler, gl_TexCoord[0].st);
+    return;
+  }
+
 	vec2 q = (gl_FragCoord.xy - offset.xy) / resolution.xy;
 	vec3 oricol = texture2D(diffuseSampler, q).xyz;
-
-	if (renderMode == 0) {
-		gl_FragColor = vec4(oricol, 1);
-		return;
-	}
 
 	// subtle zoom in/out 
 	vec2 uv = 0.5 + (q-0.5)*(0.99 + 0.006*sin(0.9*time));

@@ -9,6 +9,7 @@
 #include <LevelScriptPreviewEntity.h>
 #include <InputProvider.h>
 #include <AudioSystem.h>
+#include <GameServiceLocator.h>
 
 namespace Acidrain {
 
@@ -21,7 +22,9 @@ namespace Acidrain {
         GFXSYS.raiseWindow();
         GFXSYS.setClearColor(vec3(0.1f, 0.0f, 0.1f));
 
+
         SpriteAnimationRepository::getInstance().initialize("animations.json");
+        GameServiceLocator::gameObjectFactory()->initialize("recipes.json");
 
         game->level = make_shared<Level>();
         game->level->levelScript = make_shared<LevelScriptPreviewEntity>(entityName, game->level->scene.get());

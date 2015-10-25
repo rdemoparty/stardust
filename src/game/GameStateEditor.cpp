@@ -15,6 +15,7 @@
 #include <GameStatePreviewEntity.h>
 #include <GameStatePreviewLevel.h>
 #include <Version.h>
+#include <atomic>
 
 namespace Acidrain {
 
@@ -76,6 +77,11 @@ namespace Acidrain {
     }
 
     static Stardust* theGame = nullptr;
+
+    static std::string previewEntityName;
+    static bool actionPreviewEntity = false;
+    static std::string previewLevelName;
+    static bool actionPreviewLevel = false;
 
     static int handleRequest(struct mg_connection* conn) {
         string URI = conn->uri;
@@ -147,9 +153,8 @@ namespace Acidrain {
             vector<string> pieces = StringUtils::split(URI, '/');
             string entityName = pieces.at(pieces.size() - 1);
             if (theGame != nullptr) {
-                LOG(INFO) << "Previewing entity " << entityName;
-                GameStatePreviewEntity::instance().previewEntity(entityName);
-                theGame->fsm->changeState(&GameStatePreviewEntity::instance());
+                previewEntityName = entityName;
+                actionPreviewEntity = true;
             }
 
             mg_send_header(conn, "Content-Type", "application/json");
@@ -162,9 +167,8 @@ namespace Acidrain {
             vector<string> pieces = StringUtils::split(URI, '/');
             string levelName = pieces.at(pieces.size() - 1);
             if (theGame != nullptr) {
-                LOG(INFO) << "Previewing level " << levelName;
-                GameStatePreviewLevel::instance().preview(theGame, levelName);
-                theGame->fsm->changeState(&GameStatePreviewLevel::instance());
+                previewLevelName = levelName;
+                actionPreviewLevel = true;
             }
 
             mg_send_header(conn, "Content-Type", "application/json");
@@ -189,6 +193,8 @@ namespace Acidrain {
 
     static struct mg_server* server = nullptr;
 
+    static bool volatile shouldStopServerThread;
+
     void GameStateEditor::onEnter(Stardust* game) {
         theGame = game;
         if (!font)
@@ -205,11 +211,25 @@ namespace Acidrain {
         mg_set_option(server, "listening_port", "127.0.0.1:8080");  // Open port 8080
 
         GFXSYS.setClearColor(vec3(0, 0, 0));
+
+        shouldStopServerThread = false;
+        serverThread = std::thread([](){
+            while (!shouldStopServerThread) {
+                mg_poll_server(server, 50);
+            }
+            std::cout << "Should stop server thread is true" << std::endl;
+        });
+    }
+
+    GameStateEditor::~GameStateEditor() {
+        shouldStopServerThread = true;
+        serverThread.join();
+
+        mg_destroy_server(&server);
+        theGame = nullptr;
     }
 
     void GameStateEditor::onExit(Stardust* game) {
-        mg_destroy_server(&server);
-        theGame = nullptr;
     }
 
     void GameStateEditor::update(Stardust* game, float elapsedSeconds) {
@@ -217,7 +237,21 @@ namespace Acidrain {
             game->quitGame = true;
         }
 
-        mg_poll_server(server, 50);
+        if (actionPreviewEntity) {
+            LOG(INFO) << "Previewing entity " << previewEntityName;
+            GameStatePreviewEntity::instance().previewEntity(previewEntityName);
+            theGame->fsm->changeState(&GameStatePreviewEntity::instance());
+
+            actionPreviewEntity = false;
+        }
+
+        if (actionPreviewLevel) {
+            LOG(INFO) << "Previewing level " << previewLevelName;
+            GameStatePreviewLevel::instance().preview(game, previewLevelName);
+            theGame->fsm->changeState(&GameStatePreviewLevel::instance());
+
+            actionPreviewLevel = false;
+        }
     }
 
     void GameStateEditor::render(Stardust* game, float alpha) {
