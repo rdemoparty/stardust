@@ -1,5 +1,6 @@
 #pragma once
 
+#include <luaconf.h>
 #include <lua.hpp>
 
 namespace Acidrain {

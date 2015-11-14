@@ -2,6 +2,8 @@
 
 #include <string>
 #include <memory>
+
+#include <luaconf.h>
 #include <lua.hpp>
 
 namespace Acidrain {
