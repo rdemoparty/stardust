@@ -13,7 +13,6 @@ namespace Acidrain {
 
     class GameStateEditor : public GameState<Stardust> {
     public:
-
         static GameStateEditor& instance();
 
         virtual void onEnter(Stardust* game) override;
@@ -26,6 +25,7 @@ namespace Acidrain {
 
     private:
         ~GameStateEditor();
+
         shared_ptr<Font> font;
         thread serverThread;
     };

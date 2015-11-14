@@ -101,10 +101,17 @@ EditorViewState.prototype.moveMouseTo = function(x, y) {
 }
 
 EditorViewState.prototype.zoomBy = function(amount) {
-	if (this.selectedHull != null)
-		this.selectedHull.radius += amount*10;
-	else
-		this.scale += amount*4;
+	if (this.selectedHull != null) {
+		var newRadius = this.selectedHull.radius + amount*10;
+		if (newRadius > 0.1) {
+			this.selectedHull.radius = newRadius;
+		}
+	} else {
+		var newScale = this.scale + amount*4;
+		if (newScale > 0.1) {
+			this.scale = newScale;
+		}
+	}
 }
 
 EditorViewState.prototype.restoreTransform = function() {
@@ -176,7 +183,7 @@ function CollisionHullEditor(assets, canvas, itemsHolder) {
 			return false;
 		})
 		.mousewheel(function(e) {
-			self.viewTransform.zoomBy(e.deltaY*2 / e.deltaFactor);
+			self.viewTransform.zoomBy((e.deltaY * e.deltaFactor) / 300.0);
 			self.constructHullItemsTable();
 			return false;
 		})

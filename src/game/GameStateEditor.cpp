@@ -38,7 +38,7 @@ namespace Acidrain {
 
     void persistFile(const string& path, const string& content) {
         ofstream out;
-        out.open(path, ios :: out | ios :: binary);
+        out.open(path, ios::out | ios::binary);
         out << content;
         out.close();
     }
@@ -104,7 +104,8 @@ namespace Acidrain {
                 else
                     sstream << ", ";
 
-                sstream << "{\"filename\": \"" << f.uri << "\", \"isDir\": " << (f.isDirectory ? "true" : "false") << "}";
+                sstream << "{\"filename\": \"" << f.uri << "\", \"isDir\": " << (f.isDirectory ? "true" : "false") <<
+                "}";
             }
             sstream << "]}";
 
@@ -125,7 +126,8 @@ namespace Acidrain {
                 LOG(TRACE) << conn->content;
                 map<string, MultipartEntry> multiparts = parseMultipart(conn);
                 for (auto& kv : multiparts)
-                    LOG(INFO) << "\t" << "{var: " << kv.second.var << ", filename: " << kv.second.filename << ", size: " << kv.second.content.size() << ", isFile: " << kv.second.isFile << "}";
+                    LOG(INFO) << "\t" << "{var: " << kv.second.var << ", filename: " << kv.second.filename <<
+                    ", size: " << kv.second.content.size() << ", isFile: " << kv.second.isFile << "}";
 
                 // extract the dir in which to save uploaded files
                 string dir;
@@ -137,7 +139,8 @@ namespace Acidrain {
                     auto& part = kv.second;
                     if (part.isFile) {
                         const string filePath = FILESYS.absolutePath(dir + "/" + part.filename);
-                        LOG(INFO) << "Saving file " << part.filename << " of " << part.content.size() << " bytes to " << filePath;
+                        LOG(INFO) << "Saving file " << part.filename << " of " << part.content.size() << " bytes to " <<
+                        filePath;
                         persistFile(filePath, part.content);
                     }
                 }
@@ -213,11 +216,10 @@ namespace Acidrain {
         GFXSYS.setClearColor(vec3(0, 0, 0));
 
         shouldStopServerThread = false;
-        serverThread = std::thread([](){
+        serverThread = std::thread([]() {
             while (!shouldStopServerThread) {
-                mg_poll_server(server, 50);
+                mg_poll_server(server, 500);
             }
-            std::cout << "Should stop server thread is true" << std::endl;
         });
     }
 
@@ -260,7 +262,7 @@ namespace Acidrain {
 
             GFXSYS.setTransparencyMode(TransparencyMode::Additive);
             font->print(100, 100, "Editor mode. Waiting for commands", vec4(1, 1, 1, 0.8f));
-            font->print(100, 132, string("Version ") + STARDUST_VERSION , vec4(1, 1, 1, 0.8f));
+            font->print(100, 132, string("Version ") + STARDUST_VERSION, vec4(1, 1, 1, 0.8f));
 
             GFXSYS.show();
         }
