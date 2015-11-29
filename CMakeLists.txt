@@ -75,6 +75,7 @@ include_directories("src/3rdparty/easyloggingpp")
 include_directories("src/3rdparty/mongoose")
 include_directories("src/framework")
 include_directories("src/game")
+include_directories("src/game/scripting")
 add_subdirectory(src)
 
 add_executable(stardust src/main.cpp ${SOURCE})

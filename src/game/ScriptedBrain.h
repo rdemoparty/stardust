@@ -11,7 +11,6 @@ namespace Acidrain {
     using namespace std;
 
     class GameObject;
-    class Scene;
 
     class ScriptedBrain {
     public:
@@ -42,8 +41,6 @@ namespace Acidrain {
         string brainName;
 
         void initializeLuaContext(const string& brainFilename);
-
-        void registerExports();
     };
 
 }

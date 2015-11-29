@@ -96,7 +96,8 @@
       "maxLife": 0,
       "team": "Neutral",
       "type": "Scenery",
-      "hull": []
+      "hull": [],
+      "hidden": true
     },
     {
       "name": "level-pauser",

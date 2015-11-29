@@ -9,14 +9,16 @@
 #include <InputProvider.h>
 #include <GameStateEditor.h>
 #include <GameStateIntro.h>
+#include <GameStateTest.h>
+#include <ScriptingSystem.h>
 #include <Timer.h>
 #include <Stardust.h>
-
 
 _INITIALIZE_EASYLOGGINGPP
 
 DEFINE_string(log_level, l, "The log level", "debug")
 DEFINE_bool(editor, e, "Whether to enter editor mode or not", false)
+DEFINE_bool(test, t, "Whether to enter test mode or not", false)
 
 namespace Acidrain {
 
@@ -75,13 +77,16 @@ namespace Acidrain {
                     GAME_LOGICAL_RESOLUTION_X,
                     GAME_LOGICAL_RESOLUTION_Y);
         INPUT;
+        SCRIPTSYS.init();
     }
 
     void Application::run() {
         timer = make_shared<Timer>();
         game = make_shared<Stardust>();
 
-        if (FLAG_editor) {
+        if (FLAG_test) {
+            game->fsm->setGlobalState(&GameStateTest::instance());
+        } else if (FLAG_editor) {
             game->fsm->setGlobalState(&GameStateEditor::instance());
         } else {
             game->fsm->changeState(&GameStateIntro::instance());

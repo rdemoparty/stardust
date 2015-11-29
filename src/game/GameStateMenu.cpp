@@ -49,6 +49,7 @@ namespace Acidrain {
     const char* SOUND_OPTION_ACCEPTED = "sounds/menu/option-accepted.ogg";
     const char* SOUND_OPTION_CHANGE = "sounds/menu/option-changed.ogg";
 
+
     void GameStateMenu::onEnter(Stardust* game) {
         if (!menuFont)
             menuFont = make_shared<Font>("fonts/Neo Sans Pro Bold.ttf", 40.0f);
@@ -57,7 +58,6 @@ namespace Acidrain {
             versionFont = make_shared<Font>("fonts/Neo Sans Pro Bold.ttf", 10.0f);
 
         GFXSYS.setClearColor(vec3(0, 0, 0));
-
         for (int i = 0; i < MENU_OPTION_COUNT; i++) {
             menuOptionPosX[i] = menuOptionPosXOld[i] = 1100.0f;
         }

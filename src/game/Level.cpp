@@ -10,6 +10,7 @@
 #include <GfxSystem.h>
 #include <AudioSystem.h>
 #include <GameServiceLocator.h>
+#include <DialogRepository.h>
 
 namespace Acidrain {
 
@@ -80,13 +81,14 @@ namespace Acidrain {
 
         starfield->update(elapsedSeconds);
         scene->update(elapsedSeconds);
+        DialogRepository::getInstance().updateAll(elapsedSeconds);
     }
 
     void Level::render(float frameAlpha) {
         starfield->draw(gpuProgram, frameAlpha);
         scene->draw(gpuProgram, frameAlpha);
-
         drawPlayerLife();
+        DialogRepository::getInstance().renderAll();
     }
 
     void Level::drawPlayerLife() {
