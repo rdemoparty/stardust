@@ -2,6 +2,7 @@
 
 #pragma once
 
+// TODO: rename this to InputSystem in order to maintain consistency
 #define INPUT Acidrain::InputProvider::getInstance()
 
 namespace Acidrain {

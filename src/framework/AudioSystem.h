@@ -56,6 +56,10 @@ namespace Acidrain {
 
         void playSound(const char* URI, const char* groupName, int volume = 128);
 
+        void playSound(const string& URI, const AudioGroup* group, int volume = 128);
+
+        void playSound(const string& URI, const char* groupName, int volume = 128);
+
         void stopSounds(vector<string> groups);
 
         void stopMusic();

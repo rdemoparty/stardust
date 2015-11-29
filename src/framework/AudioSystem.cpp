@@ -88,6 +88,7 @@ namespace Acidrain {
         new AudioGroup("EXPLOSIONS", 4);
         new AudioGroup("PLAYER", 6);
         new AudioGroup("PLAYER_WEAPONS", 1);
+        new AudioGroup("TYPER", 1);
 
         Mix_AllocateChannels(AudioGroup::channelsNeeded());
         int allocatedChannels = Mix_AllocateChannels(-1);
@@ -202,5 +203,14 @@ namespace Acidrain {
             if (group != nullptr)
                 Mix_FadeOutGroup(group->getId(), 100);
         }
+    }
+
+    void AudioSystem::playSound(const string& URI, const AudioGroup* group, int volume) {
+        playSound(URI.c_str(), group, volume);
+
+    }
+
+    void AudioSystem::playSound(const string& URI, const char* groupName, int volume) {
+        playSound(URI.c_str(), groupName, volume);
     }
 }
