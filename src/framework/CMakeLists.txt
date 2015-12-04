@@ -29,7 +29,7 @@ set(HEADERS
         ${CMAKE_CURRENT_SOURCE_DIR}/Vbo.h
         ${CMAKE_CURRENT_SOURCE_DIR}/Window.h
         PARENT_SCOPE
-)
+        )
 set(SOURCE
         ${SOURCE}
         ${CMAKE_CURRENT_SOURCE_DIR}/Animation.cpp
@@ -58,4 +58,4 @@ set(SOURCE
         ${CMAKE_CURRENT_SOURCE_DIR}/Vbo.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/Window.cpp
         PARENT_SCOPE
-)
+        )

@@ -8,6 +8,10 @@ set(GAME_EXECUTABLE_NAME "stardust")
 if (${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU" OR ${CMAKE_CXX_COMPILER_ID} STREQUAL "Clang")
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wno-unused-parameter -Wno-deprecated-declarations -std=c++11")
 	set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS} -g")
+
+	# get rid of lua tmpnam deprecated warning
+	add_definitions(-DLUA_USE_POSIX)
+
 	if (${CMAKE_CXX_COMPILER_ID} STREQUAL "Clang")
 	else()
 		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unused-but-set-variable")
@@ -60,8 +64,6 @@ include_directories(./src/3rdparty/glew/include)
 file(GLOB GLEW_SOURCES ./src/3rdparty/glew/src/glew.c)
 add_definitions(-DGLEW_STATIC)
 
-# get rid of lua tmpnam deprecated warning
-add_definitions(-DLUA_USE_POSIX)
 
 if (${CMAKE_CXX_COMPILER_ID} STREQUAL "Clang")
 	# mitigates https://trac.macports.org/ticket/49004. glew build takes a lot of time on clang

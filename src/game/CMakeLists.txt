@@ -24,6 +24,7 @@ set(HEADERS
         ${CMAKE_CURRENT_SOURCE_DIR}/Level.h
         ${CMAKE_CURRENT_SOURCE_DIR}/LevelScript.h
         ${CMAKE_CURRENT_SOURCE_DIR}/LevelScriptPreviewEntity.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/mingw.thread.h
         ${CMAKE_CURRENT_SOURCE_DIR}/Menu.h
         ${CMAKE_CURRENT_SOURCE_DIR}/Scene.h
         ${CMAKE_CURRENT_SOURCE_DIR}/scripting/Script.h
@@ -51,7 +52,7 @@ set(HEADERS
         ${CMAKE_CURRENT_SOURCE_DIR}/scripting/ScriptUtils.h
 
         PARENT_SCOPE
-)
+        )
 set(SOURCE
         ${SOURCE}
         ${CMAKE_CURRENT_SOURCE_DIR}/Application.cpp
@@ -99,4 +100,4 @@ set(SOURCE
         ${CMAKE_CURRENT_SOURCE_DIR}/scripting/ScriptUtils.cpp
 
         PARENT_SCOPE
-)
+        )

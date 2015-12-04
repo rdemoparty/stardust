@@ -15,7 +15,7 @@
 #include <GameStatePreviewEntity.h>
 #include <GameStatePreviewLevel.h>
 #include <Version.h>
-#include <atomic>
+//#include <atomic>
 
 namespace Acidrain {
 

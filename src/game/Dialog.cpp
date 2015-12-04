@@ -1,6 +1,7 @@
 #include <Dialog.h>
 #include <AudioSystem.h>
 #include <Font.h>
+#include <math.h>
 
 namespace Acidrain {
 

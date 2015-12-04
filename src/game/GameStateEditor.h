@@ -1,8 +1,12 @@
 #pragma once
+#ifdef _WIN32
+    #include <mingw.thread.h>
+#else
+    #include <thread>
+#endif
 
 #include <GameState.h>
 #include <memory>
-#include <thread>
 
 namespace Acidrain {
 

@@ -10,13 +10,13 @@
       "name": "main",
       "depth": 0,
       "visible": true,
-      "selected": false
+      "selected": true
     },
     {
       "name": "back",
       "depth": -1,
       "visible": true,
-      "selected": true
+      "selected": false
     },
     {
       "name": "far away",
