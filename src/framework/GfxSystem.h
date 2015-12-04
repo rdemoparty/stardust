@@ -16,6 +16,7 @@ namespace Acidrain {
     using namespace glm;
 
     class Window;
+    class Vbo;
 
     enum class TransparencyMode {
         Opaque,
@@ -26,7 +27,6 @@ namespace Acidrain {
 
     class GfxSystem {
     public:
-
         static GfxSystem& getInstance();
 
         ~GfxSystem();
@@ -48,6 +48,8 @@ namespace Acidrain {
         void drawFilledRectangle(const vec2& topLeft, const vec2& bottomRight, const vec4& color);
 
         void drawSprite(const Sprite& sprite, const vec2& position);
+
+        void renderFullScreenTexturedQuad();
 
         void setClearColor(const vec3& color);
 
@@ -81,7 +83,12 @@ namespace Acidrain {
 
         void setVSync(bool state);
     private:
+
+        void initializeFullScreenQuadVbo();
+
         shared_ptr<Window> window;
+        shared_ptr<Vbo> fullScreenQuadVbo;
+
         int width, height;
         int offsetX, offsetY;
         int desiredWidth, desiredHeight;

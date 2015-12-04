@@ -36,22 +36,22 @@ namespace Acidrain {
             intValue = other.intValue;
         }
 
-        explicit GpuProgramConstant(const mat4& value) {
+        GpuProgramConstant(const mat4& value) {
             type = GpuProgramConstantType::Matrix4;
             matrix4Value = value;
         }
 
-        explicit GpuProgramConstant(int value) {
+        GpuProgramConstant(int value) {
             type = GpuProgramConstantType::Integer;
             intValue = value;
         }
 
-        explicit GpuProgramConstant(float value) {
+        GpuProgramConstant(float value) {
             type = GpuProgramConstantType::Float;
             floatValue = value;
         }
 
-        explicit GpuProgramConstant(vec2 value) {
+        GpuProgramConstant(vec2 value) {
             type = GpuProgramConstantType::Vec2;
             vec2Value = value;
         }

@@ -10,6 +10,7 @@
 #include <easylogging++.h>
 #include <CommandLineParser.h>
 #include <SDL_video.h>
+#include <Vbo.h>
 
 namespace Acidrain {
 
@@ -64,6 +65,7 @@ namespace Acidrain {
         clearScreen();
 
         setViewport();
+        initializeFullScreenQuadVbo();
     }
 
     void GfxSystem::setViewport() {
@@ -305,5 +307,28 @@ namespace Acidrain {
     void GfxSystem::setVSync(bool state) {
         if (window)
             window->vSync(state);
+    }
+
+    void GfxSystem::renderFullScreenTexturedQuad() {
+        fullScreenQuadVbo->draw();
+    }
+
+    void GfxSystem::initializeFullScreenQuadVbo() {
+        vector<vec2> vertices = {
+                vec2(0, 0),
+                vec2(GFXSYS.logicalWidth(), 0),
+                vec2(GFXSYS.logicalWidth(), GFXSYS.logicalHeight()),
+                vec2(0, GFXSYS.logicalHeight())
+        };
+
+        vector<vec2> texCoords = {
+                vec2(0, 1),
+                vec2(1, 1),
+                vec2(1, 0),
+                vec2(0, 0),
+        };
+
+        fullScreenQuadVbo = make_shared<Vbo>();
+        fullScreenQuadVbo->addQuad(vertices, texCoords, vec4(1, 1, 1, 1));
     }
 } // namespace Acidrain

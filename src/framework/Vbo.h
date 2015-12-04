@@ -14,7 +14,6 @@ namespace Acidrain {
 
     class Vbo {
     public:
-
         Vbo();
 
         ~Vbo();
@@ -28,7 +27,6 @@ namespace Acidrain {
         void draw();
 
     private:
-
         vector<vec2> buffer;
         int triangles = 0;
         GLuint id = 0;

@@ -3,6 +3,8 @@
 
 namespace Acidrain {
 
+    using namespace std;
+
     Fbo::Fbo(int w, int h) : width(w), height(h) {
         glGenFramebuffers(1, &frameBufferId);
         glGenTextures(1, &colorBufferId);
@@ -61,7 +63,7 @@ namespace Acidrain {
         GFXSYS.setViewport();
     }
 
-    std::shared_ptr<Texture> Fbo::getTexture() {
-        return std::shared_ptr<Texture>(new Texture(colorBufferId, width, height));
+    shared_ptr<Texture> Fbo::getTexture() {
+        return make_shared<Texture>(colorBufferId, width, height);
     }
 } // namespace Acidrain

@@ -6,9 +6,10 @@
 
 namespace Acidrain {
 
+    using namespace std;
+
     class Fbo {
     public:
-
         explicit Fbo(int width, int height);
 
         virtual ~Fbo();
@@ -25,7 +26,7 @@ namespace Acidrain {
 
         GLuint getDepthBufferId() const;
 
-        std::shared_ptr<Texture> getTexture();
+        shared_ptr<Texture> getTexture();
 
     private:
         int width;

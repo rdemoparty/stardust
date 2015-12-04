@@ -29,13 +29,12 @@ namespace Acidrain {
 
         gpuProgramConstantBundle = make_shared<GpuProgramConstantBundle>();
 
-        gpuProgramConstantBundle->add("orthoMatrix",
-                                      GpuProgramConstant(ortho(0.0f, 1024.0f, 768.0f, 0.0f, 0.0f, 1.0f)));
+        gpuProgramConstantBundle->add("orthoMatrix", ortho(0.0f, 1024.0f, 768.0f, 0.0f, 0.0f, 1.0f));
         int textureSamplerIndex = 0;
-        gpuProgramConstantBundle->add("diffuseSampler", GpuProgramConstant(textureSamplerIndex));
-        gpuProgramConstantBundle->add("resolution", GpuProgramConstant(vec2(GFXSYS.drawableWidth(), GFXSYS.drawableHeight())));
-        gpuProgramConstantBundle->add("offset", GpuProgramConstant(vec2(GFXSYS.getOffsetX(), GFXSYS.getOffsetY())));
-        gpuProgramConstantBundle->add("time", GpuProgramConstant(totalElapsedTime));
+        gpuProgramConstantBundle->add("diffuseSampler", textureSamplerIndex);
+        gpuProgramConstantBundle->add("resolution", vec2(GFXSYS.drawableWidth(), GFXSYS.drawableHeight()));
+        gpuProgramConstantBundle->add("offset", vec2(GFXSYS.getOffsetX(), GFXSYS.getOffsetY()));
+        gpuProgramConstantBundle->add("time", totalElapsedTime);
         gpuProgram->addConstants(gpuProgramConstantBundle.get());
 
     }
@@ -62,7 +61,7 @@ namespace Acidrain {
         if (INPUT.isKeyJustPressed(SDL_SCANCODE_F9)) {
             renderMode++;
             renderMode = renderMode % 5;
-            gpuProgramConstantBundle->add("renderMode", GpuProgramConstant(renderMode));
+            gpuProgramConstantBundle->add("renderMode", renderMode);
         }
 
         GameSession *gameSession = game->gameSession.get();
@@ -160,27 +159,13 @@ namespace Acidrain {
         fbo->unuse();
 
         GFXSYS.setTransparencyMode(TransparencyMode::Opaque);
-        gpuProgramConstantBundle->add("time", GpuProgramConstant(totalElapsedTime));
+        gpuProgramConstantBundle->add("time", totalElapsedTime);
 
         // draw the post processed one
         GFXSYS.clearScreen();
         gpuProgram->use();
         fboTexture->useForUnit(0);
-        glBegin(GL_QUADS);
-        {
-            glTexCoord2d(0, 1);
-            glVertex2d(0, 0);
-
-            glTexCoord2d(1, 1);
-            glVertex2d(1024, 0);
-
-            glTexCoord2d(1, 0);
-            glVertex2d(1024, 768);
-
-            glTexCoord2d(0, 0);
-            glVertex2d(0, 768);
-        }
-        glEnd();
+        GFXSYS.renderFullScreenTexturedQuad();
         gpuProgram->unuse();
 
         game->fpsCounter->addFrame();
