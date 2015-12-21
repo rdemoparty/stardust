@@ -11,7 +11,7 @@ namespace Acidrain {
     }
 
     int sizeOfVertexInBytes() {
-        return componentsInVertex() * sizeof(float);
+        return (int) (componentsInVertex() * sizeof(float));
     }
 
     Vbo::Vbo() {
@@ -50,31 +50,31 @@ namespace Acidrain {
     }
 
     // OpenGL >= 3.0 
-    // void Vbo::draw() {
-    //     if (triangles == 0)
-    //         return;
-
-    //     if (id == 0)
-    //         glGenBuffers(1, &id);
-
-    //     glBindBuffer(GL_ARRAY_BUFFER, id);
-    //     glBufferData(GL_ARRAY_BUFFER, sizeOfVertexInBytes() * triangles * 3, &buffer[0], GL_STATIC_DRAW);
-
-    //     glEnableVertexAttribArray(0); // vertices on stream 0
-    //     glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeOfVertexInBytes(), BUFFER_OFFSET(0));
-
-    //     glEnableVertexAttribArray(1); // tex coords on stream 1
-    //     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeOfVertexInBytes(), BUFFER_OFFSET(2));
-
-    //     glEnableVertexAttribArray(2); // colors on stream 2
-    //     glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, sizeOfVertexInBytes(), BUFFER_OFFSET(4));
-
-    //     glDrawArrays(GL_TRIANGLES, 0, triangles * 3);
-
-    //     glDisableVertexAttribArray(2);
-    //     glDisableVertexAttribArray(1);
-    //     glDisableVertexAttribArray(0);
-    // }
+//     void Vbo::draw() {
+//         if (triangles == 0)
+//             return;
+//
+//         if (id == 0)
+//             glGenBuffers(1, &id);
+//
+//         glBindBuffer(GL_ARRAY_BUFFER, id);
+//         glBufferData(GL_ARRAY_BUFFER, sizeOfVertexInBytes() * triangles * 3, &buffer[0], GL_STATIC_DRAW);
+//
+//         glEnableVertexAttribArray(0); // vertices on stream 0
+//         glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeOfVertexInBytes(), BUFFER_OFFSET(0));
+//
+//         glEnableVertexAttribArray(1); // tex coords on stream 1
+//         glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeOfVertexInBytes(), BUFFER_OFFSET(2));
+//
+//         glEnableVertexAttribArray(2); // colors on stream 2
+//         glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, sizeOfVertexInBytes(), BUFFER_OFFSET(4));
+//
+//         glDrawArrays(GL_TRIANGLES, 0, triangles * 3);
+//
+//         glDisableVertexAttribArray(2);
+//         glDisableVertexAttribArray(1);
+//         glDisableVertexAttribArray(0);
+//     }
 
     // OpenGL 2.1
     void Vbo::draw() {

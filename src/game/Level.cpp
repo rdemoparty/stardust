@@ -20,8 +20,8 @@ namespace Acidrain {
 
     Level::Level() {
         gpuProgram = make_shared<GpuProgram>(
-                FILESYS.getFileContent("shaders/normal.vs"),
-                FILESYS.getFileContent("shaders/normal.ps")
+                FILESYS.getFileContent("shaders/normal.vs.glsl"),
+                FILESYS.getFileContent("shaders/normal.ps.glsl")
         );
 
         starfield = make_shared<Starfield>(40, vec2(1024, 768));

@@ -10,7 +10,7 @@ if (${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU" OR ${CMAKE_CXX_COMPILER_ID} STREQUAL
 	set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS} -g")
 
 	# get rid of lua tmpnam deprecated warning
-	add_definitions(-DLUA_USE_POSIX)
+#	add_definitions(-DLUA_USE_POSIX)
 
 	if (${CMAKE_CXX_COMPILER_ID} STREQUAL "Clang")
 	else()
@@ -50,14 +50,28 @@ set(BIN_PATH ../bin)
 find_package(SDL2 REQUIRED)
 include_directories(${SDL2_INCLUDE_DIR})
 
+# SDL image setup
+find_package(SDL2_image REQUIRED)
+include_directories(${SDL2_IMAGE_INCLUDE_DIRS})
+
 # SDL mixer setup
 find_package(SDL2_mixer REQUIRED)
 include_directories(${SDL2_MIXER_INCLUDE_DIRS})
+
+# SDL ttf setup
+find_package(SDL2_ttf REQUIRED)
+include_directories(${SDL2_TTF_INCLUDE_DIRS})
 
 # GL setup
 find_package(OpenGL REQUIRED)
 include_directories(${OpenGL_INCLUDE_DIRS})
 link_directories(${OpenGL_LIBRARY_DIRS})
+
+# FREETYPE setup
+find_package(Freetype REQUIRED)
+include_directories(${Freetype_INCLUDE_DIRS})
+link_directories(${Freetype_LIBRARY_DIRS})
+include_directories("/usr/include/freetype2")
 
 # GLEW setup
 include_directories(./src/3rdparty/glew/include)
@@ -81,7 +95,7 @@ include_directories("src/game/scripting")
 add_subdirectory(src)
 
 add_executable(stardust src/main.cpp ${SOURCE})
-target_link_libraries(stardust ${SDL2_LIBRARY} ${SDL2_MAIN_LIBRARY} ${SDL2_MIXER_LIBRARIES} ${OPENGL_LIBRARIES})
+target_link_libraries(stardust ${SDL2_LIBRARY} ${SDL2_MAIN_LIBRARY} ${SDL2_IMAGE_LIBRARIES} ${SDL2_MIXER_LIBRARIES} ${SDL2_TTF_LIBRARIES} ${OPENGL_LIBRARIES} ${FREETYPE_LIBRARIES})
 if (WIN32)
 	target_link_libraries(stardust -lws2_32)
 else (WIN32)

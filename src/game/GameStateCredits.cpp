@@ -32,8 +32,8 @@ namespace Acidrain {
             prerender();
 
             gpuProgram = make_shared<GpuProgram>(
-                    FILESYS.getFileContent("shaders/postprocess.vs"),
-                    FILESYS.getFileContent("shaders/postprocess.ps")
+                    FILESYS.getFileContent("shaders/postprocess.vs.glsl"),
+                    FILESYS.getFileContent("shaders/postprocess.ps.glsl")
             );
 
             gpuProgramConstantBundle = make_shared<GpuProgramConstantBundle>();
