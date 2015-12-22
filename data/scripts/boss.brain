@@ -1,0 +1,22 @@
+---------------------------------------------------------------------
+-- The brain functions
+---------------------------------------------------------------------
+
+function onSpawn(objectPointer)
+    local o = Entity.from(objectPointer)
+end
+
+function onUpdate(objectPointer, elapsedSeconds)
+    local o = Entity.from(objectPointer)
+end
+
+
+function onDamage(objectPointer, amount, inflicterPointer)
+    local o = Entity.from(objectPointer)
+    local inflicter = Entity.from(inflicterPointer)
+end
+
+
+function onDeath(objectPointer, reason)
+    local killedEntity = Entity.from(objectPointer)
+end

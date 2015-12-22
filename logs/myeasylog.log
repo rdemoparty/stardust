@@ -1,0 +1,40 @@
+2015-12-04 07:48:00,766 INFO  [default] STARDUST v0.9-104-g1f036a6 (1448802089)
+2015-12-04 07:48:00,768 INFO  [default] Initializing event system
+2015-12-04 07:48:00,867 INFO  [default] Initializing user preferences from file C:\users\benny\.backfire\config.json
+2015-12-04 07:48:00,867 INFO  [default] Initializing file system with root dir ../data
+2015-12-04 07:48:00,867 INFO  [default] Initializing audio system with samplerate: 22050 and buffer size: 1024
+2015-12-04 07:48:00,895 INFO  [default] Allocated channels: 14
+2015-12-04 07:48:00,895 INFO  [default] Added 4 channels to group EXPLOSIONS
+2015-12-04 07:48:00,895 INFO  [default] Added 6 channels to group PLAYER
+2015-12-04 07:48:00,895 INFO  [default] Added 1 channels to group PLAYER_WEAPONS
+2015-12-04 07:48:00,895 INFO  [default] Added 1 channels to group TYPER
+2015-12-04 07:48:00,895 INFO  [default] Added 2 channels to group UI
+2015-12-04 07:48:00,895 INFO  [default] Initializing graphics system
+2015-12-04 07:48:00,895 INFO  [default] Compiled against SDL version 2.0.3
+2015-12-04 07:48:00,895 INFO  [default] Linking against SDL version 2.0.3
+2015-12-04 07:48:00,895 INFO  [default] Attempting to create window of 1920x1200. Vsync enabled: 1
+2015-12-04 07:48:01,256 INFO  [default] Initializing input provider
+2015-12-04 07:48:01,256 INFO  [default] Initializing scripting system
+2015-12-04 07:48:01,257 INFO  [default] Loading sprite animation repository from animations.json
+2015-12-04 07:48:01,257 FATAL [default] Failed reading content for file ../data/animations.json. Errno=2
+2015-12-04 07:48:01,257 WARN  [default] Aborting application. Reason: Fatal log at [/home/benny/work/stardust/src/framework/FileSystem.cpp:150]
+2015-12-04 07:48:07,256 INFO  [default] STARDUST v0.9-104-g1f036a6 (1448802089)
+2015-12-04 07:48:07,259 INFO  [default] Initializing event system
+2015-12-04 07:48:07,354 INFO  [default] Initializing user preferences from file C:\users\benny\.backfire\config.json
+2015-12-04 07:48:07,355 INFO  [default] Initializing file system with root dir ../data
+2015-12-04 07:48:07,355 INFO  [default] Initializing audio system with samplerate: 22050 and buffer size: 1024
+2015-12-04 07:48:07,378 INFO  [default] Allocated channels: 14
+2015-12-04 07:48:07,378 INFO  [default] Added 4 channels to group EXPLOSIONS
+2015-12-04 07:48:07,379 INFO  [default] Added 6 channels to group PLAYER
+2015-12-04 07:48:07,379 INFO  [default] Added 1 channels to group PLAYER_WEAPONS
+2015-12-04 07:48:07,379 INFO  [default] Added 1 channels to group TYPER
+2015-12-04 07:48:07,379 INFO  [default] Added 2 channels to group UI
+2015-12-04 07:48:07,379 INFO  [default] Initializing graphics system
+2015-12-04 07:48:07,379 INFO  [default] Compiled against SDL version 2.0.3
+2015-12-04 07:48:07,379 INFO  [default] Linking against SDL version 2.0.3
+2015-12-04 07:48:07,380 INFO  [default] Attempting to create window of 1920x1200. Vsync enabled: 1
+2015-12-04 07:48:07,809 INFO  [default] Initializing input provider
+2015-12-04 07:48:07,809 INFO  [default] Initializing scripting system
+2015-12-04 07:48:07,809 INFO  [default] Loading sprite animation repository from animations.json
+2015-12-04 07:48:07,809 FATAL [default] Failed reading content for file ../data/animations.json. Errno=2
+2015-12-04 07:48:07,810 WARN  [default] Aborting application. Reason: Fatal log at [/home/benny/work/stardust/src/framework/FileSystem.cpp:150]
