@@ -58,10 +58,6 @@ include_directories(${SDL2_IMAGE_INCLUDE_DIRS})
 find_package(SDL2_mixer REQUIRED)
 include_directories(${SDL2_MIXER_INCLUDE_DIRS})
 
-# SDL ttf setup
-find_package(SDL2_ttf REQUIRED)
-include_directories(${SDL2_TTF_INCLUDE_DIRS})
-
 # GL setup
 find_package(OpenGL REQUIRED)
 include_directories(${OpenGL_INCLUDE_DIRS})
@@ -71,7 +67,9 @@ link_directories(${OpenGL_LIBRARY_DIRS})
 find_package(Freetype REQUIRED)
 include_directories(${Freetype_INCLUDE_DIRS})
 link_directories(${Freetype_LIBRARY_DIRS})
-include_directories("/usr/include/freetype2")
+# freetype header location for mac
+include_directories("/usr/local/opt/freetype/include/")
+include_directories("/usr/local/opt/freetype/include/freetype2")
 
 # GLEW setup
 include_directories(./src/3rdparty/glew/include)
@@ -95,7 +93,7 @@ include_directories("src/game/scripting")
 add_subdirectory(src)
 
 add_executable(stardust src/main.cpp ${SOURCE})
-target_link_libraries(stardust ${SDL2_LIBRARY} ${SDL2_MAIN_LIBRARY} ${SDL2_IMAGE_LIBRARIES} ${SDL2_MIXER_LIBRARIES} ${SDL2_TTF_LIBRARIES} ${OPENGL_LIBRARIES} ${FREETYPE_LIBRARIES})
+target_link_libraries(stardust ${SDL2_LIBRARY} ${SDL2_MAIN_LIBRARY} ${SDL2_IMAGE_LIBRARIES} ${SDL2_MIXER_LIBRARIES} ${OPENGL_LIBRARIES} ${FREETYPE_LIBRARIES})
 if (WIN32)
 	target_link_libraries(stardust -lws2_32)
 else (WIN32)

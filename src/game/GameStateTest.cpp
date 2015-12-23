@@ -17,6 +17,7 @@
 #include <GpuProgram.h>
 #include <GpuProgramConstants.h>
 #include <Vbo.h>
+#include <FpsCounter.h>
 
 #include <ft2build.h>
 #include <ftglyph.h>
@@ -41,6 +42,7 @@ namespace Acidrain {
     static shared_ptr<GpuProgram> gpuProgram;
     static shared_ptr<GpuProgramConstantBundle> gpuProgramConstantBundle;
     static shared_ptr<Texture> fontTexture;
+    static shared_ptr<Texture> bigFontTexture;
     static FT_Library library;
 
     struct GlyphInfo {
@@ -51,6 +53,7 @@ namespace Acidrain {
         int advance;
         int bitmapLeft;
         int bitmapTop;
+        int padding;
     };
 
     struct GlyphAtlas {
@@ -119,18 +122,17 @@ namespace Acidrain {
             srcRect.w = outlineBitmap.width;
             srcRect.h = outlineBitmap.rows;
 
-            while (!hasRoomFor(outlineBitmap.width, outlineBitmap.rows)) {
+            while (!hasRoomFor(outlineBitmap.width + paddingSize * 2, outlineBitmap.rows + paddingSize*2)) {
                 enlargeAtlas();
             }
 
             SDL_Rect dstRect;
-            if ((currentX + outlineBitmap.width) >= atlasWidth) {
-                cout << "No more room on row. Switching to next row" << endl;
+            if ((currentX + outlineBitmap.width + paddingSize*2) >= atlasWidth) {
                 currentX = 0;
                 currentY += maxHeightOnLastRow;
                 maxHeightOnLastRow = 0;
             }
-            maxHeightOnLastRow = std::max(maxHeightOnLastRow, (int) outlineBitmap.rows);
+            maxHeightOnLastRow = std::max(maxHeightOnLastRow, (int)(outlineBitmap.rows + paddingSize*2));
 
             dstRect.x = currentX;
             dstRect.y = currentY;
@@ -140,17 +142,18 @@ namespace Acidrain {
             glyphs[asciiChar] = GlyphInfo{
                     dstRect.x,
                     dstRect.y,
-                    dstRect.w,
-                    dstRect.h,
+                    dstRect.w + paddingSize * 2,
+                    dstRect.h + paddingSize * 2,
                     (int) (glyphSlot->advance.x / 64.0),
                     glyphSlot->bitmap_left,
-                    glyphSlot->bitmap_top
+                    glyphSlot->bitmap_top,
+                    paddingSize
             };
 
             // render outlined glyph
             for (int y = 0; y < outlineBitmap.rows; y++) {
                 int sourceOffset = y * outlineBitmap.pitch;
-                int destinationOffset = (dstRect.y + y) * atlasWidth + dstRect.x;
+                int destinationOffset = (dstRect.y + y + paddingSize) * atlasWidth + dstRect.x + paddingSize;
                 unsigned char* sourcePointer = &outlineBitmap.buffer[sourceOffset];
                 for (int x = 0; x < outlineBitmap.width; x++) {
                     unsigned char alphaComponent = *sourcePointer++;
@@ -163,7 +166,7 @@ namespace Acidrain {
             // copy rendered glyph
             for (int y = 0; y < glyphSlot->bitmap.rows; y++) {
                 int sourceOffset = y * glyphSlot->bitmap.pitch;
-                int destinationOffset = (dstRect.y + y + outlineSize) * atlasWidth + dstRect.x + outlineSize;
+                int destinationOffset = (dstRect.y + y + outlineSize + paddingSize) * atlasWidth + dstRect.x + outlineSize + paddingSize;
                 unsigned char* sourcePointer = &glyphSlot->bitmap.buffer[sourceOffset];
                 for (int x = 0; x < glyphSlot->bitmap.width; x++) {
                     unsigned char alphaComponent = *sourcePointer++;
@@ -174,17 +177,17 @@ namespace Acidrain {
             }
 
             // copy shadow glyph
-            int shadowOffsetX = 2;
-            int shadowOffsetY = 2;
+            int shadowOffsetX = 5;
+            int shadowOffsetY = 5;
             for (int y = 0; y < glyphSlot->bitmap.rows; y++) {
-                int dstY = dstRect.y + y + outlineSize + shadowOffsetY;
-                if (y >= outlineBitmap.rows) continue;
+                int dstY = dstRect.y + y + outlineSize + shadowOffsetY + paddingSize;
+//                if (y >= (outlineBitmap.rows + paddingSize)) continue;
 
-                int destinationOffset = dstY * atlasWidth + dstRect.x + outlineSize + shadowOffsetX;
+                int destinationOffset = dstY * atlasWidth + dstRect.x + outlineSize + shadowOffsetX + paddingSize;
 
                 int sourceOffset = y * glyphSlot->bitmap.pitch;
                 unsigned char* sourcePointer = &glyphSlot->bitmap.buffer[sourceOffset];
-                for (int x = 0; x < (glyphSlot->bitmap.width - shadowOffsetX); x++) {
+                for (int x = 0; x < glyphSlot->bitmap.width; x++) {
                     unsigned char alphaComponent = *sourcePointer++;
                     atlasTexture[(destinationOffset * 4 + 2)] = alphaComponent;
                     atlasTexture[(destinationOffset * 4 + 3)] = 255;
@@ -192,16 +195,17 @@ namespace Acidrain {
                 }
             }
 
-            currentX += srcRect.w;
+            currentX += srcRect.w + paddingSize * 2;
         }
 
         void dump() {
-            LOG(DEBUG) << "Font atlas size is " << atlasWidth << "x" << atlasHeight;
-//            ofstream file("font.raw");
-//            file.write((const char*) atlasTexture, atlasWidth * atlasHeight * 4);
-//            file.close();
+            LOG(INFO) << "Font atlas size is " << atlasWidth << "x" << atlasHeight;
+            ofstream file("font.raw");
+            file.write((const char*) atlasTexture, atlasWidth * atlasHeight * 4);
+            file.close();
         }
 
+        int paddingSize = 5;
         int atlasWidth = 16;
         int atlasHeight = 16;
         int currentX = 0;
@@ -211,7 +215,7 @@ namespace Acidrain {
         map<uint16, GlyphInfo> glyphs;
     };
 
-    struct TtfFontMetrics {
+    struct FontMetrics {
         void setFrom(FT_Face face) {
             if (FT_IS_SCALABLE(face)) {
                 FT_Fixed scale = face->size->metrics.y_scale;
@@ -230,6 +234,12 @@ namespace Acidrain {
         int ascent;
         int descent;
         string family;
+    };
+
+    struct FontRenderStyle {
+        int outlineSize = 1;
+        int shadowOffsetX = 3;
+        int shadowOffsetY = 3;
     };
 
     class TtfFont {
@@ -295,7 +305,8 @@ namespace Acidrain {
         }
 
 
-        TtfFont(const string& fontFile, int pointSize) {
+        TtfFont(const string& fontFile, int pointSize, FontRenderStyle renderStyle) {
+            this->renderStyle = renderStyle;
             FT_Error error = FT_Init_FreeType(&library);
             if (error) {
                 LOG(ERROR) << "Failed to initialize freetype lib";
@@ -332,29 +343,29 @@ namespace Acidrain {
             if (previousChar != 0) {
                 penPosition.x += atlas.glyphs[previousChar].advance;
 
-                if (FT_HAS_KERNING(face)) {
-                    FT_UInt previousGlyphIndex = FT_Get_Char_Index(face, previousChar);
-                    FT_UInt currentGlyphIndex = FT_Get_Char_Index(face, charToRender);
-
-                    if (previousGlyphIndex != 0 && currentGlyphIndex != 0) {
-                        FT_Vector kerningInfo;
-                        FT_Error error = FT_Get_Kerning(face, previousGlyphIndex, currentGlyphIndex, FT_KERNING_DEFAULT, &kerningInfo);
-                        if (error) {
-                            LOG(ERROR) << "Failed to get kerning info between " << to_string(previousChar) << " and " << to_string(charToRender);
-                        } else {
-                            penPosition.x += kerningInfo.x / 64.0; // 2^6 = 64
-                        }
-                    }
-                }
+//                if (FT_HAS_KERNING(face)) {
+//                    FT_UInt previousGlyphIndex = FT_Get_Char_Index(face, previousChar);
+//                    FT_UInt currentGlyphIndex = FT_Get_Char_Index(face, charToRender);
+//
+//                    if (previousGlyphIndex != 0 && currentGlyphIndex != 0) {
+//                        FT_Vector kerningInfo;
+//                        FT_Error error = FT_Get_Kerning(face, previousGlyphIndex, currentGlyphIndex, FT_KERNING_DEFAULT, &kerningInfo);
+//                        if (error) {
+//                            LOG(ERROR) << "Failed to get kerning info between " << to_string(previousChar) << " and " << to_string(charToRender);
+//                        } else {
+//                            penPosition.x += kerningInfo.x / 64.0; // 2^6 = 64
+//                        }
+//                    }
+//                }
             }
 
             float penX = penPosition.x;
             float penY = penPosition.y;
             vector<vec2> verts = {
-                    {penX + glyphInfo.bitmapLeft,               penY - glyphInfo.bitmapTop},
-                    {penX + glyphInfo.bitmapLeft + glyphInfo.w, penY - glyphInfo.bitmapTop},
-                    {penX + glyphInfo.bitmapLeft + glyphInfo.w, penY + glyphInfo.h - glyphInfo.bitmapTop},
-                    {penX + glyphInfo.bitmapLeft,               penY + glyphInfo.h - glyphInfo.bitmapTop}
+                    {penX + glyphInfo.bitmapLeft - glyphInfo.padding,               penY - glyphInfo.bitmapTop - glyphInfo.padding},
+                    {penX + glyphInfo.bitmapLeft + glyphInfo.padding + glyphInfo.w, penY - glyphInfo.bitmapTop - glyphInfo.padding},
+                    {penX + glyphInfo.bitmapLeft + glyphInfo.padding + glyphInfo.w, penY + glyphInfo.h + glyphInfo.padding - glyphInfo.bitmapTop},
+                    {penX + glyphInfo.bitmapLeft - glyphInfo.padding,               penY + glyphInfo.h + glyphInfo.padding - glyphInfo.bitmapTop}
             };
 
             double textureNormalizationFactor = 1.0 / (double) atlas.atlasWidth;
@@ -401,8 +412,9 @@ namespace Acidrain {
         char previousChar;
         Vbo vbo;
         GlyphAtlas atlas;
-        TtfFontMetrics fontMetrics;
+        FontMetrics fontMetrics;
         vec2 penPosition;
+        FontRenderStyle renderStyle;
     };
 
 
@@ -444,15 +456,20 @@ namespace Acidrain {
     }
 
     shared_ptr<TtfFont> newFont;
+    shared_ptr<TtfFont> bigFont;
+    FpsCounter fpsCounter;
 
     void GameStateTest::onEnter(Stardust* game) {
         string fontName = "../data/fonts/arial.ttf";
 //        string fontName = "../data/fonts/DejaVuSans.ttf";
-        int fontSize = 20;
+        int fontSize = 12;
 
-        newFont = shared_ptr<TtfFont>(new TtfFont(fontName, fontSize));
+        FontRenderStyle renderStyle;
+        newFont = shared_ptr<TtfFont>(new TtfFont(fontName, fontSize, renderStyle));
         fontTexture = newFont->getTexture();
 
+        bigFont = shared_ptr<TtfFont>(new TtfFont(fontName, 100, renderStyle));
+        bigFontTexture = bigFont->getTexture();
         // ------------------------------------
 
         script = new Script("scripts/dialog.lua");
@@ -485,6 +502,7 @@ namespace Acidrain {
     void GameStateTest::update(Stardust* game, float elapsedSeconds) {
 //        DialogRepository::getInstance().updateAll(elapsedSeconds);
 
+        fpsCounter.update(elapsedSeconds);
         textAlpha += elapsedSeconds;
 
         if (INPUT.isKeyJustPressed(SDL_SCANCODE_ESCAPE)) {
@@ -505,11 +523,19 @@ namespace Acidrain {
 
         const char* text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit.\nVivamus nunc mauris, feugiat at tortor quis, ullamcorper porta tellus.\nPhasellus sit amet eleifend orci.";
 //        newFont->print(100, 200, text, vec4(1, 0.5, 0.2, 1));
-        newFont->print(100, 200, text, vec4(0.5, 0.5, 0.6, (sin(textAlpha) / 2.0) + 0.5));
+//        newFont->print(100, 200, text, vec4(0.5, 0.5, 0.6, (sin(textAlpha) / 2.0) + 0.5));
+        newFont->print(100, 200, text, vec4(0.5, 0.5, 0.6, 1));
+
+        stringstream ss;
+        ss << "FPS: " << fpsCounter.getFps();
+        bigFontTexture->useForUnit(0);
+        bigFont->print(0, 100, ss.str().c_str(), vec4(0.5, 0.5, 0.6, 1));
+
 //        GFXSYS.renderFullScreenTexturedQuad();
         gpuProgram->unuse();
 
         GFXSYS.show();
+        fpsCounter.addFrame();
     }
 
     GameStateTest::GameStateTest() {
