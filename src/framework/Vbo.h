@@ -15,16 +15,18 @@ namespace Acidrain {
     class Vbo {
     public:
         Vbo();
-
         ~Vbo();
 
         void empty();
 
         void addQuad(const vector<vec2>& verts, const vector<vec2>& texs, const vec4& color);
+        void setQuad(int quadIndex, const vector<vec2>& verts, const vector<vec2>& texs, const vec4& color);
 
         void addTriangle(const vector<vec2>& verts, const vector<vec2>& texs, const vec4& color, int a, int b, int c);
+        void setTriangle(int triangleIndex, const vector<vec2>& verts, const vector<vec2>& texs, const vec4& color, int a, int b, int c);
 
         void draw();
+        void draw(int howManyTriangles);
 
     private:
         vector<vec2> buffer;
