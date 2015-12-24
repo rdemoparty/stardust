@@ -3,6 +3,8 @@
 #include <string>
 #include <glm/mat4x4.hpp>
 #include <glm/vec2.hpp>
+#include <glm/vec3.hpp>
+#include <glm/vec4.hpp>
 #include <GpuProgram.h>
 
 namespace Acidrain {
@@ -16,6 +18,8 @@ namespace Acidrain {
         Matrix4,
         Integer,
         Vec2,
+        Vec3,
+        Vec4,
         Float
     };
 
@@ -25,6 +29,8 @@ namespace Acidrain {
         mat4 matrix4Value;
         int intValue;
         vec2 vec2Value;
+        vec3 vec3Value;
+        vec4 vec4Value;
         float floatValue;
 
         GpuProgramConstant() {
@@ -55,6 +61,16 @@ namespace Acidrain {
             type = GpuProgramConstantType::Vec2;
             vec2Value = value;
         }
+
+        GpuProgramConstant(vec3 value) {
+            type = GpuProgramConstantType::Vec3;
+            vec3Value = value;
+        }
+
+        GpuProgramConstant(vec4 value) {
+            type = GpuProgramConstantType::Vec4;
+            vec4Value = value;
+        }
     };
 
     class GpuProgramConstantBundle {
@@ -78,6 +94,12 @@ namespace Acidrain {
                         break;
                     case GpuProgramConstantType::Vec2:
                         program->setVec2Uniform(&kv.second.vec2Value[0], kv.first.c_str());
+                        break;
+                    case GpuProgramConstantType::Vec3:
+                        program->setVec3Uniform(&kv.second.vec3Value[0], kv.first.c_str());
+                        break;
+                    case GpuProgramConstantType::Vec4:
+                        program->setVec4Uniform(&kv.second.vec4Value[0], kv.first.c_str());
                         break;
                 }
             }
