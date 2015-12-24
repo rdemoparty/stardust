@@ -53,7 +53,6 @@ namespace Acidrain {
         int advance;
         int bitmapLeft;
         int bitmapTop;
-        int padding;
     };
 
     struct GlyphAtlas {
@@ -64,8 +63,14 @@ namespace Acidrain {
         }
 
         void enlargeAtlas() {
-            int newAtlasWidth = atlasWidth * 2;
-            int newAtlasHeight = atlasHeight * 2;
+            int newAtlasWidth = atlasWidth;
+            int newAtlasHeight = atlasHeight;
+
+            if (newAtlasWidth > 512) {
+                newAtlasHeight += 100;
+            } else {
+                newAtlasWidth *= 2;
+            }
 
             unsigned char* newAtlasTexture = new unsigned char[newAtlasWidth * newAtlasHeight * 4];
             memset(newAtlasTexture, 0, (size_t) (newAtlasWidth * newAtlasHeight * 4));
@@ -122,17 +127,17 @@ namespace Acidrain {
             srcRect.w = outlineBitmap.width;
             srcRect.h = outlineBitmap.rows;
 
-            while (!hasRoomFor(outlineBitmap.width + paddingSize * 2, outlineBitmap.rows + paddingSize*2)) {
+            while (!hasRoomFor(outlineBitmap.width + paddingSize * 2, outlineBitmap.rows + paddingSize * 2)) {
                 enlargeAtlas();
             }
 
             SDL_Rect dstRect;
-            if ((currentX + outlineBitmap.width + paddingSize*2) >= atlasWidth) {
+            if ((currentX + outlineBitmap.width + paddingSize * 2) >= atlasWidth) {
                 currentX = 0;
                 currentY += maxHeightOnLastRow;
                 maxHeightOnLastRow = 0;
             }
-            maxHeightOnLastRow = std::max(maxHeightOnLastRow, (int)(outlineBitmap.rows + paddingSize*2));
+            maxHeightOnLastRow = std::max(maxHeightOnLastRow, (int) (outlineBitmap.rows + paddingSize * 2));
 
             dstRect.x = currentX;
             dstRect.y = currentY;
@@ -146,8 +151,7 @@ namespace Acidrain {
                     dstRect.h + paddingSize * 2,
                     (int) (glyphSlot->advance.x / 64.0),
                     glyphSlot->bitmap_left,
-                    glyphSlot->bitmap_top,
-                    paddingSize
+                    glyphSlot->bitmap_top
             };
 
             // render outlined glyph
@@ -177,8 +181,8 @@ namespace Acidrain {
             }
 
             // copy shadow glyph
-            int shadowOffsetX = 5;
-            int shadowOffsetY = 5;
+            int shadowOffsetX = 2;
+            int shadowOffsetY = 2;
             for (int y = 0; y < glyphSlot->bitmap.rows; y++) {
                 int dstY = dstRect.y + y + outlineSize + shadowOffsetY + paddingSize;
 //                if (y >= (outlineBitmap.rows + paddingSize)) continue;
@@ -213,6 +217,7 @@ namespace Acidrain {
         int maxHeightOnLastRow = 0;
         unsigned char* atlasTexture;
         map<uint16, GlyphInfo> glyphs;
+        bool containsGlyphFor(char characterToRender);
     };
 
     struct FontMetrics {
@@ -277,7 +282,7 @@ namespace Acidrain {
                 }
 
 //                // render outline if needed, overwriting the normal glyph but maintaining the sizes
-                int outlineSize = 4;
+                int outlineSize = 1;
                 FT_Stroker stroker;
                 error = FT_Stroker_New(library, &stroker);
                 FT_Stroker_Set(stroker, outlineSize * 64, FT_STROKER_LINECAP_ROUND, FT_STROKER_LINEJOIN_ROUND, 0);
@@ -299,9 +304,9 @@ namespace Acidrain {
 
 //                face->glyph->bitmap = ((FT_BitmapGlyph) bitmapGlyph)->bitmap;
 
-                atlas.add(asciiChar, face->glyph, ((FT_BitmapGlyph) bitmapGlyph)->bitmap, outlineSize);
+                atlas_.add(asciiChar, face->glyph, ((FT_BitmapGlyph) bitmapGlyph)->bitmap, outlineSize);
             }
-            atlas.dump();
+            atlas_.dump();
         }
 
 
@@ -338,42 +343,43 @@ namespace Acidrain {
         }
 
         void addCharToVbo(const char& charToRender, const vec4& color) {
-            GlyphInfo glyphInfo = atlas.glyphs[charToRender];
+            GlyphInfo glyphInfo = atlas_.glyphs[charToRender];
 
             if (previousChar != 0) {
-                penPosition.x += atlas.glyphs[previousChar].advance;
+                penPosition.x += atlas_.glyphs[previousChar].advance;
 
-//                if (FT_HAS_KERNING(face)) {
-//                    FT_UInt previousGlyphIndex = FT_Get_Char_Index(face, previousChar);
-//                    FT_UInt currentGlyphIndex = FT_Get_Char_Index(face, charToRender);
-//
-//                    if (previousGlyphIndex != 0 && currentGlyphIndex != 0) {
-//                        FT_Vector kerningInfo;
-//                        FT_Error error = FT_Get_Kerning(face, previousGlyphIndex, currentGlyphIndex, FT_KERNING_DEFAULT, &kerningInfo);
-//                        if (error) {
-//                            LOG(ERROR) << "Failed to get kerning info between " << to_string(previousChar) << " and " << to_string(charToRender);
-//                        } else {
-//                            penPosition.x += kerningInfo.x / 64.0; // 2^6 = 64
-//                        }
-//                    }
-//                }
+                if (FT_HAS_KERNING(face)) {
+                    FT_UInt previousGlyphIndex = FT_Get_Char_Index(face, previousChar);
+                    FT_UInt currentGlyphIndex = FT_Get_Char_Index(face, charToRender);
+
+                    if (previousGlyphIndex != 0 && currentGlyphIndex != 0) {
+                        FT_Vector kerningInfo;
+                        FT_Error error = FT_Get_Kerning(face, previousGlyphIndex, currentGlyphIndex, FT_KERNING_DEFAULT, &kerningInfo);
+                        if (error) {
+                            LOG(ERROR) << "Failed to get kerning info between " << to_string(previousChar) << " and " << to_string(charToRender);
+                        } else {
+                            penPosition.x += kerningInfo.x / 64.0; // 2^6 = 64
+                        }
+                    }
+                }
             }
 
             float penX = penPosition.x;
             float penY = penPosition.y;
             vector<vec2> verts = {
-                    {penX + glyphInfo.bitmapLeft - glyphInfo.padding,               penY - glyphInfo.bitmapTop - glyphInfo.padding},
-                    {penX + glyphInfo.bitmapLeft + glyphInfo.padding + glyphInfo.w, penY - glyphInfo.bitmapTop - glyphInfo.padding},
-                    {penX + glyphInfo.bitmapLeft + glyphInfo.padding + glyphInfo.w, penY + glyphInfo.h + glyphInfo.padding - glyphInfo.bitmapTop},
-                    {penX + glyphInfo.bitmapLeft - glyphInfo.padding,               penY + glyphInfo.h + glyphInfo.padding - glyphInfo.bitmapTop}
+                    {penX + glyphInfo.bitmapLeft,               penY - glyphInfo.bitmapTop},
+                    {penX + glyphInfo.bitmapLeft + glyphInfo.w, penY - glyphInfo.bitmapTop},
+                    {penX + glyphInfo.bitmapLeft + glyphInfo.w, penY + glyphInfo.h - glyphInfo.bitmapTop},
+                    {penX + glyphInfo.bitmapLeft,               penY + glyphInfo.h - glyphInfo.bitmapTop}
             };
 
-            double textureNormalizationFactor = 1.0 / (double) atlas.atlasWidth;
+            double textureXNormalizationFactor = 1.0 / (double) atlas_.atlasWidth;
+            double textureYNormalizationFactor = 1.0 / (double) atlas_.atlasHeight;
             double x, y, w, h;
-            x = glyphInfo.x * textureNormalizationFactor;
-            y = glyphInfo.y * textureNormalizationFactor;
-            w = glyphInfo.w * textureNormalizationFactor;
-            h = glyphInfo.h * textureNormalizationFactor;
+            x = glyphInfo.x * textureXNormalizationFactor;
+            y = glyphInfo.y * textureYNormalizationFactor;
+            w = glyphInfo.w * textureXNormalizationFactor;
+            h = glyphInfo.h * textureYNormalizationFactor;
 
             vector<vec2> texs = {
                     {x,     y},
@@ -406,12 +412,23 @@ namespace Acidrain {
             vbo.draw();
         }
 
+        const FontMetrics& metrics() const {
+            return fontMetrics;
+        }
+
+        const GlyphAtlas& atlas() const {
+            return atlas_;
+        }
+
         shared_ptr<Texture> getTexture();
+        bool hasChar(char characterToRender);
+        int getKerning(char previousChar, const char& currentChar);
+        int getCharWidth(const char& character);
     private:
 
         char previousChar;
         Vbo vbo;
-        GlyphAtlas atlas;
+        GlyphAtlas atlas_;
         FontMetrics fontMetrics;
         vec2 penPosition;
         FontRenderStyle renderStyle;
@@ -455,21 +472,106 @@ namespace Acidrain {
         }
     }
 
+    class TextLayout {
+    public:
+        void wrapLastChars(int howManyChars);
+
+        TextLayout(const string& textToRender, Box constraint, TtfFont* fnt)
+                : text(textToRender), font(fnt), textBox(constraint) {
+            penPosition = textBox.tl + vec2(0, font->metrics().ascent);
+            previousChar = 0;
+            vbo.empty();
+            for (auto it = textToRender.begin(); it != textToRender.end(); it++) {
+                char charToRender = *it;
+                if (charToRender == '\n') {
+                    penPosition.y += font->metrics().lineSkip;
+                    penPosition.x = textBox.tl.x;
+                    previousChar = 0;
+                } else if (font->hasChar(charToRender)) {
+//                    int width = font->getCharWidth(charToRender);
+                    addCharToVbo(charToRender);
+                } else {
+                    // non printable character. do nothing
+                }
+            }
+        }
+
+        void addCharToVbo(const char& charToRender) {
+            const GlyphInfo& glyphInfo = font->atlas().glyphs.at(static_cast<uint16>(charToRender));
+
+            if (previousChar != 0) {
+                penPosition.x += font->getCharWidth(previousChar);
+                penPosition.x += font->getKerning(previousChar, charToRender);
+            }
+
+            float penX = penPosition.x;
+            float penY = penPosition.y;
+            vector<vec2> verts = {
+                    {penX + glyphInfo.bitmapLeft,               penY - glyphInfo.bitmapTop},
+                    {penX + glyphInfo.bitmapLeft + glyphInfo.w, penY - glyphInfo.bitmapTop},
+                    {penX + glyphInfo.bitmapLeft + glyphInfo.w, penY + glyphInfo.h - glyphInfo.bitmapTop},
+                    {penX + glyphInfo.bitmapLeft,               penY + glyphInfo.h - glyphInfo.bitmapTop}
+            };
+
+            double textureXNormalizationFactor = 1.0 / (double) font->atlas().atlasWidth;
+            double textureYNormalizationFactor = 1.0 / (double) font->atlas().atlasHeight;
+            double x, y, w, h;
+            x = glyphInfo.x * textureXNormalizationFactor;
+            y = glyphInfo.y * textureYNormalizationFactor;
+            w = glyphInfo.w * textureXNormalizationFactor;
+            h = glyphInfo.h * textureYNormalizationFactor;
+
+            vector<vec2> texs = {
+                    {x,     y},
+                    {x + w, y},
+                    {x + w, y + h},
+                    {x,     y + h}
+            };
+
+            vbo.addQuad(verts, texs, vec4(1, 1, 1, 1));
+            previousChar = charToRender;
+        }
+
+        const Box& getTextBox() const {
+            return textBox;
+        }
+
+        void render() {
+            vbo.draw();
+        }
+
+        void render(int howManyChars) {
+            // TODO: make it possible to also provide a from/to range (mind the buffering in the vbo)
+            vbo.draw(howManyChars * 2); // 2 triangles per char
+        }
+
+    private:
+        string text;
+        TtfFont* font;
+        Box textBox;
+        vec2 penPosition;
+        char previousChar;
+        Vbo vbo;
+    };
+
     shared_ptr<TtfFont> newFont;
     shared_ptr<TtfFont> bigFont;
     FpsCounter fpsCounter;
+    shared_ptr<TextLayout> textLayout;
 
     void GameStateTest::onEnter(Stardust* game) {
-        string fontName = "../data/fonts/arial.ttf";
-//        string fontName = "../data/fonts/DejaVuSans.ttf";
-        int fontSize = 12;
-
         FontRenderStyle renderStyle;
-        newFont = shared_ptr<TtfFont>(new TtfFont(fontName, fontSize, renderStyle));
+        newFont = shared_ptr<TtfFont>(new TtfFont("../data/fonts/Neo Sans Pro Bold.ttf", 32, renderStyle));
         fontTexture = newFont->getTexture();
 
-        bigFont = shared_ptr<TtfFont>(new TtfFont(fontName, 100, renderStyle));
+        bigFont = shared_ptr<TtfFont>(new TtfFont("../data/fonts/arial.ttf", 50, renderStyle));
         bigFontTexture = bigFont->getTexture();
+
+
+        string textToRender = "Lorem ipsum dolor sit amet, consectetur adipiscing elit.\nVivamus nunc mauris, feugiat at tortor quis, ullamcorper porta tellus.\nPhasellus sit amet eleifend orci.";
+        Box constraint(400, 300);
+        constraint.translate(vec2(200, 300));
+        textLayout = shared_ptr<TextLayout>(new TextLayout(textToRender, constraint, newFont.get()));
         // ------------------------------------
 
         script = new Script("scripts/dialog.lua");
@@ -490,6 +592,9 @@ namespace Acidrain {
         int textureSamplerIndex = 0;
         gpuProgramConstantBundle->add("diffuseSampler", GpuProgramConstant(textureSamplerIndex));
         gpuProgramConstantBundle->add("cameraShakeMatrix", GpuProgramConstant(glm::mat4()));
+        gpuProgramConstantBundle->add("textDiffuseColor", GpuProgramConstant(vec4(0.5, 0.5, 0.6, 0.9)));
+        gpuProgramConstantBundle->add("textOutlineColor", GpuProgramConstant(vec4(0.0, 0.0, 0.0, 0.4)));
+        gpuProgramConstantBundle->add("textShadowColor", GpuProgramConstant(vec4(0.0, 0.0, 0.0, 0.4)));
 
         gpuProgram->addConstants(gpuProgramConstantBundle.get());
     }
@@ -499,6 +604,7 @@ namespace Acidrain {
     }
 
     float textAlpha = 0;
+
     void GameStateTest::update(Stardust* game, float elapsedSeconds) {
 //        DialogRepository::getInstance().updateAll(elapsedSeconds);
 
@@ -510,6 +616,8 @@ namespace Acidrain {
         }
     }
 
+
+
     void GameStateTest::render(Stardust* game, float alpha) {
         GFXSYS.setClearColor(vec3(0.1 * 2, 0.1 * 2, 0.12 * 2));
         GFXSYS.clearScreen();
@@ -518,18 +626,28 @@ namespace Acidrain {
 
         GFXSYS.setTransparencyMode(TransparencyMode::Transparent);
 
+        gpuProgramConstantBundle->add("textDiffuseColor", GpuProgramConstant(vec4(1.0, 0.5, 0.2, 1)));
         gpuProgram->use();
         fontTexture->useForUnit(0);
 
-        const char* text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit.\nVivamus nunc mauris, feugiat at tortor quis, ullamcorper porta tellus.\nPhasellus sit amet eleifend orci.";
+//        const char* text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit.\nVivamus nunc mauris, feugiat at tortor quis, ullamcorper porta tellus.\nPhasellus sit amet eleifend orci.";
 //        newFont->print(100, 200, text, vec4(1, 0.5, 0.2, 1));
 //        newFont->print(100, 200, text, vec4(0.5, 0.5, 0.6, (sin(textAlpha) / 2.0) + 0.5));
-        newFont->print(100, 200, text, vec4(0.5, 0.5, 0.6, 1));
+//        newFont->print(100, 200, text, vec4(0.5, 0.5, 0.6, 1));
 
         stringstream ss;
         ss << "FPS: " << fpsCounter.getFps();
         bigFontTexture->useForUnit(0);
-        bigFont->print(0, 100, ss.str().c_str(), vec4(0.5, 0.5, 0.6, 1));
+        bigFont->print(0, 100, ss.str().c_str(), vec4(1.0, 0.5, 0.2, 1));
+
+        gpuProgram->unuse();
+//        GFXSYS.drawFilledRectangle(textLayout->getTextBox().tl, textLayout->getTextBox().tl, vec4(0, 0, 0, 0.5));
+        GFXSYS.drawFilledRectangle(textLayout->getTextBox().tl, textLayout->getTextBox().br, vec4(0, 0, 0, 0.5));
+
+        gpuProgramConstantBundle->add("textDiffuseColor", GpuProgramConstant(vec4(0.5, 0.5, 0.6, 0.9)));
+        gpuProgram->use();
+        fontTexture->useForUnit(0);
+        textLayout->render();
 
 //        GFXSYS.renderFullScreenTexturedQuad();
         gpuProgram->unuse();
@@ -555,10 +673,42 @@ namespace Acidrain {
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, atlas.atlasWidth, atlas.atlasHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, atlas.atlasTexture);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, atlas_.atlasWidth, atlas_.atlasHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, atlas_.atlasTexture);
 
         glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_TRUE);
 
-        return std::shared_ptr<Texture>(new Texture(textureId, atlas.atlasWidth, atlas.atlasHeight));
+        return std::shared_ptr<Texture>(new Texture(textureId, atlas_.atlasWidth, atlas_.atlasHeight));
+    }
+
+    bool TtfFont::hasChar(char characterToRender) {
+        return atlas_.containsGlyphFor(characterToRender);
+    }
+
+    bool GlyphAtlas::containsGlyphFor(char characterToRender) {
+        return glyphs.lower_bound(static_cast<uint16>(characterToRender)) != glyphs.end();
+    }
+
+    int TtfFont::getKerning(char previousChar, const char& currentChar) {
+        if (FT_HAS_KERNING(face)) {
+            FT_UInt previousGlyphIndex = FT_Get_Char_Index(face, static_cast<FT_ULong>(previousChar));
+            FT_UInt currentGlyphIndex = FT_Get_Char_Index(face, static_cast<FT_ULong>(currentChar));
+
+            if (previousGlyphIndex != 0 && currentGlyphIndex != 0) {
+                FT_Vector kerningInfo;
+                FT_Error error = FT_Get_Kerning(face, previousGlyphIndex, currentGlyphIndex, FT_KERNING_DEFAULT, &kerningInfo);
+                if (!error) {
+                    return kerningInfo.x / 64.0; // 2^6 = 64
+                }
+            }
+        }
+        return 0;
+    }
+
+    int TtfFont::getCharWidth(const char& character) {
+        return atlas_.glyphs.at(static_cast<uint16>(character)).advance;
+    }
+
+    void TextLayout::wrapLastChars(int howManyChars) {
+
     }
 } // namespace Acidrain

@@ -70,6 +70,8 @@ link_directories(${Freetype_LIBRARY_DIRS})
 # freetype header location for mac
 include_directories("/usr/local/opt/freetype/include/")
 include_directories("/usr/local/opt/freetype/include/freetype2")
+# freetype header location for linux
+include_directories("/usr/include/freetype2")
 
 # GLEW setup
 include_directories(./src/3rdparty/glew/include)
