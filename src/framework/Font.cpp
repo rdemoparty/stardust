@@ -1,100 +1,269 @@
 #include <Font.h>
-
-#define STB_TRUETYPE_IMPLEMENTATION
-
-#include <stb_truetype.h>
 #include <FileSystem.h>
+#include <easylogging++.h>
+#include <GpuProgram.h>
+#include <GpuProgramConstants.h>
+#include <glm/gtc/matrix_transform.hpp> // for ortho()
+#include <GfxSystem.h>
 
-#include <memory>
-#include <iostream>
+#include <ft2build.h>
+#include <ftglyph.h>
+#include <ftoutln.h>
+#include <fttrigon.h>
+#include <ftmodapi.h>
+#include FT_FREETYPE_H
+#include FT_OUTLINE_H
+#include FT_STROKER_H
+#include FT_LCD_FILTER_H
+#include FT_GLYPH_H
+#include FT_TRUETYPE_IDS_H
 
 namespace Acidrain {
 
-    static const int TEXTURE_SIZE = 512;
+    static FT_Library FREETYPE_LIBRARY_HANDLE = nullptr;
+    static int FONT_INSTANCE_COUNT = 0;
 
-    Font::Font(const char* const fontFile, float fontSize) {
-        HEIGHT_MAGIC_OFFSET = fontSize * 3.0f / 4.0f;
+    Font::Font(const string& fontFile, int pointSize, FontRenderStyle renderStyle) {
+        this->renderStyle = renderStyle;
 
-        string fontContent = FILESYS.getFileContent(fontFile);
-        unsigned char* bitmap = new unsigned char[TEXTURE_SIZE * TEXTURE_SIZE];
+        // initialize shader
+        gpuProgram = make_shared<GpuProgram>(
+                FILESYS.getFileContent("shaders/font.vs.glsl"),
+                FILESYS.getFileContent("shaders/font.compatible.ps.glsl")
+        );
 
-        this->fontSize = fontSize;
+        gpuProgramConstantBundle = make_shared<GpuProgramConstantBundle>();
 
-        stbtt_BakeFontBitmap((unsigned char const*) fontContent.c_str(), 0,
-                             fontSize,
-                             bitmap,
-                             TEXTURE_SIZE, TEXTURE_SIZE,
-                             32, 96,
-                             characterData);
+        gpuProgramConstantBundle->add("orthoMatrix",
+                                      GpuProgramConstant(ortho(0.0f, 1024.0f * TEXT_DOWNSAMPLE_FACTOR, 768.0f * TEXT_DOWNSAMPLE_FACTOR, 0.0f, 0.0f, 1.0f)));
 
-        glGenTextures(1, &atlasId);
-        glBindTexture(GL_TEXTURE_2D, atlasId);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_ALPHA, TEXTURE_SIZE, TEXTURE_SIZE, 0, GL_ALPHA, GL_UNSIGNED_BYTE, bitmap);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        int textureSamplerIndex = 0;
+        gpuProgramConstantBundle->add("diffuseSampler", GpuProgramConstant(textureSamplerIndex));
 
-        glGenerateMipmap(GL_TEXTURE_2D);
+        gpuProgram->addConstants(gpuProgramConstantBundle.get());
 
-        delete[] bitmap;
-    }
+        FT_Error error;
+        if (FREETYPE_LIBRARY_HANDLE == nullptr) {
+            error = FT_Init_FreeType(&FREETYPE_LIBRARY_HANDLE);
+            if (error) {
+                LOG(ERROR) << "Failed to initialize freetype lib";
+            } else {
+                LOG(INFO) << "Freetype initialized OK";
+            }
+        }
+        FONT_INSTANCE_COUNT++;
 
-    Font::Font(string fontFile, float fontSize)
-    : Font(fontFile.c_str(), fontSize)
-    {
+        string absoluteFontFile = FILESYS.absolutePath(fontFile);
+        error = FT_New_Face(FREETYPE_LIBRARY_HANDLE, absoluteFontFile.c_str(), 0, &face);
+        if (error) {
+            LOG(ERROR) << "Failed to load freetype face from " << absoluteFontFile;
+        } else {
+            LOG(INFO) << "Loaded font " << fontFile;
+        }
+
+        error = FT_Set_Char_Size(
+                face,    /* handle to face object           */
+                0,       /* char_width in 1/64th of points  */
+                (FT_F26Dot6) (pointSize * TEXT_DOWNSAMPLE_FACTOR * 64),   /* char_height in 1/64th of points */
+                0,     /* horizontal device resolution    */
+                0);   /* vertical device resolution      */
+        if (error) {
+            LOG(ERROR) << "Failed to set char size";
+        }
+        fontMetrics.setFrom(face);
+
+        buildGlyphAtlas(renderStyle);
     }
 
     Font::~Font() {
-        glDeleteTextures(1, &atlasId);
+        FONT_INSTANCE_COUNT--;
+        if (FONT_INSTANCE_COUNT == 0 && FREETYPE_LIBRARY_HANDLE != nullptr) {
+            FT_Done_Library(FREETYPE_LIBRARY_HANDLE);
+        }
     }
 
-    void Font::print(float x, float y, const char* text, const glm::vec4& color) {
-        x = round(x);
-        y = round(y);
+    void Font::buildGlyphAtlas(FontRenderStyle fontRenderStyle) {
+        for (uint16 asciiChar = 32; asciiChar < 127; ++asciiChar) {
 
-        float originalX = x;
+            FT_UInt glyphIndex = FT_Get_Char_Index(face, asciiChar);
+            if (glyphIndex == 0) {
+                LOG(ERROR) << "Font " << fontMetrics.family << " does not have glyph [" << asciiChar << "] provided";
+                continue;
+            }
 
-        // assume orthographic projection with units = screen pixels, origin at top left
-        glEnable(GL_TEXTURE_2D);
-        glBindTexture(GL_TEXTURE_2D, atlasId);
-        glColor4f(color.r, color.g, color.b, color.a);
-        glBegin(GL_QUADS);
-        while (*text) {
-            unsigned char charToPrint = static_cast<unsigned char>(*text);
-            if (charToPrint == '\n') {
-                x = originalX;
-                y += fontSize;
-            } else if (charToPrint == '~') {
-                // do not print pause characters
-            } else {
-                if (charToPrint >= 32 && charToPrint < 128) {
-                    stbtt_aligned_quad q;
-                    stbtt_GetBakedQuad(characterData, TEXTURE_SIZE, TEXTURE_SIZE, *text - 32, &x, &y, &q, 1);//1=opengl,0=old d3d
+            unsigned char lcd_weights[10];
 
-                    const float scale = 1.f;
+            lcd_weights[0] = 0x10;
+            lcd_weights[1] = 0x40;
+            lcd_weights[2] = 0x70;
+            lcd_weights[3] = 0x40;
+            lcd_weights[4] = 0x10;
 
-                    glTexCoord2f(q.s0, q.t0);
-                    glVertex2f(q.x0 * scale, (q.y0 + HEIGHT_MAGIC_OFFSET) * scale);
+            int flags = FT_LOAD_FORCE_AUTOHINT;
+            FT_Library_SetLcdFilter(FREETYPE_LIBRARY_HANDLE, FT_LCD_FILTER_LIGHT);
+            flags |= FT_LOAD_TARGET_LCD;
+            FT_Library_SetLcdFilterWeights(FREETYPE_LIBRARY_HANDLE, lcd_weights);
 
-                    glTexCoord2f(q.s1, q.t0);
-                    glVertex2f(q.x1 * scale, (q.y0 + HEIGHT_MAGIC_OFFSET) * scale);
+            FT_Error error = FT_Load_Glyph(face, glyphIndex, flags);
+            if (error) {
+                LOG(ERROR) << "Failed to load glyph [" << asciiChar << "] for font " << fontMetrics.family;
+                continue;
+            }
 
-                    glTexCoord2f(q.s1, q.t1);
-                    glVertex2f(q.x1 * scale, (q.y1 + HEIGHT_MAGIC_OFFSET) * scale);
+            // render outline if needed, overwriting the normal glyph but maintaining the sizes
+            int outlineSize = (int) (renderStyle.outlineSize * TEXT_DOWNSAMPLE_FACTOR);
+            FT_Stroker stroker;
+            FT_Stroker_New(FREETYPE_LIBRARY_HANDLE, &stroker);
+            FT_Stroker_Set(stroker, outlineSize * 64, FT_STROKER_LINECAP_ROUND, FT_STROKER_LINEJOIN_ROUND, 0);
 
-                    glTexCoord2f(q.s0, q.t1);
-                    glVertex2f(q.x0 * scale, (q.y1 + HEIGHT_MAGIC_OFFSET) * scale);
+            FT_Load_Glyph(face, glyphIndex, flags);
+            FT_Glyph bitmapGlyph;
+            FT_Get_Glyph(face->glyph, &bitmapGlyph);
+            FT_Glyph_Stroke(&bitmapGlyph, stroker, 1 /* delete the original glyph */ );
+            // FT_Glyph_StrokeBorder(&bitmapGlyph, stroker, false, true /* delete the original glyph */ );
+            FT_Stroker_Done(stroker);
+            FT_Glyph_To_Bitmap(&bitmapGlyph, FT_RENDER_MODE_NORMAL, nullptr, true); // no translation, destroy original image
+
+            // render normal glyph
+            error = FT_Render_Glyph(face->glyph, FT_RENDER_MODE_NORMAL);
+            if (error) {
+                LOG(ERROR) << "Failed to render glyph for slot " << face->glyph;
+                continue;
+            }
+
+            atlas_.add(asciiChar, face->glyph, ((FT_BitmapGlyph) bitmapGlyph)->bitmap, fontRenderStyle);
+        }
+
+        GLuint textureId;
+        glGenTextures(1, &textureId);
+        glBindTexture(GL_TEXTURE_2D, textureId);
+
+        glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, atlas_.width(), atlas_.height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, atlas_.texture());
+
+        glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_TRUE);
+        texture_ = shared_ptr<Texture>(new Texture(textureId, atlas_.width(), atlas_.height()));
+    }
+
+    void Font::addCharToVbo(const char& charToRender, const vec4& color) {
+        GlyphInfo glyphInfo = atlas_.glyph(charToRender);
+
+        if (previousChar != 0) {
+            penPosition.x += atlas_.glyph(previousChar).advance;
+
+            if (FT_HAS_KERNING(face)) {
+                FT_UInt previousGlyphIndex = FT_Get_Char_Index(face, (FT_ULong) previousChar);
+                FT_UInt currentGlyphIndex = FT_Get_Char_Index(face, (FT_ULong) charToRender);
+
+                if (previousGlyphIndex != 0 && currentGlyphIndex != 0) {
+                    FT_Vector kerningInfo;
+                    FT_Error error = FT_Get_Kerning(face, previousGlyphIndex, currentGlyphIndex, FT_KERNING_DEFAULT, &kerningInfo);
+                    if (error) {
+                        LOG(ERROR) << "Failed to get kerning info between " << to_string(previousChar) << " and " << to_string(charToRender);
+                    } else {
+                        penPosition.x += kerningInfo.x / 64.0; // 2^6 = 64
+                    }
                 }
             }
-            ++text;
         }
-        glEnd();
-        glDisable(GL_TEXTURE_2D);
-        lastCharPosition.x = x;
-        lastCharPosition.y = y;
+
+        float penX = penPosition.x;
+        float penY = penPosition.y;
+        vector <vec2> verts = {
+                {penX + glyphInfo.bitmapLeft,               penY - glyphInfo.bitmapTop},
+                {penX + glyphInfo.bitmapLeft + glyphInfo.w, penY - glyphInfo.bitmapTop},
+                {penX + glyphInfo.bitmapLeft + glyphInfo.w, penY + glyphInfo.h - glyphInfo.bitmapTop},
+                {penX + glyphInfo.bitmapLeft,               penY + glyphInfo.h - glyphInfo.bitmapTop}
+        };
+
+        double textureXNormalizationFactor = 1.0 / (double) atlas_.width();
+        double textureYNormalizationFactor = 1.0 / (double) atlas_.height();
+        double x, y, w, h;
+        x = glyphInfo.x * textureXNormalizationFactor;
+        y = glyphInfo.y * textureYNormalizationFactor;
+        w = glyphInfo.w * textureXNormalizationFactor;
+        h = glyphInfo.h * textureYNormalizationFactor;
+
+        vector <vec2> texs = {
+                {x,     y},
+                {x + w, y},
+                {x + w, y + h},
+                {x,     y + h}
+        };
+
+        vbo.addQuad(verts, texs, color);
+
+        previousChar = charToRender;
     }
 
+    void Font::print(float x, float y, const string& text, const vec4& color) {
 
-    void Font::print(float x, float y, string text, const vec4& color) {
-        print(x, y, text.c_str(), color);
+        // creates a vbo, sets texture, shader, renders
+        penPosition = vec2(x, y) + vec2(0, (fontMetrics.ascent - atlas_.padding()) / TEXT_DOWNSAMPLE_FACTOR);
+        previousChar = 0;
+        vbo.empty();
+        for (auto it = text.begin(); it != text.end(); it++) {
+            char charToRender = *it;
+            if (charToRender == '\n') {
+                penPosition.y += fontMetrics.height;
+                penPosition.x = x;
+                previousChar = 0;
+            } else {
+                addCharToVbo(*it, color);
+            }
+        }
+
+        gpuProgram->use();
+        texture()->useForUnit(0);
+        vbo.draw();
+        gpuProgram->unuse();
+        GFXSYS.setViewport();
+    }
+
+    const FontMetrics& Font::metrics() const {
+        return fontMetrics;
+    }
+
+    const GlyphAtlas& Font::atlas() const {
+        return atlas_;
+    }
+
+    const shared_ptr<Texture> Font::texture() const {
+        return texture_;
+    }
+
+    bool Font::hasChar(char characterToRender) const {
+        return atlas_.containsGlyphFor(characterToRender);
+    }
+
+    int Font::getKerning(char previousChar, const char& currentChar) const {
+        if (FT_HAS_KERNING(face)) {
+            FT_UInt previousGlyphIndex = FT_Get_Char_Index(face, static_cast<FT_ULong>(previousChar));
+            FT_UInt currentGlyphIndex = FT_Get_Char_Index(face, static_cast<FT_ULong>(currentChar));
+
+            if (previousGlyphIndex != 0 && currentGlyphIndex != 0) {
+                FT_Vector kerningInfo;
+                FT_Error error = FT_Get_Kerning(face, previousGlyphIndex, currentGlyphIndex, FT_KERNING_DEFAULT, &kerningInfo);
+                if (!error) {
+                    return (int) (kerningInfo.x / 64.0); // 2^6 = 64
+                }
+            }
+        }
+        return 0;
+    }
+
+    int Font::getCharWidth(const char& character) const {
+        return atlas_.glyph(character).advance;
+    }
+
+    const vec2 Font::getLastCharPosition() {
+        return penPosition;
     }
 }

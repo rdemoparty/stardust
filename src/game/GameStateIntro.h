@@ -7,13 +7,11 @@ namespace Acidrain {
     using namespace std;
 
     class Font;
-
+    class TextLayout;
     class Stardust;
 
     class GameStateIntro : public GameState<Stardust> {
-
     public:
-
         static GameStateIntro& instance();
 
         virtual void onEnter(Stardust* game) override;
@@ -26,6 +24,7 @@ namespace Acidrain {
 
     private:
         shared_ptr<Font> titleFont;
+        shared_ptr<TextLayout> titleLayout;
         float introTime = 0;
         float alpha = 0;
         float oldAlpha = 0;

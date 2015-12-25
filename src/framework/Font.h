@@ -1,34 +1,53 @@
 #pragma once
 
-#include <GLheaders.h>
-#include <stb_truetype.h>
-#include <string>
+#include <FontGlyphAtlas.h>
+#include <FontMetrics.h>
+
+#include <memory>
+#include <Texture.h>
+#include <Vbo.h>
 #include <glm/vec4.hpp>
-#include <glm/vec2.hpp>
 
 namespace Acidrain {
 
     using namespace std;
     using namespace glm;
 
+    class GpuProgram;
+    class GpuProgramConstantBundle;
+
     class Font {
     public:
-        Font(const char* const fontFile, float fontSize = 32.0f);
-        Font(string fontFile, float fontSize = 32.0f);
+        Font(const string& fontFile, int pointSize, FontRenderStyle renderStyle = DEFAULT_FONT_RENDER_STYLE);
         ~Font();
 
-        void print(float x, float y, const char* text, const vec4& color = vec4(1, 1, 1, 1));
-        void print(float x, float y, string text, const vec4& color = vec4(1, 1, 1, 1));
+        void print(float x, float y, const string& text, const vec4& color);
 
-        const vec2& getLastCharPosition() const { return lastCharPosition; }
+        const FontMetrics& metrics() const;
+        const GlyphAtlas& atlas() const;
+        const shared_ptr<Texture> texture() const;
 
-        float getFontSize() const { return fontSize; }
+        bool hasChar(char characterToRender) const;
+        int getKerning(char previousChar, const char& currentChar) const;
+        int getCharWidth(const char& character) const;
 
+        const vec2 getLastCharPosition();
     private:
-        GLuint atlasId;
-        float fontSize;
-        stbtt_bakedchar characterData[96];
-        vec2 lastCharPosition;
-        float HEIGHT_MAGIC_OFFSET;
+        void buildGlyphAtlas(FontRenderStyle fontRenderStyle);
+        void addCharToVbo(const char& charToRender, const vec4& color);
+
+        FontRenderStyle renderStyle;
+        FontMetrics fontMetrics;
+
+        shared_ptr<Texture> texture_;
+        shared_ptr<GpuProgram> gpuProgram;
+        shared_ptr<GpuProgramConstantBundle> gpuProgramConstantBundle;
+
+        FT_Face face;
+        char previousChar;
+        Vbo vbo;
+        GlyphAtlas atlas_;
+        vec2 penPosition;
     };
+
 } // namespace Acidrain

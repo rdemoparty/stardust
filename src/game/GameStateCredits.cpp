@@ -124,9 +124,9 @@ namespace Acidrain {
         GFXSYS.clearScreen();
         GFXSYS.setTransparencyMode(TransparencyMode::Additive);
 
-        for (int i = 0; i < 5; i++) {
-            font->print(0, i*32, lines[i]);
-        }
+//        for (int i = 0; i < 5; i++) {
+//            font->print(0, i*32, lines[i]);
+//        }
         fbo->unuse();
     }
 }

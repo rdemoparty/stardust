@@ -77,11 +77,11 @@ namespace Acidrain {
 //     }
 
     // OpenGL 2.1
-    void Vbo::draw() {
+    void Vbo::draw() const {
         draw(triangles);
     }
 
-    void Vbo::draw(int howManyTriangles) {
+    void Vbo::draw(int howManyTriangles) const {
         if (howManyTriangles == 0)
             return;
 

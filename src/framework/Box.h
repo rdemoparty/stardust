@@ -16,6 +16,11 @@ namespace Acidrain {
         Box() {
         }
 
+        Box(float x, float y, float width, float height) {
+            tl = vec2(x, y);
+            br = tl + vec2(width, height);
+        }
+
         Box(const vec2& size) {
             tl = vec2(0, 0);
             br = vec2(size.x, size.y);

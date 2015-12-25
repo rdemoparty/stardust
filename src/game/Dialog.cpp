@@ -85,7 +85,7 @@ namespace Acidrain {
                             }
                         } else {
                             if (options.scrollOldLinesUp) {
-                                y -= this->font->getFontSize();
+                                y -= this->font->metrics().height;
                             }
                         }
                         timeToBlink = true;

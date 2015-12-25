@@ -9,6 +9,9 @@ set(HEADERS
         ${CMAKE_CURRENT_SOURCE_DIR}/Fbo.h
         ${CMAKE_CURRENT_SOURCE_DIR}/FileSystem.h
         ${CMAKE_CURRENT_SOURCE_DIR}/Font.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/FontGlyphAtlas.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/FontMetrics.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/FontRenderStyle.h
         ${CMAKE_CURRENT_SOURCE_DIR}/FpsCounter.h
         ${CMAKE_CURRENT_SOURCE_DIR}/GfxSystem.h
         ${CMAKE_CURRENT_SOURCE_DIR}/GLheaders.h
@@ -23,6 +26,7 @@ set(HEADERS
         ${CMAKE_CURRENT_SOURCE_DIR}/stb_image.h
         ${CMAKE_CURRENT_SOURCE_DIR}/stb_truetype.h
         ${CMAKE_CURRENT_SOURCE_DIR}/StringUtils.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/TextLayout.h
         ${CMAKE_CURRENT_SOURCE_DIR}/Texture.h
         ${CMAKE_CURRENT_SOURCE_DIR}/TextureGenerator.h
         ${CMAKE_CURRENT_SOURCE_DIR}/Timer.h
@@ -41,6 +45,8 @@ set(SOURCE
         ${CMAKE_CURRENT_SOURCE_DIR}/Fbo.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/FileSystem.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/Font.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/FontGlyphAtlas.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/FontMetrics.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/FpsCounter.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/GfxSystem.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/InputProvider.cpp
@@ -52,6 +58,7 @@ set(SOURCE
         ${CMAKE_CURRENT_SOURCE_DIR}/Sprite.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/SpritePool.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/StringUtils.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/TextLayout.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/Texture.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/TextureGenerator.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/Timer.cpp
