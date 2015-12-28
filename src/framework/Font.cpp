@@ -217,7 +217,6 @@ namespace Acidrain {
             }
         }
 
-
         gpuProgramConstantBundle->add("textDiffuseColor", GpuProgramConstant(color));
         gpuProgramConstantBundle->add("textOutlineColor", GpuProgramConstant(outlineColor));
         gpuProgramConstantBundle->add("textPrintStyle", GpuProgramConstant(static_cast<int>(printStyle)));
@@ -265,5 +264,32 @@ namespace Acidrain {
 
     const vec2 Font::getLastCharPosition() {
         return penPosition;
+    }
+
+    vec2 Font::getTextExtent(const string& text, FontPrintStyle printStyle) const {
+
+        // TODO Adrian: mind the print style
+        char prevChar = 0;
+        vec2 extents(0, 0);
+
+        for (auto it = text.begin(); it != text.end(); it++) {
+            char charToRender = *it;
+            const GlyphInfo& glyphInfo = atlas_.glyph(charToRender);
+
+            bool hasAPreviousCharacter = prevChar != 0;
+            if (hasAPreviousCharacter) {
+                extents.x += getKerning(previousChar, charToRender);
+            }
+
+            // TODO Adrian: check
+//            if (charToRender == '\n') {
+//                extents.y += atlas_.height() + metrics().descent;
+//            }
+
+            extents.x += getCharWidth(charToRender) / TEXT_DOWNSAMPLE_FACTOR;
+            extents.y = std::max(extents.y, glyphInfo.h / TEXT_DOWNSAMPLE_FACTOR);
+        }
+
+        return extents;
     }
 }

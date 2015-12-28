@@ -139,9 +139,10 @@ namespace Acidrain {
         GFXSYS.setTransparencyMode(TransparencyMode::Transparent);
         for (int i = 0; i < MENU_OPTION_COUNT; i++) {
             float x = glm::mix(menuOptionPosXOld[i], menuOptionPosX[i], alpha);
-            textLayouts[i]->renderAt(selectedIndex == i ? SELECTED_OPTION_COLOR : OPTION_COLOR,
-                                     vec4(0, 0, 0, 0.0),
-                                     x, 80 * i + 100);
+            float y = 80 * i + 100;
+            vec4 textColor = selectedIndex == i ? SELECTED_OPTION_COLOR : OPTION_COLOR;
+            vec4 outlineColor = vec4(1, 0, 0, 0.1);
+            menuFont->print(x, y, string(menuOptions[i]), textColor, outlineColor, FontPrintStyle::OUTLINE);
         }
 
         versionFont->print(800, 700, STARDUST_VERSION, vec4(1, 1, 1, 1));

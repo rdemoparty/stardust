@@ -173,19 +173,20 @@ namespace Acidrain {
 
         glBegin(GL_QUADS);
         {
-            glTexCoord2f(spriteInfo.texCoords.left(), spriteInfo.texCoords.bottom());
+            glTexCoord2f(spriteInfo.texCoords.left(), spriteInfo.texCoords.top());
             glVertex2f(position.x, position.y);
 
-            glTexCoord2f(spriteInfo.texCoords.left(), spriteInfo.texCoords.top());
+            glTexCoord2f(spriteInfo.texCoords.left(), spriteInfo.texCoords.bottom());
             glVertex2f(position.x, spriteInfo.height + position.y);
 
-            glTexCoord2f(spriteInfo.texCoords.right(), spriteInfo.texCoords.top());
+            glTexCoord2f(spriteInfo.texCoords.right(), spriteInfo.texCoords.bottom());
             glVertex2f(position.x + spriteInfo.width, spriteInfo.height + position.y);
 
-            glTexCoord2f(spriteInfo.texCoords.right(), spriteInfo.texCoords.bottom());
+            glTexCoord2f(spriteInfo.texCoords.right(), spriteInfo.texCoords.top());
             glVertex2f(position.x + spriteInfo.width, position.y);
         }
         glEnd();
+        glDisable(GL_TEXTURE_2D);
     }
 
     void GfxSystem::setTransparencyMode(TransparencyMode mode) {

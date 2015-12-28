@@ -6,6 +6,7 @@
 #include <GameStateMenu.h>
 #include <InputProvider.h>
 #include <TextLayout.h>
+#include <SpritePool.h>
 
 namespace Acidrain {
 
@@ -14,13 +15,17 @@ namespace Acidrain {
         return instance;
     }
 
-    void GameStateIntro::onEnter(Stardust* game) {
-        if (!titleFont)
-            titleFont = make_shared<Font>("fonts/Neo Sans Pro Bold.ttf", 90.0f);
+    static shared_ptr<SpriteSheet> splashSheet;
 
-        if (!titleLayout) {
-            Box constraint = Box(200, 300, 1024, 768);
-            titleLayout = shared_ptr<TextLayout>(new TextLayout("B A C K F I R E", constraint, titleFont.get()));
+    void GameStateIntro::onEnter(Stardust* game) {
+        if (!splashSheet) {
+            splashSheet = shared_ptr<SpriteSheet>(new SpriteSheet());
+            splashSheet->texture = GFXSYS.loadTexture("sprites/splash.png");
+            splashSheet->autoAdd(1024, 768);
+        }
+
+        if (!titleFont) {
+            titleFont = make_shared<Font>("fonts/Neo Sans Pro Bold.ttf", 100.0f);
         }
 
 
@@ -42,32 +47,55 @@ namespace Acidrain {
         oldAlpha = alpha;
 
         introTime += elapsedSeconds;
-        if (introTime < 2.0f) {
-            alpha = easeInQuintic(introTime / 2.0f);
-        } else if (introTime < 3.0f) {
-            alpha = 1.0f;
+
+        if (introTime < 5.0f) {
+            if (introTime < 2.0f) {
+                alpha = easeInQuintic(introTime / 2.0f);
+            } else if (introTime < 3.0f) {
+                alpha = 1.0f;
+            } else {
+                alpha = 1.0f - easeInOutQuintic((introTime - 3.0f) / 2.0f);
+            }
+        } else if (introTime < 10.0f) {
+            float it = introTime - 5.0f;
+            if (it < 2.0f) {
+                alpha = easeInQuintic(it / 2.0f);
+            } else if (it < 3.0f) {
+                alpha = 1.0f;
+            } else {
+                alpha = 1.0f - easeInOutQuintic((it - 3.0f) / 2.0f);
+            }
+        } else {
+            game->fsm->changeState(&GameStateMenu::instance());
         }
 
-//        introTime += elapsedSeconds;
-//        if (introTime < 5.0f) {
-//            if (introTime < 2.0f) {
-//                alpha = easeInQuintic(introTime / 2.0f);
-//            } else if (introTime < 3.0f) {
-//                alpha = 1.0f;
-//            } else {
-//                alpha = 1.0f - easeInOutQuintic((introTime - 3.0f) / 2.0f);
-//            }
-//        } else {
-//            game->fsm->changeState(&GameStateMenu::instance());
-//        }
     }
 
     void GameStateIntro::render(Stardust* game, float renderAlpha) {
         GFXSYS.clearScreen();
-        GFXSYS.setTransparencyMode(TransparencyMode::Transparent);
 
         float a = alpha * renderAlpha + oldAlpha * (1.0f - renderAlpha);
-        titleLayout->render(vec4(1, 1, 1, a), vec4(0, 0, 0, 0.0));
+        if (introTime < 5.0f) {
+            GFXSYS.setTransparencyMode(TransparencyMode::Transparent);
+            glColor4f(1, 1, 1, a);
+
+            Sprite sprite(splashSheet.get(), 0);
+            GFXSYS.drawSprite(sprite, vec2(0, 0));
+
+        } else {
+            GFXSYS.setTransparencyMode(TransparencyMode::Transparent);
+
+            string gameTitle = "B A C K F I R E";
+            FontPrintStyle printStyle = FontPrintStyle::NORMAL;
+            vec2 textExtents = titleFont->getTextExtent(gameTitle, printStyle);
+
+            titleFont->print((1024 - textExtents.x) / 2,
+                             (768 - textExtents.y) / 2,
+                             gameTitle,
+                             vec4(1, 1, 1, a),
+                             vec4(0, 0, 0, 0.4),
+                             printStyle);
+        }
 
         GFXSYS.show();
     }

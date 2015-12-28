@@ -7,6 +7,7 @@
 #include <Texture.h>
 #include <Vbo.h>
 #include <glm/vec4.hpp>
+#include <Box.h>
 
 namespace Acidrain {
 
@@ -27,6 +28,8 @@ namespace Acidrain {
     public:
         Font(const string& fontFile, int pointSize, FontRenderStyle renderStyle = DEFAULT_FONT_RENDER_STYLE);
         ~Font();
+
+        vec2 getTextExtent(const string& text, FontPrintStyle printStyle = FontPrintStyle::NORMAL) const;
 
         void print(float x, float y, const string& text, const vec4& color, FontPrintStyle printStyle = FontPrintStyle::NORMAL);
         void print(float x, float y, const string& text, const vec4& textColor, const vec4& outlineColor, FontPrintStyle printStyle = FontPrintStyle::NORMAL);

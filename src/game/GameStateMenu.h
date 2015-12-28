@@ -11,7 +11,6 @@ namespace Acidrain {
 
     class GameStateMenu : public GameState<Stardust> {
     public:
-
         static GameStateMenu& instance();
 
         virtual void onEnter(Stardust* game) override;
