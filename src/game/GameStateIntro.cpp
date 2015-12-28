@@ -5,8 +5,6 @@
 #include <MathSupport.h>
 #include <GameStateMenu.h>
 #include <InputProvider.h>
-#include <TextLayout.h>
-#include <SpritePool.h>
 
 namespace Acidrain {
 
@@ -29,8 +27,8 @@ namespace Acidrain {
         }
 
 
-        GFXSYS.setClearColor(vec3(0, 0, 0));
-//        GFXSYS.setClearColor(vec3(0.1 * 2, 0.1 * 2, 0.12 * 2));
+//        GFXSYS.setClearColor(vec3(0, 0, 0));
+        GFXSYS.setClearColor(vec3(0.1 * 2, 0.1 * 2, 0.12 * 2));
         introTime = 0;
         oldAlpha = alpha = 0;
     }
@@ -76,7 +74,7 @@ namespace Acidrain {
 
         float a = alpha * renderAlpha + oldAlpha * (1.0f - renderAlpha);
         if (introTime < 5.0f) {
-            GFXSYS.setTransparencyMode(TransparencyMode::Transparent);
+            GFXSYS.setTransparencyMode(TransparencyMode::Additive);
             glColor4f(1, 1, 1, a);
 
             Sprite sprite(splashSheet.get(), 0);
