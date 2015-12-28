@@ -101,7 +101,9 @@ namespace Acidrain {
             string face = readTableString(L, "face");
             float size = readTableFloat(L, "size");
 
-            Font* result = new Font(face, size);
+            FontRenderStyle renderStyle;
+            renderStyle.outlineSize = 3;
+            Font* result = new Font(face, size, renderStyle);
             lua_pop(L, 1);
 
             return result;

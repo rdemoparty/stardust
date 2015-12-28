@@ -71,7 +71,7 @@ namespace Acidrain {
     }
 
     void Menu::render(float alpha) {
-        GFXSYS.setTransparencyMode(TransparencyMode::Additive);
+        GFXSYS.setTransparencyMode(TransparencyMode::Transparent);
         int i = 0;
         for (auto& entry : entries) {
             bool isSelected = selectedIndex == i;

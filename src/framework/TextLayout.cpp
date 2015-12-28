@@ -48,7 +48,7 @@ namespace Acidrain {
         // initialize shader
         gpuProgram = make_shared<GpuProgram>(
                 FILESYS.getFileContent("shaders/font.vs.glsl"),
-                FILESYS.getFileContent("shaders/font.shadow.ps.glsl")
+                FILESYS.getFileContent("shaders/font.ps.glsl")
         );
 
         gpuProgramConstantBundle = make_shared<GpuProgramConstantBundle>();
@@ -144,6 +144,21 @@ namespace Acidrain {
     void TextLayout::render(vec4 color, vec4 outlineColor) {
         gpuProgramConstantBundle->add("textDiffuseColor", GpuProgramConstant(color));
         gpuProgramConstantBundle->add("textOutlineColor", GpuProgramConstant(outlineColor));
+
+        gpuProgram->use();
+        font->texture()->useForUnit(0);
+        render();
+        gpuProgram->unuse();
+    }
+
+    void TextLayout::renderAt(vec4 color, vec4 outlineColor, float x, float y) const {
+        gpuProgramConstantBundle->add("textDiffuseColor", GpuProgramConstant(color));
+        gpuProgramConstantBundle->add("textOutlineColor", GpuProgramConstant(outlineColor));
+
+        mat4 orthoMatrix = ortho(0.0f, 1024.0f * TEXT_DOWNSAMPLE_FACTOR, 768.0f * TEXT_DOWNSAMPLE_FACTOR, 0.0f, 0.0f, 1.0f);
+        orthoMatrix = translate(orthoMatrix, vec3(x * TEXT_DOWNSAMPLE_FACTOR, y * TEXT_DOWNSAMPLE_FACTOR, 0));
+
+        gpuProgramConstantBundle->add("orthoMatrix", GpuProgramConstant(orthoMatrix));
 
         gpuProgram->use();
         font->texture()->useForUnit(0);

@@ -16,12 +16,20 @@ namespace Acidrain {
     class GpuProgram;
     class GpuProgramConstantBundle;
 
+    enum class FontPrintStyle {
+        NORMAL = 0,
+        OUTLINE = 1,
+        SHADOW = 2
+    };
+
+
     class Font {
     public:
         Font(const string& fontFile, int pointSize, FontRenderStyle renderStyle = DEFAULT_FONT_RENDER_STYLE);
         ~Font();
 
-        void print(float x, float y, const string& text, const vec4& color);
+        void print(float x, float y, const string& text, const vec4& color, FontPrintStyle printStyle = FontPrintStyle::NORMAL);
+        void print(float x, float y, const string& text, const vec4& textColor, const vec4& outlineColor, FontPrintStyle printStyle = FontPrintStyle::NORMAL);
 
         const FontMetrics& metrics() const;
         const GlyphAtlas& atlas() const;
@@ -34,7 +42,7 @@ namespace Acidrain {
         const vec2 getLastCharPosition();
     private:
         void buildGlyphAtlas(FontRenderStyle fontRenderStyle);
-        void addCharToVbo(const char& charToRender, const vec4& color);
+        void addCharToVbo(const char& charToRender, const vec4& color, FontPrintStyle printStyle);
 
         FontRenderStyle renderStyle;
         FontMetrics fontMetrics;

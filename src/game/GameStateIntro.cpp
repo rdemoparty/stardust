@@ -42,25 +42,32 @@ namespace Acidrain {
         oldAlpha = alpha;
 
         introTime += elapsedSeconds;
-        if (introTime < 5.0f) {
-            if (introTime < 2.0f) {
-                alpha = easeInQuintic(introTime / 2.0f);
-            } else if (introTime < 3.0f) {
-                alpha = 1.0f;
-            } else {
-                alpha = 1.0f - easeInOutQuintic((introTime - 3.0f) / 2.0f);
-            }
-        } else {
-            game->fsm->changeState(&GameStateMenu::instance());
+        if (introTime < 2.0f) {
+            alpha = easeInQuintic(introTime / 2.0f);
+        } else if (introTime < 3.0f) {
+            alpha = 1.0f;
         }
+
+//        introTime += elapsedSeconds;
+//        if (introTime < 5.0f) {
+//            if (introTime < 2.0f) {
+//                alpha = easeInQuintic(introTime / 2.0f);
+//            } else if (introTime < 3.0f) {
+//                alpha = 1.0f;
+//            } else {
+//                alpha = 1.0f - easeInOutQuintic((introTime - 3.0f) / 2.0f);
+//            }
+//        } else {
+//            game->fsm->changeState(&GameStateMenu::instance());
+//        }
     }
 
     void GameStateIntro::render(Stardust* game, float renderAlpha) {
         GFXSYS.clearScreen();
-        GFXSYS.setTransparencyMode(TransparencyMode::Additive);
+        GFXSYS.setTransparencyMode(TransparencyMode::Transparent);
 
         float a = alpha * renderAlpha + oldAlpha * (1.0f - renderAlpha);
-        titleLayout->render(vec4(1, 1, 1, a), vec4(0, 0, 0, 0));
+        titleLayout->render(vec4(1, 1, 1, a), vec4(0, 0, 0, 0.0));
 
         GFXSYS.show();
     }

@@ -25,7 +25,9 @@ namespace Acidrain {
         // TODO Adrian: figure out a better name for the event system. It is too generic. Events of?
         EVENTSYS.addListener(this, SDL_QUIT);
 
-        statsFont = make_shared<Font>("fonts/Impact.ttf", 20.0f);
+        FontRenderStyle renderStyle;
+        renderStyle.outlineSize = 2;
+        statsFont = shared_ptr<Font>(new Font("fonts/Neo Sans Pro.ttf", 18, renderStyle));
         fpsCounter = make_shared<FpsCounter>();
         gameSession = make_shared<GameSession>();
         level = make_shared<Level>();
@@ -60,13 +62,13 @@ namespace Acidrain {
 
     void Stardust::drawStats() {
         GFXSYS.setTransparencyMode(TransparencyMode::Transparent);
-        GFXSYS.drawFilledRectangle(vec2(-1), vec2(1024, 50), vec4(0, 0, 0, 0.7f));
+        GFXSYS.drawFilledRectangle(vec2(-1), vec2(1024, 50), vec4(0.0, 0.0, 0.05, 0.8));
 
         stringstream s;
         s << "FPS: " << fpsCounter->getFps() << "  . Objects in scene: " << level->objectsCount();
 
-        GFXSYS.setTransparencyMode(TransparencyMode::Additive);
-        statsFont->print(10, 10, s.str(), vec4(1, 1, 1, 0.9f));
+        GFXSYS.setTransparencyMode(TransparencyMode::Transparent);
+        statsFont->print(10, 10, s.str(), vec4(1, 1, 1, 1), vec4(0, 0, 0, 0.8), FontPrintStyle::OUTLINE);
     }
 
     bool Stardust::shouldQuit() {

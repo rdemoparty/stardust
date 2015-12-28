@@ -10,7 +10,6 @@ namespace Acidrain {
     class Stardust;
 
     class GameStateMenu : public GameState<Stardust> {
-
     public:
 
         static GameStateMenu& instance();

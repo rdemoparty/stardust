@@ -2,6 +2,7 @@
 #include <AudioSystem.h>
 #include <Font.h>
 #include <math.h>
+#include <GfxSystem.h>
 
 namespace Acidrain {
 
@@ -119,18 +120,19 @@ namespace Acidrain {
     }
 
     void Dialog::impl::drawText(string message) {
+        GFXSYS.setTransparencyMode(TransparencyMode::Transparent);
         if (message.size() > 2) {
-            font->print(x, y, message.substr(0, message.size() - 2), options.charColor);
+            font->print(x, y, message.substr(0, message.size() - 2), options.charColor, vec4(0, 0, 0, 0.2), FontPrintStyle::OUTLINE);
         }
 
         if (message.size() > 1) {
             const vec2 lastPos = font->getLastCharPosition();
-            font->print(lastPos.x, lastPos.y, message.substr(message.size() - 2, 1), options.activeCharColor);
+            font->print(lastPos.x, lastPos.y, message.substr(message.size() - 2, 1), options.activeCharColor, vec4(0, 0, 0, 0.2), FontPrintStyle::OUTLINE);
         }
 
         if (message.size() > 1) {
             const vec2 lastPos = font->getLastCharPosition();
-            font->print(lastPos.x, lastPos.y, message.substr(message.size() - 1, 1), options.activeCharColor);
+            font->print(lastPos.x, lastPos.y, message.substr(message.size() - 1, 1), options.activeCharColor, vec4(0, 0, 0, 0.2), FontPrintStyle::OUTLINE);
         }
     }
 }

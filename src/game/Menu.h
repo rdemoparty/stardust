@@ -19,10 +19,10 @@ namespace Acidrain {
             this->versionFont = versionFont;
         }
 
-        vec4 OPTION_COLOR = vec4(1.0f, 1.0f, 1.0f, 0.8f);
-        vec4 SELECTED_OPTION_COLOR = vec4(1.0f, 0.0f, 0.0f, 0.8f);
-        vec4 NOT_APPLIED_VALUE_COLOR = vec4(1.0f, 1.0f, 0.0f, 0.8f);
-        vec4 APPLIED_VALUE_COLOR = vec4(1.0f, 0.0f, 0.0f, 0.8f);
+        vec4 OPTION_COLOR = vec4(1.0f, 1.0f, 1.0f, 1.0f);
+        vec4 SELECTED_OPTION_COLOR = vec4(1.0f, 0.0f, 0.0f, 1.0f);
+        vec4 NOT_APPLIED_VALUE_COLOR = vec4(1.0f, 1.0f, 0.0f, 1.0f);
+        vec4 APPLIED_VALUE_COLOR = vec4(1.0f, 0.0f, 0.0f, 1.0f);
 
         string SOUND_OPTION_REJECTED = "sounds/menu/option-rejected.ogg";
         string SOUND_OPTION_ACCEPTED = "sounds/menu/option-accepted.ogg";

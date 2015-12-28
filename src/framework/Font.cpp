@@ -29,11 +29,10 @@ namespace Acidrain {
         // initialize shader
         gpuProgram = make_shared<GpuProgram>(
                 FILESYS.getFileContent("shaders/font.vs.glsl"),
-                FILESYS.getFileContent("shaders/font.compatible.ps.glsl")
+                FILESYS.getFileContent("shaders/font.ps.glsl")
         );
 
         gpuProgramConstantBundle = make_shared<GpuProgramConstantBundle>();
-
         gpuProgramConstantBundle->add("orthoMatrix",
                                       GpuProgramConstant(ortho(0.0f, 1024.0f * TEXT_DOWNSAMPLE_FACTOR, 768.0f * TEXT_DOWNSAMPLE_FACTOR, 0.0f, 0.0f, 1.0f)));
 
@@ -152,35 +151,25 @@ namespace Acidrain {
         texture_ = shared_ptr<Texture>(new Texture(textureId, atlas_.width(), atlas_.height()));
     }
 
-    void Font::addCharToVbo(const char& charToRender, const vec4& color) {
-        GlyphInfo glyphInfo = atlas_.glyph(charToRender);
+    void Font::addCharToVbo(const char& charToRender, const vec4& color, FontPrintStyle printStyle) {
+        const GlyphInfo& glyphInfo = atlas_.glyph(charToRender);
 
-        if (previousChar != 0) {
-            penPosition.x += atlas_.glyph(previousChar).advance;
+        float penX = penPosition.x * TEXT_DOWNSAMPLE_FACTOR;
+        float penY = penPosition.y * TEXT_DOWNSAMPLE_FACTOR;
 
-            if (FT_HAS_KERNING(face)) {
-                FT_UInt previousGlyphIndex = FT_Get_Char_Index(face, (FT_ULong) previousChar);
-                FT_UInt currentGlyphIndex = FT_Get_Char_Index(face, (FT_ULong) charToRender);
-
-                if (previousGlyphIndex != 0 && currentGlyphIndex != 0) {
-                    FT_Vector kerningInfo;
-                    FT_Error error = FT_Get_Kerning(face, previousGlyphIndex, currentGlyphIndex, FT_KERNING_DEFAULT, &kerningInfo);
-                    if (error) {
-                        LOG(ERROR) << "Failed to get kerning info between " << to_string(previousChar) << " and " << to_string(charToRender);
-                    } else {
-                        penPosition.x += kerningInfo.x / 64.0; // 2^6 = 64
-                    }
-                }
-            }
+        bool hasAPreviousCharacter = previousChar != 0;
+        if (hasAPreviousCharacter) {
+            penX += getKerning(previousChar, charToRender);
+            penPosition.x += getKerning(previousChar, charToRender) / TEXT_DOWNSAMPLE_FACTOR;
         }
 
-        float penX = penPosition.x;
-        float penY = penPosition.y;
-        vector <vec2> verts = {
-                {penX + glyphInfo.bitmapLeft,               penY - glyphInfo.bitmapTop},
-                {penX + glyphInfo.bitmapLeft + glyphInfo.w, penY - glyphInfo.bitmapTop},
-                {penX + glyphInfo.bitmapLeft + glyphInfo.w, penY + glyphInfo.h - glyphInfo.bitmapTop},
-                {penX + glyphInfo.bitmapLeft,               penY + glyphInfo.h - glyphInfo.bitmapTop}
+        float amountToAddToYForTopPositioning = (fontMetrics.ascent - atlas_.padding() * TEXT_DOWNSAMPLE_FACTOR) / TEXT_DOWNSAMPLE_FACTOR;
+
+        vector<vec2> verts = {
+                {penX + glyphInfo.bitmapLeft,               penY - glyphInfo.bitmapTop + amountToAddToYForTopPositioning},
+                {penX + glyphInfo.bitmapLeft + glyphInfo.w, penY - glyphInfo.bitmapTop + amountToAddToYForTopPositioning},
+                {penX + glyphInfo.bitmapLeft + glyphInfo.w, penY + glyphInfo.h - glyphInfo.bitmapTop + amountToAddToYForTopPositioning},
+                {penX + glyphInfo.bitmapLeft,               penY + glyphInfo.h - glyphInfo.bitmapTop + amountToAddToYForTopPositioning}
         };
 
         double textureXNormalizationFactor = 1.0 / (double) atlas_.width();
@@ -191,7 +180,7 @@ namespace Acidrain {
         w = glyphInfo.w * textureXNormalizationFactor;
         h = glyphInfo.h * textureYNormalizationFactor;
 
-        vector <vec2> texs = {
+        vector<vec2> texs = {
                 {x,     y},
                 {x + w, y},
                 {x + w, y + h},
@@ -200,31 +189,42 @@ namespace Acidrain {
 
         vbo.addQuad(verts, texs, color);
 
+        penPosition.x += getCharWidth(charToRender) / TEXT_DOWNSAMPLE_FACTOR;
+//        if (printStyle == FontPrintStyle::OUTLINE) {
+//            penPosition.x += 2 * renderStyle.outlineSize - 2;
+//        }
         previousChar = charToRender;
     }
 
-    void Font::print(float x, float y, const string& text, const vec4& color) {
+    void Font::print(float x, float y, const string& text, const vec4& color, FontPrintStyle printStyle) {
+        print(x, y, text, color, vec4(0, 0, 0, 0), printStyle);
+    }
 
+    void Font::print(float x, float y, const string& text, const vec4& color, const vec4& outlineColor, FontPrintStyle printStyle) {
         // creates a vbo, sets texture, shader, renders
-        penPosition = vec2(x, y) + vec2(0, (fontMetrics.ascent - atlas_.padding()) / TEXT_DOWNSAMPLE_FACTOR);
+        penPosition = vec2(x, y);
         previousChar = 0;
         vbo.empty();
         for (auto it = text.begin(); it != text.end(); it++) {
             char charToRender = *it;
             if (charToRender == '\n') {
-                penPosition.y += fontMetrics.height;
+                penPosition.y += fontMetrics.height / TEXT_DOWNSAMPLE_FACTOR;
                 penPosition.x = x;
+
                 previousChar = 0;
             } else {
-                addCharToVbo(*it, color);
+                addCharToVbo(*it, color, printStyle);
             }
         }
 
+
+        gpuProgramConstantBundle->add("textDiffuseColor", GpuProgramConstant(color));
+        gpuProgramConstantBundle->add("textOutlineColor", GpuProgramConstant(outlineColor));
+        gpuProgramConstantBundle->add("textPrintStyle", GpuProgramConstant(static_cast<int>(printStyle)));
         gpuProgram->use();
         texture()->useForUnit(0);
         vbo.draw();
         gpuProgram->unuse();
-        GFXSYS.setViewport();
     }
 
     const FontMetrics& Font::metrics() const {

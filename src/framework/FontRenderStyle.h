@@ -2,10 +2,10 @@
 
 namespace Acidrain {
 
-    const float TEXT_DOWNSAMPLE_FACTOR = 1.8f;
+    const float TEXT_DOWNSAMPLE_FACTOR = 1.2f;
 
     struct FontRenderStyle {
-        int outlineSize = 1;
+        int outlineSize = 2;
         int shadowOffsetX = 3;
         int shadowOffsetY = 3;
     };

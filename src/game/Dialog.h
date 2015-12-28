@@ -30,8 +30,8 @@ namespace Acidrain {
             false,
             20,
             2,
-            vec4(0, 0.8, 0, 0.7),
-            vec4(0, 1, 0, 0.7)
+            vec4(0, 0.8, 0, 1.0),
+            vec4(0, 1, 0, 1.0)
     };
 
     class Dialog {

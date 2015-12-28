@@ -10,6 +10,7 @@
 #include <GameStateCredits.h>
 #include <Version.h>
 #include <GameSession.h>
+#include <TextLayout.h>
 
 
 namespace Acidrain {
@@ -37,13 +38,15 @@ namespace Acidrain {
             0, 0, 0, 0, 0, 0, 0
     };
 
+    static shared_ptr<TextLayout> textLayouts[MENU_OPTION_COUNT];
+
     static int selectedIndex = 0;
 
     static float menuTime = 0;
 
-    static vec4 OPTION_COLOR = vec4(1, 1, 1, 0.8f);
+    static vec4 OPTION_COLOR = vec4(1, 1, 1, 1.0f);
 
-    static vec4 SELECTED_OPTION_COLOR = vec4(1, 0, 0, 0.8f);
+    static vec4 SELECTED_OPTION_COLOR = vec4(1, 0, 0, 1.0f);
 
     const char* SOUND_OPTION_REJECTED = "sounds/menu/option-rejected.ogg";
     const char* SOUND_OPTION_ACCEPTED = "sounds/menu/option-accepted.ogg";
@@ -60,6 +63,9 @@ namespace Acidrain {
         GFXSYS.setClearColor(vec3(0, 0, 0));
         for (int i = 0; i < MENU_OPTION_COUNT; i++) {
             menuOptionPosX[i] = menuOptionPosXOld[i] = 1100.0f;
+            if (!textLayouts[i]) {
+                textLayouts[i] = shared_ptr<TextLayout>(new TextLayout(string(menuOptions[i]), Box(0, 0, 1024, 768), menuFont.get()));
+            }
         }
         menuTime = 0;
 
@@ -130,14 +136,12 @@ namespace Acidrain {
     void GameStateMenu::render(Stardust* game, float alpha) {
         GFXSYS.clearScreen();
 
-        GFXSYS.setTransparencyMode(TransparencyMode::Additive);
+        GFXSYS.setTransparencyMode(TransparencyMode::Transparent);
         for (int i = 0; i < MENU_OPTION_COUNT; i++) {
-            menuFont->print(
-                    glm::mix(menuOptionPosXOld[i], menuOptionPosX[i], alpha),
-                    80 * i + 100,
-                    menuOptions[i],
-                    selectedIndex == i ? SELECTED_OPTION_COLOR : OPTION_COLOR
-            );
+            float x = glm::mix(menuOptionPosXOld[i], menuOptionPosX[i], alpha);
+            textLayouts[i]->renderAt(selectedIndex == i ? SELECTED_OPTION_COLOR : OPTION_COLOR,
+                                     vec4(0, 0, 0, 0.0),
+                                     x, 80 * i + 100);
         }
 
         versionFont->print(800, 700, STARDUST_VERSION, vec4(1, 1, 1, 1));

@@ -10,21 +10,21 @@ function onSpawn(objectPointer)
         x = 500,
         y = 100,
         font = {
-            face = "fonts/Neo Sans Pro Medium.ttf",
+            face = "fonts/Neo Sans Pro Bold.ttf",
             size = 30
         },
         options = {
             scrollOldLinesUp = false,
             charColor = {
-                r = 0.6,
-                g = 0.2,
-                b = 0.1,
+                r = 1.0,
+                g = 0.0,
+                b = 0.0,
                 a = 1
             },
             activeCharColor = {
-                r = 0.8,
-                g = 0.8,
-                b = 0.8,
+                r = 1,
+                g = 1,
+                b = 1,
                 a = 1
             }
         }

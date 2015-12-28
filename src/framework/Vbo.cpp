@@ -89,7 +89,7 @@ namespace Acidrain {
             glGenBuffers(1, &id);
 
         glBindBuffer(GL_ARRAY_BUFFER, id);
-        glBufferData(GL_ARRAY_BUFFER, sizeOfVertexInBytes() * howManyTriangles * 3, &buffer[0], GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, sizeOfVertexInBytes() * howManyTriangles * 3, &buffer[0], GL_DYNAMIC_DRAW);
 
         glEnableClientState(GL_VERTEX_ARRAY);
         glEnableClientState(GL_TEXTURE_COORD_ARRAY);

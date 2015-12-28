@@ -18,6 +18,7 @@ namespace Acidrain {
         const Box& getTextBox() const;
 
         void render() const;
+        void renderAt(vec4 color, vec4 outlineColor, float x, float y) const;
         void render(int howManyChars) const;
 
         void render(vec4 color, vec4 outlineColor);
