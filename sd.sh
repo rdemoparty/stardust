@@ -11,6 +11,7 @@ function usage {
 	echo -e "\t$0 run cross"
 	echo -e "\t$0 package"
 	echo -e "\t$0 editor"
+	echo -e "\t$0 docker"
 	echo -e ""
 }
 
@@ -109,6 +110,11 @@ function build_project {
 	cd ..
 }
 
+function compile_with_docker {
+	docker build -t stardust/mingw .
+	docker run --rm -it -v $(pwd):/stardust stardust/mingw sh -c "./sd.sh clean && ./sd.sh build cross"
+}
+
 
 if [ $# -eq 0 ]; then
 	usage
@@ -135,6 +141,9 @@ case $1 in
 		;;
 	editor)
 		start_editor $@
+		;;
+	docker)
+		compile_with_docker
 		;;
 	*)
 		echo -e "Unknown option $1"

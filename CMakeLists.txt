@@ -65,13 +65,16 @@ link_directories(${OpenGL_LIBRARY_DIRS})
 
 # FREETYPE setup
 find_package(Freetype REQUIRED)
-include_directories(${Freetype_INCLUDE_DIRS})
-link_directories(${Freetype_LIBRARY_DIRS})
+include_directories(${FREETYPE_INCLUDE_DIRS})
+link_directories(${FREETYPE_LIBRARY_DIRS})
 # freetype header location for mac
 include_directories("/usr/local/opt/freetype/include/")
 include_directories("/usr/local/opt/freetype/include/freetype2")
 # freetype header location for linux
 include_directories("/usr/include/freetype2")
+# mingw cross compile
+include_directories("/opt/cross-tools/x86_64-w64-mingw32/include/freetype2")
+include_directories("/opt/cross-tools/x86_64-w64-mingw32/include/freetype2/freetype")
 
 # GLEW setup
 include_directories(./src/3rdparty/glew/include)
@@ -93,6 +96,13 @@ include_directories("src/framework")
 include_directories("src/game")
 include_directories("src/game/scripting")
 add_subdirectory(src)
+
+
+# spit out include directories
+get_property(dirs DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY INCLUDE_DIRECTORIES)
+foreach(dir ${dirs})
+	message(STATUS "dir='${dir}'")
+endforeach()
 
 add_executable(stardust src/main.cpp ${SOURCE})
 target_link_libraries(stardust ${SDL2_LIBRARY} ${SDL2_MAIN_LIBRARY} ${SDL2_IMAGE_LIBRARIES} ${SDL2_MIXER_LIBRARIES} ${OPENGL_LIBRARIES} ${FREETYPE_LIBRARIES})

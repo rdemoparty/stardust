@@ -70,7 +70,7 @@ namespace Acidrain {
         GFXSYS.setTransparencyMode(TransparencyMode::Transparent);
         statsFont->print(10, 10, s.str(), vec4(1, 1, 1, 1), vec4(0, 0, 0, 0.7), FontPrintStyle::OUTLINE);
 
-        s = stringstream();
+        s.str(std::string());
         s << "Objects in scene: " << level->objectsCount();
         statsFont->print(100, 10, s.str(), vec4(1, 1, 1, 1), vec4(0, 0, 0, 0.7), FontPrintStyle::OUTLINE);
     }
