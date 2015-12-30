@@ -54,11 +54,16 @@ namespace Acidrain {
 
 
     void GameStateMenu::onEnter(Stardust* game) {
-        if (!menuFont)
-            menuFont = make_shared<Font>("fonts/Neo Sans Pro Bold.ttf", 40.0f);
+        FontRenderStyle renderStyle;
+        renderStyle.outlineSize = 3;
 
-        if (!versionFont)
-            versionFont = make_shared<Font>("fonts/Neo Sans Pro Bold.ttf", 10.0f);
+        if (!menuFont) {
+            menuFont = make_shared<Font>("fonts/Neo Sans Pro Bold.ttf", 40.0f, renderStyle);
+        }
+
+        if (!versionFont) {
+            versionFont = make_shared<Font>("fonts/Neo Sans Pro Bold.ttf", 10.0f, renderStyle);
+        }
 
         GFXSYS.setClearColor(vec3(0, 0, 0));
         for (int i = 0; i < MENU_OPTION_COUNT; i++) {
@@ -141,11 +146,11 @@ namespace Acidrain {
             float x = glm::mix(menuOptionPosXOld[i], menuOptionPosX[i], alpha);
             float y = 80 * i + 100;
             vec4 textColor = selectedIndex == i ? SELECTED_OPTION_COLOR : OPTION_COLOR;
-            vec4 outlineColor = vec4(1, 0, 0, 0.1);
+            vec4 outlineColor = vec4(0.1, 0.1, 0.1, 0.1);
             menuFont->print(x, y, string(menuOptions[i]), textColor, outlineColor, FontPrintStyle::OUTLINE);
         }
 
-        versionFont->print(800, 700, STARDUST_VERSION, vec4(1, 1, 1, 1));
+        versionFont->print(800, 700, STARDUST_VERSION, vec4(1, 1, 1, 1), vec4(0.1, 0.1, 0.1, 0.9), FontPrintStyle::SHADOW);
 
         GFXSYS.show();
     }

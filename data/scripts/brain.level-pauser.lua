@@ -8,23 +8,23 @@ function onSpawn(objectPointer)
     local dialogId = Dialog.create {
         message = "Kill the flashing explosion \nin order to resume the level ",
         x = 500,
-        y = 100,
+        y = 150,
         font = {
-            face = "fonts/Neo Sans Pro Bold.ttf",
-            size = 30
+            face = "fonts/alien.ttf",
+            size = 24
         },
         options = {
             scrollOldLinesUp = false,
             charColor = {
-                r = 1.0,
-                g = 0.0,
+                r = 0.45,
                 b = 0.0,
+                g = 0.9,
                 a = 1
             },
             activeCharColor = {
-                r = 1,
+                r = 0.75,
+                b = 0.5,
                 g = 1,
-                b = 1,
                 a = 1
             }
         }

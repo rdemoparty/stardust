@@ -84,7 +84,7 @@ namespace Acidrain {
             GFXSYS.setTransparencyMode(TransparencyMode::Transparent);
 
             string gameTitle = "B A C K F I R E";
-            FontPrintStyle printStyle = FontPrintStyle::NORMAL;
+            FontPrintStyle printStyle = FontPrintStyle::SHADOW;
             vec2 textExtents = titleFont->getTextExtent(gameTitle, printStyle);
 
             titleFont->print((1024 - textExtents.x) / 2,

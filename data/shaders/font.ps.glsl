@@ -31,6 +31,8 @@ void main() {
     // main alpha is main font color alpha
     // outline alpha is the stroke or shadow alpha
     float mainAlpha = tex.r * textDiffuseColor.a;
+//    float outlineAlpha = (textPrintStyle == 1 ? tex.g : tex.b) * textOutlineColor.a * textDiffuseColor.a;
     float outlineAlpha = (textPrintStyle == 1 ? tex.g : tex.b) * textOutlineColor.a * textDiffuseColor.a;
-    gl_FragColor = vec4(finalColor, clamp(mainAlpha + outlineAlpha, 0.0, 1.0));
+//    gl_FragColor = vec4(finalColor, clamp(mainAlpha + outlineAlpha, 0.0, 1.0));
+    gl_FragColor = vec4(finalColor, clamp(max(mainAlpha, outlineAlpha), 0.0, 1.0));
 }
