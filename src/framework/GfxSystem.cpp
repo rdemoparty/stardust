@@ -11,6 +11,9 @@
 #include <CommandLineParser.h>
 #include <SDL_video.h>
 #include <Vbo.h>
+#include <GpuProgram.h>
+#include <GpuProgramConstants.h>
+#include <glm/gtc/matrix_transform.hpp>
 
 namespace Acidrain {
 
@@ -66,6 +69,25 @@ namespace Acidrain {
 
         setViewport();
         initializeFullScreenQuadVbo();
+
+        spriteShader = shared_ptr<GpuProgram>(new GpuProgram(
+                FILESYS.getFileContent("shaders/core.sprite.vs.glsl"),
+                FILESYS.getFileContent("shaders/core.sprite.ps.glsl")
+        ));
+
+        solidShader = shared_ptr<GpuProgram>(new GpuProgram(
+                FILESYS.getFileContent("shaders/core.sprite.vs.glsl"),
+                FILESYS.getFileContent("shaders/core.solid.ps.glsl")
+        ));
+
+        shaderConstants = make_shared<GpuProgramConstantBundle>();
+        shaderConstants->set("orthoMatrix", glm::ortho(0.0f, 1024.0f, 768.0f, 0.0f, 0.0f, 1.0f));
+        int textureSamplerIndex = 0;
+        shaderConstants->set("diffuseSampler", textureSamplerIndex);
+        shaderConstants->set("color", vec4(1, 1, 1, 1));
+
+        spriteShader->addConstants(shaderConstants.get());
+        solidShader->addConstants(shaderConstants.get());
     }
 
     void GfxSystem::setViewport() {
@@ -76,12 +98,12 @@ namespace Acidrain {
         glEnable(GL_SCISSOR_TEST);
         glDisable(GL_DEPTH_TEST);
 
-        glMatrixMode(GL_PROJECTION);
-        glLoadIdentity();
-        glOrtho(0, desiredWidth, desiredHeight, 0, 0, 1);
-
-        glMatrixMode(GL_MODELVIEW);
-        glLoadIdentity();
+//        glMatrixMode(GL_PROJECTION);
+//        glLoadIdentity();
+//        glOrtho(0, desiredWidth, desiredHeight, 0, 0, 1);
+//
+//        glMatrixMode(GL_MODELVIEW);
+//        glLoadIdentity();
 
         // trick for exact pixelization
 //        glTranslatef(0.375, 0.375, 0);
@@ -153,16 +175,16 @@ namespace Acidrain {
         glEnd();
     }
 
+    Vbo solidRectangleVbo;
     void GfxSystem::drawFilledRectangle(const vec2& topLeft, const vec2& bottomRight, const vec4& color) {
-        glBegin(GL_QUADS);
-        {
-            glColor4f(color.r, color.g, color.b, color.a);
-            glVertex2d(topLeft.x, topLeft.y);
-            glVertex2d(bottomRight.x, topLeft.y);
-            glVertex2d(bottomRight.x, bottomRight.y);
-            glVertex2d(topLeft.x, bottomRight.y);
-        }
-        glEnd();
+        // TODO Adrian: optimize this so that we won't create a vbo every time
+        Box box(topLeft, bottomRight);
+        solidRectangleVbo.empty();
+        solidRectangleVbo.addQuad(box.computeVertices(), box.computeVertices(), color);
+
+        solidShader->use();
+        solidRectangleVbo.draw();
+        solidShader->unuse();
     }
 
     void GfxSystem::drawSprite(const Sprite& sprite, const vec2& position) {
@@ -331,5 +353,13 @@ namespace Acidrain {
 
         fullScreenQuadVbo = make_shared<Vbo>();
         fullScreenQuadVbo->addQuad(vertices, texCoords, vec4(1, 1, 1, 1));
+    }
+
+    void GfxSystem::drawSprite(const Sprite& sprite, const vec2& position, const vec4& color) {
+        sprite.getTexture()->useForUnit(0);
+        shaderConstants->set("color", color);
+        spriteShader->use();
+        renderFullScreenTexturedQuad();
+        spriteShader->unuse();
     }
 } // namespace Acidrain

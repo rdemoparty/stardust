@@ -33,11 +33,11 @@ namespace Acidrain {
         );
 
         gpuProgramConstantBundle = make_shared<GpuProgramConstantBundle>();
-        gpuProgramConstantBundle->add("orthoMatrix",
+        gpuProgramConstantBundle->set("orthoMatrix",
                                       GpuProgramConstant(ortho(0.0f, 1024.0f * TEXT_DOWNSAMPLE_FACTOR, 768.0f * TEXT_DOWNSAMPLE_FACTOR, 0.0f, 0.0f, 1.0f)));
 
         int textureSamplerIndex = 0;
-        gpuProgramConstantBundle->add("diffuseSampler", GpuProgramConstant(textureSamplerIndex));
+        gpuProgramConstantBundle->set("diffuseSampler", GpuProgramConstant(textureSamplerIndex));
 
         gpuProgram->addConstants(gpuProgramConstantBundle.get());
 
@@ -137,7 +137,8 @@ namespace Acidrain {
         glGenTextures(1, &textureId);
         glBindTexture(GL_TEXTURE_2D, textureId);
 
-        glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+        // not core
+        // glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
@@ -147,7 +148,8 @@ namespace Acidrain {
 
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, atlas_.width(), atlas_.height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, atlas_.texture());
 
-        glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_TRUE);
+//        glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_TRUE);
+        glGenerateMipmap(GL_TEXTURE_2D);
         texture_ = shared_ptr<Texture>(new Texture(textureId, atlas_.width(), atlas_.height()));
     }
 
@@ -217,9 +219,9 @@ namespace Acidrain {
             }
         }
 
-        gpuProgramConstantBundle->add("textDiffuseColor", GpuProgramConstant(color));
-        gpuProgramConstantBundle->add("textOutlineColor", GpuProgramConstant(outlineColor));
-        gpuProgramConstantBundle->add("textPrintStyle", GpuProgramConstant(static_cast<int>(printStyle)));
+        gpuProgramConstantBundle->set("textDiffuseColor", GpuProgramConstant(color));
+        gpuProgramConstantBundle->set("textOutlineColor", GpuProgramConstant(outlineColor));
+        gpuProgramConstantBundle->set("textPrintStyle", GpuProgramConstant(static_cast<int>(printStyle)));
         gpuProgram->use();
         texture()->useForUnit(0);
         vbo.draw();

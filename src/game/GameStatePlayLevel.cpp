@@ -29,29 +29,29 @@ namespace Acidrain {
 
         gpuProgramConstantBundle = make_shared<GpuProgramConstantBundle>();
 
-        gpuProgramConstantBundle->add("orthoMatrix", ortho(0.0f, 1024.0f, 768.0f, 0.0f, 0.0f, 1.0f));
+        gpuProgramConstantBundle->set("orthoMatrix", ortho(0.0f, 1024.0f, 768.0f, 0.0f, 0.0f, 1.0f));
         int textureSamplerIndex = 0;
-        gpuProgramConstantBundle->add("diffuseSampler", textureSamplerIndex);
-        gpuProgramConstantBundle->add("resolution", vec2(GFXSYS.drawableWidth(), GFXSYS.drawableHeight()));
-        gpuProgramConstantBundle->add("offset", vec2(GFXSYS.getOffsetX(), GFXSYS.getOffsetY()));
-        gpuProgramConstantBundle->add("time", totalElapsedTime);
+        gpuProgramConstantBundle->set("diffuseSampler", textureSamplerIndex);
+        gpuProgramConstantBundle->set("resolution", vec2(GFXSYS.drawableWidth(), GFXSYS.drawableHeight()));
+        gpuProgramConstantBundle->set("offset", vec2(GFXSYS.getOffsetX(), GFXSYS.getOffsetY()));
+        gpuProgramConstantBundle->set("time", totalElapsedTime);
         gpuProgram->addConstants(gpuProgramConstantBundle.get());
 
     }
 
-    GameStatePlayLevel &GameStatePlayLevel::instance() {
+    GameStatePlayLevel& GameStatePlayLevel::instance() {
         static GameStatePlayLevel instance;
         return instance;
     }
 
-    void GameStatePlayLevel::onEnter(Stardust *game) {
+    void GameStatePlayLevel::onEnter(Stardust* game) {
         GFXSYS.setClearColor(vec3(0.1f, 0.0f, 0.1f));
     }
 
-    void GameStatePlayLevel::onExit(Stardust *game) {
+    void GameStatePlayLevel::onExit(Stardust* game) {
     }
 
-    void GameStatePlayLevel::update(Stardust *game, float elapsedSeconds) {
+    void GameStatePlayLevel::update(Stardust* game, float elapsedSeconds) {
         if (INPUT.isKeyDown(SDL_SCANCODE_ESCAPE)) {
             AUDIOSYS.stopSounds({"PLAYER", "EXPLOSIONS"});
             game->fsm->changeState(&GameStateMenu::instance());
@@ -61,12 +61,12 @@ namespace Acidrain {
         if (INPUT.isKeyJustPressed(SDL_SCANCODE_F9)) {
             renderMode++;
             renderMode = renderMode % 5;
-            gpuProgramConstantBundle->add("renderMode", renderMode);
+            gpuProgramConstantBundle->set("renderMode", renderMode);
         }
 
-        GameSession *gameSession = game->gameSession.get();
-        Level *level = game->level.get();
-        LevelScript *levelScript = level->levelScript.get();
+        GameSession* gameSession = game->gameSession.get();
+        Level* level = game->level.get();
+        LevelScript* levelScript = level->levelScript.get();
 
         // TODO: create individual states for both game over and game completed states
         if (gameSession != nullptr) {
@@ -115,7 +115,7 @@ namespace Acidrain {
         totalElapsedTime += elapsedSeconds;
     }
 
-    void GameStatePlayLevel::handleGameEvents(const Stardust *game) const {
+    void GameStatePlayLevel::handleGameEvents(const Stardust* game) const {
         GameEvent event;
         while ((event = game->level->scene->pollEvent()) != GameEvent::NO_EVENT) {
             switch (event) {
@@ -134,10 +134,15 @@ namespace Acidrain {
         }
     }
 
-    void GameStatePlayLevel::render(Stardust *game, float alpha) {
+    static bool useFbo = true;
+
+    void GameStatePlayLevel::render(Stardust* game, float alpha) {
         GFXSYS.clearScreen();
 
-        fbo->use();
+
+        if (useFbo) {
+            fbo->use();
+        }
 
         glDisable(GL_DEPTH_TEST);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -156,17 +161,20 @@ namespace Acidrain {
                     break;
             }
         }
-        fbo->unuse();
 
-        GFXSYS.setTransparencyMode(TransparencyMode::Opaque);
-        gpuProgramConstantBundle->add("time", totalElapsedTime);
+        if (useFbo) {
+            fbo->unuse();
 
-        // draw the post processed one
-        GFXSYS.clearScreen();
-        gpuProgram->use();
-        fboTexture->useForUnit(0);
-        GFXSYS.renderFullScreenTexturedQuad();
-        gpuProgram->unuse();
+            GFXSYS.setTransparencyMode(TransparencyMode::Opaque);
+            gpuProgramConstantBundle->set("time", totalElapsedTime);
+
+            // draw the post processed one
+            GFXSYS.clearScreen();
+            gpuProgram->use();
+            fboTexture->useForUnit(0);
+            GFXSYS.renderFullScreenTexturedQuad();
+            gpuProgram->unuse();
+        }
 
         game->fpsCounter->addFrame();
         GFXSYS.show();

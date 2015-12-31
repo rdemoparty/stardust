@@ -32,5 +32,7 @@ namespace Acidrain {
         vector<vec2> buffer;
         int triangles = 0;
         mutable GLuint id = 0;
+        mutable GLuint vaoId = 0;
+        mutable bool initialized = false;
     };
 } // namespace Acidrain

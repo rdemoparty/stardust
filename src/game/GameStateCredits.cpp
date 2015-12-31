@@ -38,14 +38,14 @@ namespace Acidrain {
 
             gpuProgramConstantBundle = make_shared<GpuProgramConstantBundle>();
 
-            gpuProgramConstantBundle->add("orthoMatrix",
+            gpuProgramConstantBundle->set("orthoMatrix",
                                           GpuProgramConstant(ortho(0.0f, 1024.0f, 768.0f, 0.0f, 0.0f, 1.0f)));
             int textureSamplerIndex = 0;
-            gpuProgramConstantBundle->add("diffuseSampler", GpuProgramConstant(textureSamplerIndex));
-            gpuProgramConstantBundle->add("resolution", GpuProgramConstant(vec2(GFXSYS.drawableWidth(), GFXSYS.drawableHeight())));
-            gpuProgramConstantBundle->add("offset", GpuProgramConstant(vec2(GFXSYS.getOffsetX(), GFXSYS.getOffsetY())));
-            gpuProgramConstantBundle->add("time", GpuProgramConstant(totalElapsedTime));
-            gpuProgramConstantBundle->add("renderMode", GpuProgramConstant((int)0));
+            gpuProgramConstantBundle->set("diffuseSampler", GpuProgramConstant(textureSamplerIndex));
+            gpuProgramConstantBundle->set("resolution", GpuProgramConstant(vec2(GFXSYS.drawableWidth(), GFXSYS.drawableHeight())));
+            gpuProgramConstantBundle->set("offset", GpuProgramConstant(vec2(GFXSYS.getOffsetX(), GFXSYS.getOffsetY())));
+            gpuProgramConstantBundle->set("time", GpuProgramConstant(totalElapsedTime));
+            gpuProgramConstantBundle->set("renderMode", GpuProgramConstant((int) 0));
             gpuProgram->addConstants(gpuProgramConstantBundle.get());
         }
 
@@ -69,7 +69,7 @@ namespace Acidrain {
         float timeToStartExit = animationTotalTime - animationDuration;
 
         totalElapsedTime += elapsedSeconds;
-        gpuProgramConstantBundle->add("time", GpuProgramConstant(totalElapsedTime));
+        gpuProgramConstantBundle->set("time", GpuProgramConstant(totalElapsedTime));
         float animationCurrentTime = fmod(totalElapsedTime, animationTotalTime);
 
 

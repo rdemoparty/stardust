@@ -1,8 +1,12 @@
-#version 120
+#version 150
+
+in vec2 interpolatedTexCoord;
+in vec4 interpolatedVertexColor;
 
 uniform sampler2D diffuseSampler;
-varying vec4 color;
+
+out vec4 colorOut;
 
 void main() {
-	gl_FragColor = texture2D(diffuseSampler, gl_TexCoord[0].st) * color;
+	colorOut = texture(diffuseSampler, interpolatedTexCoord) * interpolatedVertexColor;
 }

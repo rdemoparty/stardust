@@ -75,10 +75,9 @@ namespace Acidrain {
         float a = alpha * renderAlpha + oldAlpha * (1.0f - renderAlpha);
         if (introTime < 5.0f) {
             GFXSYS.setTransparencyMode(TransparencyMode::Additive);
-            glColor4f(1, 1, 1, a);
 
             Sprite sprite(splashSheet.get(), 0);
-            GFXSYS.drawSprite(sprite, vec2(0, 0));
+            GFXSYS.drawSprite(sprite, vec2(0, 0), vec4(1, 1, 1, a));
 
         } else {
             GFXSYS.setTransparencyMode(TransparencyMode::Transparent);

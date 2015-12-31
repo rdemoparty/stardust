@@ -27,6 +27,11 @@ namespace Acidrain {
             centerAround(vec2(0, 0));
         }
 
+        Box(const vec2& topLeft, const vec2& bottomRight) {
+            tl = topLeft;
+            br = bottomRight;
+        }
+
         Box(float width, float height) {
             tl = vec2(0, 0);
             br = vec2(width, height);

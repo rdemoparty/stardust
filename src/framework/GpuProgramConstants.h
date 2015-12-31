@@ -6,6 +6,7 @@
 #include <glm/vec3.hpp>
 #include <glm/vec4.hpp>
 #include <GpuProgram.h>
+#include <glm/gtc/type_ptr.hpp>
 
 namespace Acidrain {
 
@@ -76,7 +77,7 @@ namespace Acidrain {
     class GpuProgramConstantBundle {
     public:
 
-        void add(string name, const GpuProgramConstant& constant) {
+        void set(string name, const GpuProgramConstant& constant) {
             constants[name] = constant;
         }
 
@@ -84,7 +85,7 @@ namespace Acidrain {
             for (auto& kv : constants) {
                 switch (kv.second.type) {
                     case GpuProgramConstantType::Matrix4:
-                        program->setMatrix4Uniform(&kv.second.matrix4Value[0][0], kv.first.c_str());
+                        program->setMatrix4Uniform(value_ptr(kv.second.matrix4Value), kv.first.c_str());
                         break;
                     case GpuProgramConstantType::Integer:
                         program->setIntUniform(kv.second.intValue, kv.first.c_str());
@@ -93,13 +94,13 @@ namespace Acidrain {
                         program->setFloatUniform(kv.second.floatValue, kv.first.c_str());
                         break;
                     case GpuProgramConstantType::Vec2:
-                        program->setVec2Uniform(&kv.second.vec2Value[0], kv.first.c_str());
+                        program->setVec2Uniform(value_ptr(kv.second.vec2Value), kv.first.c_str());
                         break;
                     case GpuProgramConstantType::Vec3:
-                        program->setVec3Uniform(&kv.second.vec3Value[0], kv.first.c_str());
+                        program->setVec3Uniform(value_ptr(kv.second.vec3Value), kv.first.c_str());
                         break;
                     case GpuProgramConstantType::Vec4:
-                        program->setVec4Uniform(&kv.second.vec4Value[0], kv.first.c_str());
+                        program->setVec4Uniform(value_ptr(kv.second.vec4Value), kv.first.c_str());
                         break;
                 }
             }

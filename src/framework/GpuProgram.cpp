@@ -46,9 +46,14 @@ namespace Acidrain {
         programId = glCreateProgram();
         glAttachShader(programId, shaderIds[0]);
         glAttachShader(programId, shaderIds[1]);
+
+        // TODO Adrian: these should come from an external enumeration
+        glBindAttribLocation(programId, 0, "position");
+        glBindAttribLocation(programId, 1, "texCoord");
+        glBindAttribLocation(programId, 2, "vertexColor");
+
         glLinkProgram(programId);
 
-//        glUseProgram(programId);
         // Be nice to others and do not let this
         // gpu program be set as default unless we really mean it
         glUseProgram(0);
@@ -76,57 +81,55 @@ namespace Acidrain {
 
     void GpuProgram::unuse() {
         glUseProgram(0);
-        glDisable(GL_TEXTURE_2D);
     }
 
-    int GpuProgram::getUniform(const char* uniformName) {
+    int GpuProgram::getUniform(const string& uniformName) {
         if (uniformCache.count(uniformName) == 0)
-            uniformCache[uniformName] = glGetUniformLocation(programId, uniformName);
+            uniformCache[uniformName] = glGetUniformLocation(programId, uniformName.c_str());
 
         return uniformCache[uniformName];
     }
 
-    void GpuProgram::setMatrix3Uniform(float* matrix, const char* uniformName) {
+    void GpuProgram::setMatrix3Uniform(float* matrix, const string& uniformName) {
         GLint location = getUniform(uniformName);
         if (location != -1)
             glUniformMatrix3fv(location, 1, false, matrix);
     }
 
-    void GpuProgram::setMatrix4Uniform(float* matrix, const char* uniformName) {
+    void GpuProgram::setMatrix4Uniform(float* matrix, const string& uniformName) {
         GLint location = getUniform(uniformName);
         if (location != -1)
             glUniformMatrix4fv(location, 1, false, matrix);
     }
 
-    void GpuProgram::setVec2Uniform(float* value, const char* uniformName) {
+    void GpuProgram::setVec2Uniform(float* value, const string& uniformName) {
         GLint location = getUniform(uniformName);
         if (location != -1)
             glUniform2fv(location, 1, value);
     }
 
-    void GpuProgram::setVec3Uniform(float* value, const char* uniformName) {
+    void GpuProgram::setVec3Uniform(float* value, const string& uniformName) {
         GLint location = getUniform(uniformName);
         if (location != -1)
             glUniform3fv(location, 1, value);
     }
 
-    void GpuProgram::setVec4Uniform(float* value, const char* uniformName) {
+    void GpuProgram::setVec4Uniform(float* value, const string& uniformName) {
         GLint location = getUniform(uniformName);
         if (location != -1)
             glUniform4fv(location, 1, value);
     }
 
-    void GpuProgram::setIntUniform(int value, const char* uniformName) {
+    void GpuProgram::setIntUniform(int value, const string& uniformName) {
         GLint location = getUniform(uniformName);
         if (location != -1)
             glUniform1i(location, value);
     }
 
-    void GpuProgram::setFloatUniform(float value, const char* uniformName) {
+    void GpuProgram::setFloatUniform(float value, const string& uniformName) {
         GLint location = getUniform(uniformName);
         if (location != -1)
             glUniform1f(location, value);
     }
-
 } // namespace Acidrain
 

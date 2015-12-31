@@ -1,4 +1,4 @@
-#version 150
+#version 150 core
 
 in vec2 position;
 in vec2 texCoord;
@@ -13,6 +13,6 @@ uniform mat4 orthoMatrix;
 void main() {
     gl_Position = orthoMatrix * vec4(position.x, position.y, 0.0f, 1.0f);
     interpolatedPosition = position;
-    interpolatedTexCoord = vec2(texCoord.x, texCoord.y);
+    interpolatedTexCoord = vec2(texCoord.x, 1.0 - texCoord.y);
     interpolatedVertexColor = vertexColor;
 }

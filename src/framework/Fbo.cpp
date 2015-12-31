@@ -12,6 +12,7 @@ namespace Acidrain {
 
         glBindFramebuffer(GL_FRAMEBUFFER, frameBufferId);
 
+        // no multisampling on the fbo
         glBindTexture(GL_TEXTURE_2D, colorBufferId);
         glTexImage2D(GL_TEXTURE_2D,
                      0,
@@ -26,6 +27,16 @@ namespace Acidrain {
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, colorBufferId, 0);
 
+
+//        glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, colorBufferId);
+//        int numberOfMsaaSamples = 4;
+//        glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, numberOfMsaaSamples, GL_RGBA8, width, height, false);
+//
+//        glTexParameteri(GL_TEXTURE_2D_MULTISAMPLE, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+//        glTexParameteri(GL_TEXTURE_2D_MULTISAMPLE, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+//        glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D_MULTISAMPLE, colorBufferId, 0);
+
+        // render buffer
         glBindRenderbuffer(GL_RENDERBUFFER, depthBufferId);
         glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, width, height);
         glFramebufferRenderbuffer(GL_DRAW_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthBufferId);

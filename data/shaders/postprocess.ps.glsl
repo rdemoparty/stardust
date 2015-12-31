@@ -1,4 +1,10 @@
-#version 120
+#version 150
+
+in vec2 interpolatedTexCoord;
+in vec2 interpolatedPosition;
+in vec4 interpolatedVertexColor;
+
+out vec4 outColor;
 
 uniform sampler2D diffuseSampler;
 uniform vec2 resolution;
@@ -12,12 +18,12 @@ float rand(vec2 co) {
 
 void main(void) {
   if (renderMode == 0) {
-    gl_FragColor = texture2D(diffuseSampler, gl_TexCoord[0].st);
+    outColor = texture(diffuseSampler, interpolatedTexCoord);
     return;
   }
 
 	vec2 q = (gl_FragCoord.xy - offset.xy) / resolution.xy;
-	vec3 oricol = texture2D(diffuseSampler, q).xyz;
+	vec3 oricol = texture(diffuseSampler, q).xyz;
 
 	// subtle zoom in/out 
 	vec2 uv = 0.5 + (q-0.5)*(0.99 + 0.006*sin(0.9*time));
@@ -29,9 +35,9 @@ void main(void) {
     // col.g = texture2D(diffuseSampler,vec2(uv.x+0.000,uv.y)).y;
     // col.b = texture2D(diffuseSampler,vec2(uv.x-0.003,uv.y)).z;
 
-    col.r = texture2D(diffuseSampler,vec2(uv.x+0.002,uv.y)).x;
-    col.g = texture2D(diffuseSampler,vec2(uv.x+0.000,uv.y)).y;
-    col.b = texture2D(diffuseSampler,vec2(uv.x-0.002,uv.y)).z;
+    col.r = texture(diffuseSampler, vec2(uv.x+0.002,uv.y)).x;
+    col.g = texture(diffuseSampler, vec2(uv.x+0.000,uv.y)).y;
+    col.b = texture(diffuseSampler, vec2(uv.x-0.002,uv.y)).z;
 
     // contrast curve
     col = clamp(col*0.5+0.5*col*col*1.2,0.0,1.0);
@@ -54,14 +60,14 @@ void main(void) {
     col = mix(col, oricol, clamp(-2.0+2.0*q.x+3.0*comp,0.0,1.0) / 3);
 
 	if (renderMode == 1) {
-		gl_FragColor = vec4(col, 1.0);
+		outColor = vec4(col, 1.0);
 		return;
 	}
 
     // add greenish tint
     if (renderMode == 2) {
 		col *= vec3(0.2, 1, 0.2);
-		gl_FragColor = vec4(col, 1.0);
+		outColor = vec4(col, 1.0);
 		return;
     }
 
@@ -90,11 +96,11 @@ void main(void) {
    }
 
     if (renderMode == 3) {
-		gl_FragColor = finalColor;
+		outColor = finalColor;
 		return;
     }
 
     // add greenish tint
    vec4 greenishTint = vec4(0.2, 1, 0.2, 1);
-   gl_FragColor = finalColor * greenishTint;
+   outColor = finalColor * greenishTint;
 }

@@ -17,6 +17,8 @@ namespace Acidrain {
 
     class Window;
     class Vbo;
+    class GpuProgram;
+    class GpuProgramConstantBundle;
 
     enum class TransparencyMode {
         Opaque,
@@ -48,6 +50,8 @@ namespace Acidrain {
         void drawFilledRectangle(const vec2& topLeft, const vec2& bottomRight, const vec4& color);
 
         void drawSprite(const Sprite& sprite, const vec2& position);
+
+        void drawSprite(const Sprite& sprite, const vec2& position, const vec4& color);
 
         void renderFullScreenTexturedQuad();
 
@@ -88,6 +92,10 @@ namespace Acidrain {
 
         shared_ptr<Window> window;
         shared_ptr<Vbo> fullScreenQuadVbo;
+
+        shared_ptr<GpuProgram> spriteShader;
+        shared_ptr<GpuProgram> solidShader;
+        shared_ptr<GpuProgramConstantBundle> shaderConstants;
 
         int width, height;
         int offsetX, offsetY;

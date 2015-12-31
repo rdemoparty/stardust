@@ -66,7 +66,7 @@ namespace Acidrain {
 
         gpuProgramConstantBundle = make_shared<GpuProgramConstantBundle>();
 
-        gpuProgramConstantBundle->add("orthoMatrix",
+        gpuProgramConstantBundle->set("orthoMatrix",
                                       GpuProgramConstant(ortho(0.0f, 1024.0f * TEXT_DOWNSAMPLE_FACTOR, 768.0f * TEXT_DOWNSAMPLE_FACTOR, 0.0f, 0.0f, 1.0f)));
 
 //        glViewport(0, 0, GFXSYS.windowWidth(), GFXSYS.windowHeight());
@@ -74,11 +74,11 @@ namespace Acidrain {
 //                                      GpuProgramConstant(ortho(0.0f, (float)GFXSYS.windowWidth(), (float)GFXSYS.windowHeight(), 0.0f, 0.0f, 1.0f)));
 
         int textureSamplerIndex = 0;
-        gpuProgramConstantBundle->add("diffuseSampler", GpuProgramConstant(textureSamplerIndex));
-        gpuProgramConstantBundle->add("cameraShakeMatrix", GpuProgramConstant(glm::mat4()));
-        gpuProgramConstantBundle->add("textDiffuseColor", GpuProgramConstant(vec4(0.5, 0.5, 0.6, 0.9)));
-        gpuProgramConstantBundle->add("textOutlineColor", GpuProgramConstant(vec4(0.0, 0.0, 0.0, 0.4)));
-        gpuProgramConstantBundle->add("textShadowColor", GpuProgramConstant(vec4(0.0, 0.0, 0.0, 1)));
+        gpuProgramConstantBundle->set("diffuseSampler", GpuProgramConstant(textureSamplerIndex));
+        gpuProgramConstantBundle->set("cameraShakeMatrix", GpuProgramConstant(glm::mat4()));
+        gpuProgramConstantBundle->set("textDiffuseColor", GpuProgramConstant(vec4(0.5, 0.5, 0.6, 0.9)));
+        gpuProgramConstantBundle->set("textOutlineColor", GpuProgramConstant(vec4(0.0, 0.0, 0.0, 0.4)));
+        gpuProgramConstantBundle->set("textShadowColor", GpuProgramConstant(vec4(0.0, 0.0, 0.0, 1)));
 
         gpuProgram->addConstants(gpuProgramConstantBundle.get());
     }
@@ -109,7 +109,7 @@ namespace Acidrain {
 
         GFXSYS.setTransparencyMode(TransparencyMode::Transparent);
 
-        gpuProgramConstantBundle->add("textDiffuseColor", GpuProgramConstant(vec4(1.0, 0.5, 0.2, 1)));
+        gpuProgramConstantBundle->set("textDiffuseColor", GpuProgramConstant(vec4(1.0, 0.5, 0.2, 1)));
         gpuProgram->use();
         newFont->texture()->useForUnit(0);
 
@@ -127,9 +127,9 @@ namespace Acidrain {
 //        GFXSYS.drawFilledRectangle(textLayout->getTextBox().tl, textLayout->getTextBox().tl, vec4(0, 0, 0, 0.5));
         GFXSYS.drawFilledRectangle(textLayout->getTextBox().tl, textLayout->getTextBox().br, vec4(0, 0, 0, 0.2));
 
-        gpuProgramConstantBundle->add("textDiffuseColor", GpuProgramConstant(vec4(1, 1, 1, 1)));
+        gpuProgramConstantBundle->set("textDiffuseColor", GpuProgramConstant(vec4(1, 1, 1, 1)));
 //        gpuProgramConstantBundle->add("textDiffuseColor", GpuProgramConstant(vec4(1)));
-        gpuProgramConstantBundle->add("textOutlineColor", GpuProgramConstant(vec4(0, 0, 0, 0.2)));
+        gpuProgramConstantBundle->set("textOutlineColor", GpuProgramConstant(vec4(0, 0, 0, 0.2)));
 
         gpuProgram->use();
         newFont->texture()->useForUnit(0);

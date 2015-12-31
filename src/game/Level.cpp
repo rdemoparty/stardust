@@ -39,11 +39,12 @@ namespace Acidrain {
         // initialize some gpuProgram constants
         gpuProgramConstantBundle = make_shared<GpuProgramConstantBundle>();
 
-        gpuProgramConstantBundle->add("orthoMatrix",
+        gpuProgramConstantBundle->set("orthoMatrix",
                                       GpuProgramConstant(ortho(0.0f, 1024.0f, 768.0f, 0.0f, 0.0f, 1.0f)));
         int textureSamplerIndex = 0;
-        gpuProgramConstantBundle->add("diffuseSampler", GpuProgramConstant(textureSamplerIndex));
-        gpuProgramConstantBundle->add("cameraShakeMatrix", GpuProgramConstant(camera->getShakeMatrix()));
+        gpuProgramConstantBundle->set("diffuseSampler", GpuProgramConstant(textureSamplerIndex));
+        gpuProgramConstantBundle->set("cameraShakeMatrix", GpuProgramConstant(camera->getShakeMatrix()));
+        gpuProgramConstantBundle->set("color", GpuProgramConstant(vec4(1, 1, 1, 1)));
 
         gpuProgram->addConstants(gpuProgramConstantBundle.get());
 
@@ -73,7 +74,7 @@ namespace Acidrain {
 
     void Level::update(float elapsedSeconds) {
         camera->update(elapsedSeconds);
-        gpuProgramConstantBundle->add("cameraShakeMatrix", GpuProgramConstant(camera->getShakeMatrix()));
+        gpuProgramConstantBundle->set("cameraShakeMatrix", GpuProgramConstant(camera->getShakeMatrix()));
 
         if (!paused) {
             levelScript->update(elapsedSeconds);

@@ -8,9 +8,6 @@ namespace Acidrain {
         glGenTextures(1, &textureId);
         glBindTexture(GL_TEXTURE_2D, textureId);
 
-        // select modulate to mix texture with color for shading
-        glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-
         // only set this when we do have mipmaps
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
         // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -19,13 +16,11 @@ namespace Acidrain {
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
-        // for versions up to 3
-        glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_TRUE);
-
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA,
                 width, height,
                 0, GL_RGBA, GL_UNSIGNED_BYTE,
                 buffer);
+        glGenerateMipmap(GL_TEXTURE_2D);
     }
 
     Texture::Texture(GLuint textId, int w, int h)
@@ -50,7 +45,7 @@ namespace Acidrain {
     }
 
     void Texture::useForUnit(int unit) const {
-        glEnable(GL_TEXTURE_2D);
+//        glEnable(GL_TEXTURE_2D);
         glActiveTexture(GL_TEXTURE0 + unit);
         use();
     }

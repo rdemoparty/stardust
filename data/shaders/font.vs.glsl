@@ -1,10 +1,18 @@
-#version 120
+#version 150 core
+
+in vec2 position;
+in vec2 texCoord;
+in vec4 vertexColor;
+
+out vec2 interpolatedTexCoord;
+out vec2 interpolatedPosition;
+out vec4 interpolatedVertexColor;
 
 uniform mat4 orthoMatrix;
-varying vec4 color;
 
 void main() {
-    gl_Position = orthoMatrix * vec4(gl_Vertex.x, gl_Vertex.y, 0.0f, 1.0f);
-    gl_TexCoord[0] = gl_MultiTexCoord0;
-    color = gl_Color;
+    gl_Position = orthoMatrix * vec4(position.x, position.y, 0.0f, 1.0f);
+    interpolatedPosition = position;
+    interpolatedTexCoord = vec2(texCoord.x, texCoord.y);
+    interpolatedVertexColor = vertexColor;
 }

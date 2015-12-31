@@ -53,11 +53,11 @@ namespace Acidrain {
 
         gpuProgramConstantBundle = make_shared<GpuProgramConstantBundle>();
 
-        gpuProgramConstantBundle->add("orthoMatrix",
+        gpuProgramConstantBundle->set("orthoMatrix",
                                       GpuProgramConstant(ortho(0.0f, 1024.0f * TEXT_DOWNSAMPLE_FACTOR, 768.0f * TEXT_DOWNSAMPLE_FACTOR, 0.0f, 0.0f, 1.0f)));
 
         int textureSamplerIndex = 0;
-        gpuProgramConstantBundle->add("diffuseSampler", GpuProgramConstant(textureSamplerIndex));
+        gpuProgramConstantBundle->set("diffuseSampler", GpuProgramConstant(textureSamplerIndex));
 
         gpuProgram->addConstants(gpuProgramConstantBundle.get());
 
@@ -142,8 +142,8 @@ namespace Acidrain {
     }
 
     void TextLayout::render(vec4 color, vec4 outlineColor) {
-        gpuProgramConstantBundle->add("textDiffuseColor", GpuProgramConstant(color));
-        gpuProgramConstantBundle->add("textOutlineColor", GpuProgramConstant(outlineColor));
+        gpuProgramConstantBundle->set("textDiffuseColor", GpuProgramConstant(color));
+        gpuProgramConstantBundle->set("textOutlineColor", GpuProgramConstant(outlineColor));
 
         gpuProgram->use();
         font->texture()->useForUnit(0);
@@ -152,13 +152,13 @@ namespace Acidrain {
     }
 
     void TextLayout::renderAt(vec4 color, vec4 outlineColor, float x, float y) const {
-        gpuProgramConstantBundle->add("textDiffuseColor", GpuProgramConstant(color));
-        gpuProgramConstantBundle->add("textOutlineColor", GpuProgramConstant(outlineColor));
+        gpuProgramConstantBundle->set("textDiffuseColor", GpuProgramConstant(color));
+        gpuProgramConstantBundle->set("textOutlineColor", GpuProgramConstant(outlineColor));
 
         mat4 orthoMatrix = ortho(0.0f, 1024.0f * TEXT_DOWNSAMPLE_FACTOR, 768.0f * TEXT_DOWNSAMPLE_FACTOR, 0.0f, 0.0f, 1.0f);
         orthoMatrix = translate(orthoMatrix, vec3(x * TEXT_DOWNSAMPLE_FACTOR, y * TEXT_DOWNSAMPLE_FACTOR, 0));
 
-        gpuProgramConstantBundle->add("orthoMatrix", GpuProgramConstant(orthoMatrix));
+        gpuProgramConstantBundle->set("orthoMatrix", GpuProgramConstant(orthoMatrix));
 
         gpuProgram->use();
         font->texture()->useForUnit(0);
