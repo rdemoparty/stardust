@@ -31,6 +31,7 @@ build
 bin/stardust
 bin/stardust.exe
 bin/logs
+logs
 *.trace
 *.mp4
 
