@@ -7,6 +7,7 @@
 
 #include <GameState.h>
 #include <memory>
+#include <ConcurrentQueue.h>
 
 namespace Acidrain {
 

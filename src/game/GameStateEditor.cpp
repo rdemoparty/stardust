@@ -16,8 +16,48 @@
 #include <GameStatePreviewLevel.h>
 #include <Version.h>
 //#include <atomic>
+#include <ConcurrentQueue.h>
 
 namespace Acidrain {
+
+    class EditorCommand {
+    public:
+        virtual void execute(Stardust* game) = 0;
+    };
+
+    class CommandPreviewLevel : public EditorCommand {
+    public:
+        explicit CommandPreviewLevel(string name) :
+                levelName(name) { };
+
+        void execute(Stardust* game) override {
+            LOG(INFO) << "Previewing level " << levelName;
+            if (game != nullptr) {
+                GameStatePreviewLevel::instance().preview(game, levelName);
+                game->fsm->changeState(&GameStatePreviewLevel::instance());
+            }
+        };
+
+        const string levelName;
+    };
+
+    class CommandPreviewEntity : public EditorCommand {
+    public:
+        explicit CommandPreviewEntity(string name) :
+                entityName(name) { };
+
+        void execute(Stardust* game) override {
+            LOG(INFO) << "Previewing entity " << entityName;
+            if (game != nullptr) {
+                GameStatePreviewEntity::instance().previewEntity(entityName);
+                game->fsm->changeState(&GameStatePreviewEntity::instance());
+            }
+        };
+
+        const string entityName;
+    };
+
+    ConcurrentQueue<shared_ptr<EditorCommand>> editorCommandQueue;
 
     GameStateEditor& GameStateEditor::instance() {
         static GameStateEditor instance;
@@ -77,11 +117,6 @@ namespace Acidrain {
     }
 
     static Stardust* theGame = nullptr;
-
-    static std::string previewEntityName;
-    static bool actionPreviewEntity = false;
-    static std::string previewLevelName;
-    static bool actionPreviewLevel = false;
 
     static int handleRequest(struct mg_connection* conn) {
         string URI = conn->uri;
@@ -155,10 +190,7 @@ namespace Acidrain {
         if (stringStartsWith(URI, "/editor/preview-entity")) {
             vector<string> pieces = StringUtils::split(URI, '/');
             string entityName = pieces.at(pieces.size() - 1);
-            if (theGame != nullptr) {
-                previewEntityName = entityName;
-                actionPreviewEntity = true;
-            }
+            editorCommandQueue.push(shared_ptr<EditorCommand>(new CommandPreviewEntity(entityName)));
 
             mg_send_header(conn, "Content-Type", "application/json");
             mg_printf_data(conn, "{\"status\": {\"code\": \"OK\"}}");
@@ -169,10 +201,7 @@ namespace Acidrain {
         if (stringStartsWith(URI, "/editor/preview-level")) {
             vector<string> pieces = StringUtils::split(URI, '/');
             string levelName = pieces.at(pieces.size() - 1);
-            if (theGame != nullptr) {
-                previewLevelName = levelName;
-                actionPreviewLevel = true;
-            }
+            editorCommandQueue.push(shared_ptr<EditorCommand>(new CommandPreviewLevel(levelName)));
 
             mg_send_header(conn, "Content-Type", "application/json");
             mg_printf_data(conn, "{\"status\": {\"code\": \"OK\"}}");
@@ -239,20 +268,9 @@ namespace Acidrain {
             game->quitGame = true;
         }
 
-        if (actionPreviewEntity) {
-            LOG(INFO) << "Previewing entity " << previewEntityName;
-            GameStatePreviewEntity::instance().previewEntity(previewEntityName);
-            theGame->fsm->changeState(&GameStatePreviewEntity::instance());
-
-            actionPreviewEntity = false;
-        }
-
-        if (actionPreviewLevel) {
-            LOG(INFO) << "Previewing level " << previewLevelName;
-            GameStatePreviewLevel::instance().preview(game, previewLevelName);
-            theGame->fsm->changeState(&GameStatePreviewLevel::instance());
-
-            actionPreviewLevel = false;
+        shared_ptr<EditorCommand> editorCommand;
+        while (editorCommandQueue.try_pop(editorCommand)) {
+            editorCommand->execute(theGame);
         }
     }
 
@@ -260,11 +278,12 @@ namespace Acidrain {
         if (game->fsm->getCurrentState() == nullptr) {
             GFXSYS.clearScreen();
 
-            GFXSYS.setTransparencyMode(TransparencyMode::Additive);
+            GFXSYS.setTransparencyMode(TransparencyMode::Transparent);
             font->print(100, 100, "Editor mode. Waiting for commands", vec4(1, 1, 1, 0.8f));
             font->print(100, 132, string("Version ") + STARDUST_VERSION, vec4(1, 1, 1, 0.8f));
 
             GFXSYS.show();
         }
     }
+
 } // namespace Acidrain

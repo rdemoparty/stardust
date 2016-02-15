@@ -4,6 +4,7 @@ set(HEADERS
         ${CMAKE_CURRENT_SOURCE_DIR}/AudioSystem.h
         ${CMAKE_CURRENT_SOURCE_DIR}/Box.h
         ${CMAKE_CURRENT_SOURCE_DIR}/CommandLineParser.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/ConcurrentQueue.h
         ${CMAKE_CURRENT_SOURCE_DIR}/Collisions.h
         ${CMAKE_CURRENT_SOURCE_DIR}/EventSystem.h
         ${CMAKE_CURRENT_SOURCE_DIR}/Fbo.h
@@ -40,6 +41,7 @@ set(SOURCE
         ${CMAKE_CURRENT_SOURCE_DIR}/AudioSystem.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/Box.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/CommandLineParser.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/ConcurrentQueue.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/Collisions.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/EventSystem.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/Fbo.cpp
