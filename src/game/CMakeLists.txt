@@ -3,6 +3,7 @@ set(HEADERS
         ${CMAKE_CURRENT_SOURCE_DIR}/Application.h
         ${CMAKE_CURRENT_SOURCE_DIR}/AttributeBag.h
         ${CMAKE_CURRENT_SOURCE_DIR}/Camera.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/concurrentqueue.h
         ${CMAKE_CURRENT_SOURCE_DIR}/Dialog.h
         ${CMAKE_CURRENT_SOURCE_DIR}/DialogRepository.h
         ${CMAKE_CURRENT_SOURCE_DIR}/Entity.h

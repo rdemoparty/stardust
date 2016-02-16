@@ -16,7 +16,7 @@
 #include <GameStatePreviewLevel.h>
 #include <Version.h>
 //#include <atomic>
-#include <ConcurrentQueue.h>
+#include <concurrentqueue.h>
 
 namespace Acidrain {
 
@@ -57,7 +57,7 @@ namespace Acidrain {
         const string entityName;
     };
 
-    ConcurrentQueue<shared_ptr<EditorCommand>> editorCommandQueue;
+    moodycamel::ConcurrentQueue<shared_ptr<EditorCommand>> editorCommandQueue;
 
     GameStateEditor& GameStateEditor::instance() {
         static GameStateEditor instance;
@@ -190,7 +190,7 @@ namespace Acidrain {
         if (stringStartsWith(URI, "/editor/preview-entity")) {
             vector<string> pieces = StringUtils::split(URI, '/');
             string entityName = pieces.at(pieces.size() - 1);
-            editorCommandQueue.push(shared_ptr<EditorCommand>(new CommandPreviewEntity(entityName)));
+            editorCommandQueue.enqueue(shared_ptr<EditorCommand>(new CommandPreviewEntity(entityName)));
 
             mg_send_header(conn, "Content-Type", "application/json");
             mg_printf_data(conn, "{\"status\": {\"code\": \"OK\"}}");
@@ -201,7 +201,7 @@ namespace Acidrain {
         if (stringStartsWith(URI, "/editor/preview-level")) {
             vector<string> pieces = StringUtils::split(URI, '/');
             string levelName = pieces.at(pieces.size() - 1);
-            editorCommandQueue.push(shared_ptr<EditorCommand>(new CommandPreviewLevel(levelName)));
+            editorCommandQueue.enqueue(shared_ptr<EditorCommand>(new CommandPreviewLevel(levelName)));
 
             mg_send_header(conn, "Content-Type", "application/json");
             mg_printf_data(conn, "{\"status\": {\"code\": \"OK\"}}");
@@ -269,7 +269,7 @@ namespace Acidrain {
         }
 
         shared_ptr<EditorCommand> editorCommand;
-        while (editorCommandQueue.try_pop(editorCommand)) {
+        while (editorCommandQueue.try_dequeue(editorCommand)) {
             editorCommand->execute(theGame);
         }
     }
