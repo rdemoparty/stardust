@@ -1,0 +1,35 @@
+A weapon is a blueprint for what should happen whenever an `Entity` triggers the fire button. It acts as a bullet emitter container in the sense that
+multiple bullet emitters can be added to it. All contained bullet emitters are triggered at the same fire rate specified in the weapon constructor.
+
+First you would create the weapon, add bullet emitters to it and finally use the weapon by adding it to one or multiple `Entities`, defining their behaviour upon _pressing fire_.
+
+[source,lua]
+----
+function onSpawn(objectPointer)
+    local o = Entity.from(objectPointer)
+
+    ...
+
+    local w = Weapon.new(10, "sounds/gun2.ogg")
+    w:addEmitter("player.bullet", -10, -32)
+    w:addEmitter("player.bullet", 12, -32)
+    o:addWeapon(w)
+end
+----
+
+Here is the list of functions currently offered by the lua `Weapon` abstraction:
+
+===== Weapon.new(shotsPerSecond, soundWhenFired)
+Creates a new lua object representing a weapon configuration. The provided `shotsPerSecond` parameter affects all bullet emitters
+added to this weapon.
+
+shotsPerSecond:: how many bullets to emit in a second. number
+soundWhenFired:: the path to the sound to be triggered when firing, relative to data folder. string, optional
+
+
+===== Weapon:addEmitter(bulletType, x, y)
+Adds a new bullet emitter to the current weapon which, when instructed to fire will add a bullet of the specified type.
+
+bulletType:: the `Entity` type that will be created and added to the scene when time comes. string
+x:: the horizontal offset from the owning entity's center where the new bullet will be placed
+y:: the vertical offset from the owning entity's center where the new bullet will be placed

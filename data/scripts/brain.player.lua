@@ -34,6 +34,12 @@ function onSpawn(objectPointer)
     -- o:setFloat("friction", 0.94)
 
     -- o:setFloat("maxSpeed", 600)
+
+    local w = Weapon.new(10, "sounds/gun2.ogg")
+    w:addEmitter("player.bullet", -10, -32)
+    w:addEmitter("player.bullet", 12, -32)
+    o:addWeapon(w)
+
 end
 
 function calculateForces(thrusterForce)

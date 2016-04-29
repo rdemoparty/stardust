@@ -3,7 +3,6 @@
 #include <GameObject.h>
 #include <Animation.h>
 #include <SpriteAnimationRepository.h>
-#include <Weapon.h>
 #include <FileSystem.h>
 #include <json11.hpp>
 
@@ -14,17 +13,6 @@ namespace Acidrain {
     struct CollisionHullRecipe {
         float radius;
         vec2 center;
-    };
-
-    struct WeaponEmitterRecipe {
-        string bulletName;
-        vec2 mountingPoint;
-    };
-
-    struct WeaponRecipe {
-        int shotsPerSecond;
-        string soundWhenFired;
-        vector<WeaponEmitterRecipe> emitters;
     };
 
     struct GameObjectRecipe {
@@ -39,7 +27,6 @@ namespace Acidrain {
         float maxLife;
         EntityType type;
         EntitySide team;
-        vector<WeaponRecipe> weapons;
         vector<CollisionHullRecipe> hull;
     };
 
@@ -53,7 +40,6 @@ namespace Acidrain {
         long NEXT_ID = 1;
 
         GameObject* cookGameObject(GameObjectRecipe& recipe);
-        Weapon* cookWeapon(WeaponRecipe recipe);
         Circle cookHullPart(CollisionHullRecipe recipe);
         shared_ptr<ScriptedBrain> cookBrain(string brainFilename);
 
@@ -107,19 +93,9 @@ namespace Acidrain {
 
         LOG(TRACE) << "Cooking entity for recipe with name " << recipe.name << " where hidden flag is " << recipe.hidden;
 
-        for (auto weaponRecipe : recipe.weapons)
-            result->addWeapon(cookWeapon(weaponRecipe));
-
         for (auto hullPart : recipe.hull)
             result->collisionHull.add(cookHullPart(hullPart));
 
-        return result;
-    }
-
-    Weapon* GameObjectFactory::impl::cookWeapon(WeaponRecipe recipe) {
-        Weapon* result = new Weapon(recipe.shotsPerSecond, recipe.soundWhenFired);
-        for (auto& emitterRecipe : recipe.emitters)
-            result->addEmitter({emitterRecipe.bulletName, emitterRecipe.mountingPoint});
         return result;
     }
 
@@ -173,44 +149,6 @@ namespace Acidrain {
         }
     }
 
-    WeaponEmitterRecipe readWeaponEmitter(const Json& element) {
-        WeaponEmitterRecipe result;
-        for (auto& e : element.object_items()) {
-            const string& param = e.first;
-            if (icompare(param, "bulletName"))
-                result.bulletName = e.second.string_value();
-            else if (icompare(param, "x")) {
-                result.mountingPoint.x = (float) e.second.number_value();
-            } else if (icompare(param, "y")) {
-                result.mountingPoint.y = (float) e.second.number_value();
-            } else {
-                LOG(WARNING) << "Unknown weapon recipe attribute " << param;
-            }
-        }
-        return result;
-    }
-
-
-    WeaponRecipe readWeapon(const Json& element) {
-        WeaponRecipe result;
-        for (auto& e : element.object_items()) {
-            const string& param = e.first;
-            if (icompare(param, "shotsPerSecond"))
-                result.shotsPerSecond = e.second.int_value();
-            else if (icompare(param, "soundWhenFired")) {
-                result.soundWhenFired = e.second.string_value();
-            }
-            else if (icompare(param, "emitters")) {
-                for (auto& k : e.second.array_items())
-                    result.emitters.push_back(readWeaponEmitter(k));
-            }
-            else {
-                LOG(WARNING) << "Unknown weapon recipe attribute " << param;
-            }
-        }
-        return result;
-    }
-
     CollisionHullRecipe readCollisionHull(const Json& element) {
         CollisionHullRecipe result;
         for (auto& e : element.object_items()) {
@@ -258,9 +196,6 @@ namespace Acidrain {
             else if (icompare(param, "hull"))
                 for (auto& k : e.second.array_items())
                     result.hull.push_back(readCollisionHull(k));
-            else if (icompare(param, "weapons"))
-                for (auto& k : e.second.array_items())
-                    result.weapons.push_back(readWeapon(k));
             else {
                 LOG(WARNING) << "Unknown game object recipe attribute " << param;
             }

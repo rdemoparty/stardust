@@ -17,6 +17,10 @@ function Entity:fire(shouldFire)
     fireWeapons(self.pointer, shouldFire)
 end
 
+function Entity:addWeapon(weapon)
+    addWeapon(self.pointer, weapon)
+end
+
 function Entity:kill(reason)
     kill(self.pointer, reason)
 end

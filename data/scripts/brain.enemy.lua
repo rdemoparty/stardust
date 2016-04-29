@@ -16,6 +16,10 @@ function onSpawn(objectPointer)
     o:setFloat("hitTimer", 0)
     o:setFloat("hitDuration", 0.05)
 
+    w = Weapon.new(2, "")
+    w:addEmitter("enemy.bullet", 0, 32)
+    o:addWeapon(w)
+
     o:fire(true)
 end
 

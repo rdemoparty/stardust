@@ -38,6 +38,9 @@ include::level.editor.adoc[]
 ==== Entity object
 include::lua.entity.adoc[]
 
+==== Weapon object
+include::lua.weapon.adoc[]
+
 ==== Scene object
 include::lua.scene.adoc[]
 

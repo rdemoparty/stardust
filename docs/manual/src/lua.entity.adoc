@@ -13,8 +13,14 @@ local o = Entity.from(pointer)
 ----
 ====
 
+===== Entity:addWeapon(weapon)
+Adds a weapon with the specified definition to the current entity.
+
+weapon:: a `Weapon` lua object
+
 ===== Entity:fire(shouldFire)
 Determines whether the wrapped entity should pull the trigger or not. The `shouldFire` argument must be a boolean value, either `true` or `false`.
+Whenever the current entity fires, all its attached weapons will be triggered.
 
 ===== Entity:kill(reason)
 Triggers the kill of the wrapped entity with the specified reason. Reason must be one of the following:

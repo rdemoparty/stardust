@@ -3,8 +3,12 @@
 #include <ScriptUtils.h>
 #include <GameObject.h>
 #include <GameServiceLocator.h>
+#include <Weapon.h>
+#include <ScriptUtils.h>
 
 namespace Acidrain {
+
+    using namespace Lua;
 
     EntityScriptExporter::EntityScriptExporter() {
     }
@@ -48,6 +52,53 @@ namespace Acidrain {
     static int fireWeapons(lua_State* L) {
         GameObject* object = (GameObject*) lua_topointer(L, 1);
         object->fireWeapons((bool) lua_toboolean(L, 2));
+        return 0; // arguments pushed on stack
+    }
+
+    static int addWeapon(lua_State* L) {
+        GameObject* object = (GameObject*) lua_topointer(L, 1);
+
+        float shotsPerSecond = 0;
+        string soundWhenFired = "";
+        vector<WeaponEmitter> emitters;
+
+        luaL_checktype(L, -1, LUA_TTABLE);
+        lua_pushnil(L);
+        while (lua_next(L, -2) != 0) {
+            const char* key = lua_tostring(L, -2);
+            if (strcmp(key, "soundWhenFired") == 0) {
+                soundWhenFired = readString(L);
+            } else if(strcmp(key, "shotsPerSecond") == 0) {
+                shotsPerSecond = readFloat(L);
+            } else if(strcmp(key, "emitters") == 0) {
+                luaL_checktype(L, -1, LUA_TTABLE);
+                lua_pushnil(L);
+
+                // read the emitters
+                while (lua_next(L, -2) != 0) {
+                    WeaponEmitter emitter;
+                    emitter.bulletType = readTableString(L, "bullet");
+                    emitter.mountingPoint.x = readTableFloat(L, "x");
+                    emitter.mountingPoint.y = readTableFloat(L, "y");
+                    emitters.push_back(emitter);
+
+                    lua_pop(L, 1);
+                }
+                lua_pop(L, 1);
+
+            } else {
+                LOG(WARNING) << "Unknown key " << key << " when reading weapon";
+                lua_pop(L, 1);
+            }
+        }
+        lua_pop(L, 1);
+
+        Weapon* weapon = new Weapon(shotsPerSecond, soundWhenFired);
+        for (auto& emitter : emitters) {
+            weapon->addEmitter(emitter);
+        }
+        object->addWeapon(weapon);
+
         return 0; // arguments pushed on stack
     }
 
@@ -205,6 +256,7 @@ namespace Acidrain {
     }
 
     void EntityScriptExporter::exportToScript(lua_State* L) const {
+        lua_register(L, "addWeapon", addWeapon);
         lua_register(L, "fireWeapons", fireWeapons);
         lua_register(L, "kill", kill);
         lua_register(L, "killAllChildren", killAllChildren);
