@@ -3,6 +3,7 @@ set(HEADERS
         ${CMAKE_CURRENT_SOURCE_DIR}/Application.h
         ${CMAKE_CURRENT_SOURCE_DIR}/AttributeBag.h
         ${CMAKE_CURRENT_SOURCE_DIR}/Camera.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/CutScene.h
         ${CMAKE_CURRENT_SOURCE_DIR}/concurrentqueue.h
         ${CMAKE_CURRENT_SOURCE_DIR}/Dialog.h
         ${CMAKE_CURRENT_SOURCE_DIR}/DialogRepository.h
@@ -59,6 +60,7 @@ set(SOURCE
         ${CMAKE_CURRENT_SOURCE_DIR}/Application.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/AttributeBag.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/Camera.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/CutScene.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/Dialog.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/DialogRepository.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/Entity.cpp

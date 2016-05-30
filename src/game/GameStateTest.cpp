@@ -19,13 +19,16 @@
 #include <Vbo.h>
 #include <FpsCounter.h>
 #include <TextLayout.h>
+#include <CutScene.h>
 
 
 namespace Acidrain {
 
     static Script* script;
-    static shared_ptr <GpuProgram> gpuProgram;
-    static shared_ptr <GpuProgramConstantBundle> gpuProgramConstantBundle;
+    static shared_ptr<GpuProgram> gpuProgram;
+    static shared_ptr<GpuProgramConstantBundle> gpuProgramConstantBundle;
+    static shared_ptr<CutScene> cutScene;
+    static shared_ptr<CutScenePlayer> cutScenePlayer;
 
 
     GameStateTest& GameStateTest::instance() {
@@ -34,10 +37,10 @@ namespace Acidrain {
     }
 
 
-    shared_ptr <Font> newFont;
-    shared_ptr <Font> bigFont;
+    shared_ptr<Font> newFont;
+    shared_ptr<Font> bigFont;
     FpsCounter fpsCounter;
-    shared_ptr <TextLayout> textLayout;
+    shared_ptr<TextLayout> textLayout;
 
     void GameStateTest::onEnter(Stardust* game) {
         FontRenderStyle renderStyle;
@@ -81,6 +84,20 @@ namespace Acidrain {
         gpuProgramConstantBundle->set("textShadowColor", GpuProgramConstant(vec4(0.0, 0.0, 0.0, 1)));
 
         gpuProgram->addConstants(gpuProgramConstantBundle.get());
+
+
+        cutScene = shared_ptr<CutScene>(new CutScene);
+
+        Slide* slide = new Slide(GFXSYS.loadTexture("sprites/splash.png"), 5);
+        slide->addCaption("This is the caption\nfor the first slide", vec2(100, 400));
+        cutScene->slides.push_back(shared_ptr<Slide>(slide));
+
+        Slide* slide2 = new Slide(GFXSYS.loadTexture("sprites/splash.png"), 10);
+        slide2->addCaption("This is the caption\nfor the SECOND SLIDE !!11", vec2(100, 500));
+        cutScene->slides.push_back(shared_ptr<Slide>(slide2));
+
+        cutScenePlayer = shared_ptr<CutScenePlayer>(new CutScenePlayer(cutScene));
+        cutScenePlayer->start();
     }
 
     void GameStateTest::onExit(Stardust* game) {
@@ -98,12 +115,22 @@ namespace Acidrain {
         if (INPUT.isKeyJustPressed(SDL_SCANCODE_ESCAPE)) {
             game->quitGame = true;
         }
+
+        cutScenePlayer->update(elapsedSeconds);
     }
 
 
     void GameStateTest::render(Stardust* game, float alpha) {
         GFXSYS.setClearColor(vec3(0.1 * 2, 0.1 * 2, 0.12 * 2));
         GFXSYS.clearScreen();
+
+
+        cutScenePlayer->render();
+
+        GFXSYS.show();
+        fpsCounter.addFrame();
+
+        return;
 
 //        DialogRepository::getInstance().renderAll();
 
