@@ -1,6 +1,9 @@
 #include <CutScene.h>
 #include <GfxSystem.h>
 #include <Font.h>
+#include <MathSupport.h>
+#include <easylogging++.h>
+#include <glm/ext.hpp> // for glm::to_string
 
 namespace Acidrain {
 
@@ -52,6 +55,13 @@ namespace Acidrain {
 
         Slide* slide = cutScene->slides[currentSlideIndex].get();
 
+        frameFadingAlpha = 1;
+        if (slide->fadeInSeconds > 0 && timeInCurrentSlide < slide->fadeInSeconds) {
+            frameFadingAlpha = easeInQuintic(timeInCurrentSlide / slide->fadeInSeconds);
+        } else if (slide->fadeOutSeconds > 0 && timeInCurrentSlide >= (slide->seconds - slide->fadeOutSeconds)) {
+            frameFadingAlpha = easeOutQuintic((slide->seconds - timeInCurrentSlide) / slide->fadeOutSeconds);
+        }
+
         GFXSYS.setTransparencyMode(TransparencyMode::Opaque);
         renderSlideImage(slide->texture);
 
@@ -69,7 +79,8 @@ namespace Acidrain {
 
         Sprite sprite(&spriteSheet, 0);
         vec2 position(0, 0);
-        vec4 color(1, 1, 1, 1);
+        vec4 color(frameFadingAlpha, frameFadingAlpha, frameFadingAlpha, 1);
+
         GFXSYS.drawSprite(sprite, position, color);
     }
 
@@ -77,7 +88,7 @@ namespace Acidrain {
         captionFont->print(caption->position.x,
                            caption->position.y,
                            caption->content,
-                           caption->color,
+                           caption->color * vec4(frameFadingAlpha),
                            FontPrintStyle::SHADOW);
     }
 

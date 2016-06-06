@@ -88,11 +88,15 @@ namespace Acidrain {
 
         cutScene = shared_ptr<CutScene>(new CutScene);
 
-        Slide* slide = new Slide(GFXSYS.loadTexture("sprites/splash.png"), 5);
-        slide->addCaption("This is the caption\nfor the first slide", vec2(100, 400));
+
+        Slide* slide = new Slide(GFXSYS.loadTexture("sprites/splash1.png"), 5);
+        slide->setFadeSeconds(2, 2);
+        slide->addCaption("This is the caption\nfor the first slide", vec2(100, 400), vec4(1, 0, 0, 1));
+        slide->addCaption("Some extra text", vec2(100, 500));
         cutScene->slides.push_back(shared_ptr<Slide>(slide));
 
-        Slide* slide2 = new Slide(GFXSYS.loadTexture("sprites/splash.png"), 10);
+        Slide* slide2 = new Slide(GFXSYS.loadTexture("sprites/splash2.png"), 10);
+        slide2->setFadeSeconds(2, 2);
         slide2->addCaption("This is the caption\nfor the SECOND SLIDE !!11", vec2(100, 500));
         cutScene->slides.push_back(shared_ptr<Slide>(slide2));
 

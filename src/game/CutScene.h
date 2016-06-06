@@ -25,11 +25,17 @@ namespace Acidrain {
 
     struct Slide {
         explicit Slide(shared_ptr<Texture> texture, float seconds);
+        void setFadeSeconds(float fadeInTime, float fadeOutTime) {
+            this->fadeInSeconds = fadeInTime;
+            this->fadeOutSeconds = fadeOutTime;
+        }
         void addCaption(string content, vec2 position, vec4 color = vec4(1, 1, 1, 1));
 
         shared_ptr<Texture> texture;
         vector<shared_ptr<Caption>> captions;
         float seconds;
+        float fadeInSeconds = 0;
+        float fadeOutSeconds = 0;
     };
 
     struct Caption {
@@ -59,6 +65,7 @@ namespace Acidrain {
 
         shared_ptr<Font> captionFont;
         shared_ptr<CutScene> cutScene;
+        float frameFadingAlpha;
         float timeInCurrentSlide;
         int currentSlideIndex;
         bool finished;
