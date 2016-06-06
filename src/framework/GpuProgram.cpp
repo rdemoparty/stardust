@@ -22,7 +22,7 @@ namespace Acidrain {
             std::cerr << "Shader error: " << errorLog << std::endl;
 
             glDeleteShader(shaderId); //Don't leak the shader.
-            delete errorLog;
+            delete [] errorLog;
             return;
         }
     }

@@ -30,7 +30,7 @@ namespace Acidrain {
         }
 
         SDL_Rect dstRect;
-        if ((currentX + outlineBitmap.width + paddingSize * 2) >= atlasWidth) {
+        if ((currentX + (int)outlineBitmap.width + paddingSize * 2) >= atlasWidth) {
             currentX = 0;
             currentY += maxHeightOnLastRow;
             maxHeightOnLastRow = 0;
@@ -53,11 +53,11 @@ namespace Acidrain {
         };
 
         // render outlined glyph
-        for (int y = 0; y < outlineBitmap.rows; y++) {
+        for (unsigned int y = 0; y < outlineBitmap.rows; y++) {
             int sourceOffset = y * outlineBitmap.pitch;
             int destinationOffset = (dstRect.y + y + paddingSize) * atlasWidth + dstRect.x + paddingSize;
             unsigned char* sourcePointer = &outlineBitmap.buffer[sourceOffset];
-            for (int x = 0; x < outlineBitmap.width; x++) {
+            for (unsigned int x = 0; x < outlineBitmap.width; x++) {
                 unsigned char alphaComponent = *sourcePointer++;
                 atlasTexture[(destinationOffset * 4 + 1)] = alphaComponent;
                 atlasTexture[(destinationOffset * 4 + 3)] = 255;
@@ -66,12 +66,12 @@ namespace Acidrain {
         }
 
         // copy rendered glyph
-        int outlineSize = fontRenderStyle.outlineSize * TEXT_DOWNSAMPLE_FACTOR;
-        for (int y = 0; y < glyphSlot->bitmap.rows; y++) {
+        int outlineSize = (int)(fontRenderStyle.outlineSize * TEXT_DOWNSAMPLE_FACTOR);
+        for (unsigned int y = 0; y < glyphSlot->bitmap.rows; y++) {
             int sourceOffset = y * glyphSlot->bitmap.pitch;
             int destinationOffset = (dstRect.y + y + outlineSize + paddingSize) * atlasWidth + dstRect.x + outlineSize + paddingSize;
             unsigned char* sourcePointer = &glyphSlot->bitmap.buffer[sourceOffset];
-            for (int x = 0; x < glyphSlot->bitmap.width; x++) {
+            for (unsigned int x = 0; x < glyphSlot->bitmap.width; x++) {
                 unsigned char alphaComponent = *sourcePointer++;
                 atlasTexture[(destinationOffset * 4 + 0)] = alphaComponent;
                 atlasTexture[(destinationOffset * 4 + 3)] = 255;
@@ -82,7 +82,7 @@ namespace Acidrain {
         // copy shadow glyph
         int shadowOffsetX = fontRenderStyle.shadowOffsetX * TEXT_DOWNSAMPLE_FACTOR;
         int shadowOffsetY = fontRenderStyle.shadowOffsetY * TEXT_DOWNSAMPLE_FACTOR;
-        for (int y = 0; y < glyphSlot->bitmap.rows; y++) {
+        for (unsigned int y = 0; y < glyphSlot->bitmap.rows; y++) {
             int dstY = dstRect.y + y + outlineSize + shadowOffsetY + paddingSize;
 //                if (y >= (outlineBitmap.rows + paddingSize)) continue;
 
@@ -90,7 +90,7 @@ namespace Acidrain {
 
             int sourceOffset = y * glyphSlot->bitmap.pitch;
             unsigned char* sourcePointer = &glyphSlot->bitmap.buffer[sourceOffset];
-            for (int x = 0; x < glyphSlot->bitmap.width; x++) {
+            for (unsigned int x = 0; x < glyphSlot->bitmap.width; x++) {
                 unsigned char alphaComponent = *sourcePointer++;
                 atlasTexture[(destinationOffset * 4 + 2)] = alphaComponent;
                 atlasTexture[(destinationOffset * 4 + 3)] = 255;

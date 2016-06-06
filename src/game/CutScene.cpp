@@ -43,7 +43,7 @@ namespace Acidrain {
             currentSlideIndex++;
             timeInCurrentSlide = 0;
 
-            if (currentSlideIndex >= cutScene->slides.size()) {
+            if (currentSlideIndex >= (int)cutScene->slides.size()) {
                 finished = true;
                 playing = false;
             }
