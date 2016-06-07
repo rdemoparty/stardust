@@ -89,10 +89,26 @@ namespace Acidrain {
         cutScene = shared_ptr<CutScene>(new CutScene);
 
 
-        Slide* slide = new Slide(GFXSYS.loadTexture("sprites/splash1.png"), 5);
+        Slide* slide = new Slide(GFXSYS.loadTexture("sprites/splash1.png"), 8);
         slide->setFadeSeconds(2, 2);
-        slide->addCaption("This is the caption\nfor the first slide", vec2(100, 400), vec4(1, 0, 0, 1));
-        slide->addCaption("Some extra text", vec2(100, 500));
+
+        slide->addCaption(
+                Caption::create("This is the caption\nfor the first slide")
+                        ->atPosition(vec2(100, 400))
+                        ->withColor(vec4(1, 0, 0, 1))
+                        ->withDelayFromSlideStart(2)
+                        ->activeForSeconds(3)
+                        ->withFading(1, 1)
+        );
+        slide->addCaption(
+                Caption::create("Some extra text")
+                        ->atPosition(vec2(100, 500))
+                        ->withColor(vec4(1, 1, 1, 1))
+                        ->withDelayFromSlideStart(4)
+                        ->activeForSeconds(3)
+                        ->withFading(1, 1)
+        );
+
         cutScene->slides.push_back(shared_ptr<Slide>(slide));
 
         Slide* slide2 = new Slide(GFXSYS.loadTexture("sprites/splash2.png"), 10);
@@ -100,7 +116,12 @@ namespace Acidrain {
         slide2->addCaption("This is the caption\nfor the SECOND SLIDE !!11", vec2(100, 500));
         cutScene->slides.push_back(shared_ptr<Slide>(slide2));
 
-        cutScenePlayer = shared_ptr<CutScenePlayer>(new CutScenePlayer(cutScene));
+        FontRenderStyle fontRenderStyle;
+        fontRenderStyle.outlineSize = 2;
+        fontRenderStyle.shadowOffsetX = -2;
+        fontRenderStyle.shadowOffsetY = -2;
+        cutScenePlayer = shared_ptr<CutScenePlayer>(new CutScenePlayer(cutScene,
+                                                                       shared_ptr<Font>(new Font("fonts/Neo Sans Pro Bold.ttf", 32, fontRenderStyle))));
         cutScenePlayer->start();
     }
 

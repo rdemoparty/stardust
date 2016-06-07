@@ -14,6 +14,15 @@ namespace Acidrain {
 
     }
 
+    void Slide::setFadeSeconds(float fadeInTime, float fadeOutTime) {
+        this->fadeInSeconds = fadeInTime;
+        this->fadeOutSeconds = fadeOutTime;
+    }
+
+    void Slide::addCaption(Caption* caption) {
+        captions.push_back(shared_ptr<Caption>(caption));
+    }
+
     void Slide::addCaption(string content, vec2 position, vec4 color) {
         shared_ptr<Caption> caption = shared_ptr<Caption>(new Caption);
         caption->content = content;
@@ -22,13 +31,49 @@ namespace Acidrain {
         this->captions.push_back(caption);
     }
 
-    CutScenePlayer::CutScenePlayer(shared_ptr<CutScene> cs)
+
+    Caption* Caption::create(string content) {
+        Caption* result = new Caption;
+        result->content = content;
+        return result;
+    }
+
+    Caption* Caption::atPosition(vec2 position) {
+        this->position = position;
+        return this;
+    }
+
+    Caption* Caption::withColor(vec4 color) {
+        this->color = color;
+        return this;
+    }
+
+    Caption* Caption::activeForSeconds(float seconds) {
+        this->displaySeconds = seconds;
+        return this;
+    }
+
+    Caption* Caption::withDelayFromSlideStart(float seconds) {
+        this->secondsFromSlideStart = seconds;
+        return this;
+    }
+
+    Caption* Caption::withFading(float fadeInSeconds, float fadeOutSeconds) {
+        this->fadeInSeconds = fadeInSeconds;
+        this->fadeOutSeconds = fadeOutSeconds;
+        return this;
+    }
+
+
+
+    CutScenePlayer::CutScenePlayer(shared_ptr<CutScene> cs, shared_ptr<Font> font)
             : cutScene(cs),
+              captionFont(font),
               timeInCurrentSlide(0),
               currentSlideIndex(0),
               finished(false),
-              playing(false) {
-        captionFont = shared_ptr<Font>(new Font("fonts/arial.ttf", 32));
+              playing(false)
+    {
     }
 
     void CutScenePlayer::start() {
@@ -43,7 +88,7 @@ namespace Acidrain {
             currentSlideIndex++;
             timeInCurrentSlide = 0;
 
-            if (currentSlideIndex >= (int)cutScene->slides.size()) {
+            if (currentSlideIndex >= (int) cutScene->slides.size()) {
                 finished = true;
                 playing = false;
             }
@@ -54,13 +99,7 @@ namespace Acidrain {
         if (finished) return;
 
         Slide* slide = cutScene->slides[currentSlideIndex].get();
-
-        frameFadingAlpha = 1;
-        if (slide->fadeInSeconds > 0 && timeInCurrentSlide < slide->fadeInSeconds) {
-            frameFadingAlpha = easeInQuintic(timeInCurrentSlide / slide->fadeInSeconds);
-        } else if (slide->fadeOutSeconds > 0 && timeInCurrentSlide >= (slide->seconds - slide->fadeOutSeconds)) {
-            frameFadingAlpha = easeOutQuintic((slide->seconds - timeInCurrentSlide) / slide->fadeOutSeconds);
-        }
+        computeFrameFadingAlpha(slide);
 
         GFXSYS.setTransparencyMode(TransparencyMode::Opaque);
         renderSlideImage(slide->texture);
@@ -68,6 +107,15 @@ namespace Acidrain {
         GFXSYS.setTransparencyMode(TransparencyMode::Transparent);
         for (auto caption : slide->captions) {
             renderSlideCaption(caption);
+        }
+    }
+
+    void CutScenePlayer::computeFrameFadingAlpha(const Slide* slide) {
+        frameFadingAlpha = 1;
+        if (slide->fadeInSeconds > 0 && timeInCurrentSlide < slide->fadeInSeconds) {
+            frameFadingAlpha = easeInQuintic(timeInCurrentSlide / slide->fadeInSeconds);
+        } else if (slide->fadeOutSeconds > 0 && timeInCurrentSlide >= (slide->seconds - slide->fadeOutSeconds)) {
+            frameFadingAlpha = easeOutQuintic((slide->seconds - timeInCurrentSlide) / slide->fadeOutSeconds);
         }
     }
 
@@ -85,11 +133,33 @@ namespace Acidrain {
     }
 
     void CutScenePlayer::renderSlideCaption(shared_ptr<Caption> caption) {
-        captionFont->print(caption->position.x,
-                           caption->position.y,
-                           caption->content,
-                           caption->color * vec4(frameFadingAlpha),
-                           FontPrintStyle::SHADOW);
+        float secondsSinceCaptionStart = timeInCurrentSlide - caption->secondsFromSlideStart;
+        if (secondsSinceCaptionStart >= 0) {
+            bool shouldDisplayCaption = secondsSinceCaptionStart < caption->displaySeconds || caption->displaySeconds <= 0;
+            if (shouldDisplayCaption) {
+
+                float captionFadingAlpha = computeCaptionFadingAlpha(caption, secondsSinceCaptionStart);
+
+                captionFont->print(caption->position.x,
+                                   caption->position.y,
+                                   caption->content,
+                                   caption->color * vec4(frameFadingAlpha) * vec4(1, 1, 1, captionFadingAlpha),
+                                   FontPrintStyle::SHADOW);
+            }
+        }
+    }
+
+    float CutScenePlayer::computeCaptionFadingAlpha(const shared_ptr<Caption>& caption, float secondsSinceCaptionStart) const {
+        float captionFadingAlpha = 1;
+        if (caption->fadeInSeconds > 0 && secondsSinceCaptionStart < caption->fadeInSeconds) {
+            captionFadingAlpha = easeInCubic(secondsSinceCaptionStart / caption->fadeInSeconds);
+        } else if (caption->fadeOutSeconds > 0) {
+            float secondsSinceFadeOutStart = caption->displaySeconds - secondsSinceCaptionStart;
+            if (secondsSinceFadeOutStart >= 0) {
+                captionFadingAlpha = easeOutCubic(secondsSinceFadeOutStart / caption->fadeOutSeconds);
+            }
+        }
+        return captionFadingAlpha;
     }
 
 } // end of namespace Acidrain

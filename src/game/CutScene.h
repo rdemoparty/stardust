@@ -25,32 +25,38 @@ namespace Acidrain {
 
     struct Slide {
         explicit Slide(shared_ptr<Texture> texture, float seconds);
-        void setFadeSeconds(float fadeInTime, float fadeOutTime) {
-            this->fadeInSeconds = fadeInTime;
-            this->fadeOutSeconds = fadeOutTime;
-        }
+
+        void setFadeSeconds(float fadeInTime, float fadeOutTime);
         void addCaption(string content, vec2 position, vec4 color = vec4(1, 1, 1, 1));
+        void addCaption(Caption* caption);
 
         shared_ptr<Texture> texture;
         vector<shared_ptr<Caption>> captions;
-        float seconds;
+        float seconds = 0;
         float fadeInSeconds = 0;
         float fadeOutSeconds = 0;
     };
 
     struct Caption {
         string content;
-        vec2 position;
-        vec4 color;
-        float secondsFromSlideStart;
-        float fadeInSeconds;
-        float fadeOutSeconds;
-        float displaySeconds;
+        vec2 position = vec2(0, 0);
+        vec4 color = vec4(1, 1, 1, 1);
+        float secondsFromSlideStart = 0;
+        float fadeInSeconds = 0;
+        float fadeOutSeconds = 0;
+        float displaySeconds = 0;
+
+        static Caption* create(string content);
+        Caption* atPosition(vec2 position);
+        Caption* withColor(vec4 color);
+        Caption* activeForSeconds(float seconds);
+        Caption* withDelayFromSlideStart(float seconds);
+        Caption* withFading(float fadeInSeconds, float fadeOutSeconds);
     };
 
     class CutScenePlayer {
     public:
-        explicit CutScenePlayer(shared_ptr<CutScene> cutScene);
+        explicit CutScenePlayer(shared_ptr<CutScene> cutScene, shared_ptr<Font> captionFont);
 
         void start();
         void update(float dt);
@@ -63,13 +69,14 @@ namespace Acidrain {
         void renderSlideImage(shared_ptr<Texture> texture);
         void renderSlideCaption(shared_ptr<Caption> caption);
 
-        shared_ptr<Font> captionFont;
         shared_ptr<CutScene> cutScene;
+        shared_ptr<Font> captionFont;
         float frameFadingAlpha;
         float timeInCurrentSlide;
         int currentSlideIndex;
         bool finished;
         bool playing;
+        float computeCaptionFadingAlpha(const shared_ptr<Caption>& caption, float secondsSinceCaptionStart) const;
+        void computeFrameFadingAlpha(const Slide* slide);
     };
-
 }
