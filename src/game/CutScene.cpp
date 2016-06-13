@@ -2,11 +2,15 @@
 #include <GfxSystem.h>
 #include <Font.h>
 #include <MathSupport.h>
+#include <AudioSystem.h>
 #include <easylogging++.h>
 #include <glm/ext.hpp> // for glm::to_string
 
 namespace Acidrain {
 
+    void CutScene::addSlide(Slide* slide) {
+        slides.push_back(shared_ptr<Slide>(slide));
+    }
 
     Slide::Slide(shared_ptr<Texture> texture, float seconds) {
         this->texture = texture;
@@ -65,35 +69,61 @@ namespace Acidrain {
     }
 
 
-
     CutScenePlayer::CutScenePlayer(shared_ptr<CutScene> cs, shared_ptr<Font> font)
             : cutScene(cs),
               captionFont(font),
               timeInCurrentSlide(0),
               currentSlideIndex(0),
               finished(false),
-              playing(false)
-    {
+              playing(false) {
     }
 
     void CutScenePlayer::start() {
         playing = true;
+
+        if (!cutScene->musicUri.empty()) {
+            AUDIOSYS.playMusic(cutScene->musicUri.c_str());
+        }
+        if (!cutScene->speechUri.empty()) {
+            AUDIOSYS.playSound(cutScene->speechUri, "PLAYER");
+        }
+    }
+
+    void CutScenePlayer::skip() {
+        finishPlaying();
     }
 
     void CutScenePlayer::update(float dt) {
         if (finished || !playing) return;
 
         timeInCurrentSlide += dt;
-        if (timeInCurrentSlide > cutScene->slides[currentSlideIndex]->seconds) {
-            currentSlideIndex++;
-            timeInCurrentSlide = 0;
-
-            if (currentSlideIndex >= (int) cutScene->slides.size()) {
-                finished = true;
-                playing = false;
+        if (isCurrentSlideFinished()) {
+            selectNextSlide();
+            if (noMoreSlidesAvailable()) {
+                finishPlaying();
             }
         }
     }
+
+    void CutScenePlayer::finishPlaying() {
+        finished = true;
+        playing = false;
+        if (!cutScene->musicUri.empty()) {
+            AUDIOSYS.stopMusic();
+        }
+        if (!cutScene->speechUri.empty()) {
+            AUDIOSYS.stopSounds({"PLAYER"});
+        }
+    }
+
+    void CutScenePlayer::selectNextSlide() {
+        currentSlideIndex++;
+        timeInCurrentSlide = 0;
+    }
+
+    bool CutScenePlayer::isCurrentSlideFinished() const { return timeInCurrentSlide > cutScene->slides[currentSlideIndex]->seconds; }
+
+    bool CutScenePlayer::noMoreSlidesAvailable() const { return currentSlideIndex >= (int) cutScene->slides.size(); }
 
     void CutScenePlayer::render() {
         if (finished) return;
@@ -162,7 +192,9 @@ namespace Acidrain {
         return captionFadingAlpha;
     }
 
+
 } // end of namespace Acidrain
+
 
 
 

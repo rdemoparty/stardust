@@ -21,6 +21,8 @@ namespace Acidrain {
         string speechUri;
         vector<shared_ptr<Slide>> slides;
         bool skippable = true;
+
+        void addSlide(Slide* slide);
     };
 
     struct Slide {
@@ -59,16 +61,13 @@ namespace Acidrain {
         explicit CutScenePlayer(shared_ptr<CutScene> cutScene, shared_ptr<Font> captionFont);
 
         void start();
+        void skip();
         void update(float dt);
         void render();
 
         inline bool isFinished() const { return finished; };
 
     private:
-
-        void renderSlideImage(shared_ptr<Texture> texture);
-        void renderSlideCaption(shared_ptr<Caption> caption);
-
         shared_ptr<CutScene> cutScene;
         shared_ptr<Font> captionFont;
         float frameFadingAlpha;
@@ -76,7 +75,14 @@ namespace Acidrain {
         int currentSlideIndex;
         bool finished;
         bool playing;
+
+        void renderSlideImage(shared_ptr<Texture> texture);
+        void renderSlideCaption(shared_ptr<Caption> caption);
         float computeCaptionFadingAlpha(const shared_ptr<Caption>& caption, float secondsSinceCaptionStart) const;
         void computeFrameFadingAlpha(const Slide* slide);
+        bool noMoreSlidesAvailable() const;
+        bool isCurrentSlideFinished() const;
+        void selectNextSlide();
+        void finishPlaying();
     };
 }

@@ -87,7 +87,8 @@ namespace Acidrain {
 
 
         cutScene = shared_ptr<CutScene>(new CutScene);
-
+        cutScene->musicUri = "main.ogg";
+        cutScene->speechUri = "sounds/rain/acquiring_modules_change_the_behaviour_of_the_ship.ogg";
 
         Slide* slide = new Slide(GFXSYS.loadTexture("sprites/splash1.png"), 8);
         slide->setFadeSeconds(2, 2);
@@ -109,12 +110,12 @@ namespace Acidrain {
                         ->withFading(1, 1)
         );
 
-        cutScene->slides.push_back(shared_ptr<Slide>(slide));
+        cutScene->addSlide(slide);
 
         Slide* slide2 = new Slide(GFXSYS.loadTexture("sprites/splash2.png"), 10);
         slide2->setFadeSeconds(2, 2);
         slide2->addCaption("This is the caption\nfor the SECOND SLIDE !!11", vec2(100, 500));
-        cutScene->slides.push_back(shared_ptr<Slide>(slide2));
+        cutScene->addSlide(slide2);
 
         FontRenderStyle fontRenderStyle;
         fontRenderStyle.outlineSize = 2;
