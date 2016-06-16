@@ -86,44 +86,59 @@ namespace Acidrain {
         gpuProgram->addConstants(gpuProgramConstantBundle.get());
 
 
-        cutScene = shared_ptr<CutScene>(new CutScene);
-        cutScene->musicUri = "main.ogg";
-        cutScene->speechUri = "sounds/rain/acquiring_modules_change_the_behaviour_of_the_ship.ogg";
 
-        Slide* slide = new Slide(GFXSYS.loadTexture("sprites/splash1.png"), 8);
-        slide->setFadeSeconds(2, 2);
+        // trigger the creation of a cutscene
+        new Script("cutscenes/test.cutscene.lua");
 
-        slide->addCaption(
-                Caption::create("This is the caption\nfor the first slide")
-                        ->atPosition(vec2(100, 400))
-                        ->withColor(vec4(1, 0, 0, 1))
-                        ->withDelayFromSlideStart(2)
-                        ->activeForSeconds(3)
-                        ->withFading(1, 1)
-        );
-        slide->addCaption(
-                Caption::create("Some extra text")
-                        ->atPosition(vec2(100, 500))
-                        ->withColor(vec4(1, 1, 1, 1))
-                        ->withDelayFromSlideStart(4)
-                        ->activeForSeconds(3)
-                        ->withFading(1, 1)
-        );
+        shared_ptr<Font> cutSceneFont = shared_ptr<Font>(new Font("fonts/Neo Sans Pro Bold.ttf", 32));
+        cutScene = shared_ptr<CutScene>(CutSceneRegistry::getCutScene(1, CutScenePosition::BeforeLevel));
+        if (cutScene) {
+            cutScenePlayer = shared_ptr<CutScenePlayer>(new CutScenePlayer(cutScene, cutSceneFont));
+            cutScenePlayer->start();
+        }
 
-        cutScene->addSlide(slide);
 
-        Slide* slide2 = new Slide(GFXSYS.loadTexture("sprites/splash2.png"), 10);
-        slide2->setFadeSeconds(2, 2);
-        slide2->addCaption("This is the caption\nfor the SECOND SLIDE !!11", vec2(100, 500));
-        cutScene->addSlide(slide2);
+//        exit(0);
 
-        FontRenderStyle fontRenderStyle;
-        fontRenderStyle.outlineSize = 2;
-        fontRenderStyle.shadowOffsetX = -2;
-        fontRenderStyle.shadowOffsetY = -2;
-        cutScenePlayer = shared_ptr<CutScenePlayer>(new CutScenePlayer(cutScene,
-                                                                       shared_ptr<Font>(new Font("fonts/Neo Sans Pro Bold.ttf", 32, fontRenderStyle))));
-        cutScenePlayer->start();
+
+//        cutScene = shared_ptr<CutScene>(new CutScene);
+//        cutScene->musicUri = "main.ogg";
+//        cutScene->speechUri = "sounds/rain/acquiring_modules_change_the_behaviour_of_the_ship.ogg";
+//
+//        Slide* slide = new Slide(GFXSYS.loadTexture("sprites/splash1.png"), 8);
+//        slide->setFadeSeconds(2, 2);
+//
+//        slide->addCaption(
+//                Caption::create("This is the caption\nfor the first slide")
+//                        ->atPosition(vec2(100, 400))
+//                        ->withColor(vec4(1, 0, 0, 1))
+//                        ->withDelayFromSlideStart(2)
+//                        ->activeForSeconds(3)
+//                        ->withFading(1, 1)
+//        );
+//        slide->addCaption(
+//                Caption::create("Some extra text")
+//                        ->atPosition(vec2(100, 500))
+//                        ->withColor(vec4(1, 1, 1, 1))
+//                        ->withDelayFromSlideStart(4)
+//                        ->activeForSeconds(3)
+//                        ->withFading(1, 1)
+//        );
+//
+//        cutScene->addSlide(slide);
+//
+//        Slide* slide2 = new Slide(GFXSYS.loadTexture("sprites/splash2.png"), 10);
+//        slide2->setFadeSeconds(2, 2);
+//        slide2->addCaption("This is the caption\nfor the SECOND SLIDE !!11", vec2(100, 500));
+//        cutScene->addSlide(slide2);
+//
+//        FontRenderStyle fontRenderStyle;
+//        fontRenderStyle.outlineSize = 2;
+//        fontRenderStyle.shadowOffsetX = -2;
+//        fontRenderStyle.shadowOffsetY = -2;
+//        cutScenePlayer = shared_ptr<CutScenePlayer>(new CutScenePlayer(cutScene,
+//                                                                       shared_ptr<Font>(new Font("fonts/Neo Sans Pro Bold.ttf", 32, fontRenderStyle))));
+//        cutScenePlayer->start();
     }
 
     void GameStateTest::onExit(Stardust* game) {
@@ -142,7 +157,8 @@ namespace Acidrain {
             game->quitGame = true;
         }
 
-        cutScenePlayer->update(elapsedSeconds);
+        if (cutScenePlayer)
+            cutScenePlayer->update(elapsedSeconds);
     }
 
 
@@ -150,8 +166,8 @@ namespace Acidrain {
         GFXSYS.setClearColor(vec3(0.1 * 2, 0.1 * 2, 0.12 * 2));
         GFXSYS.clearScreen();
 
-
-        cutScenePlayer->render();
+        if (cutScenePlayer)
+            cutScenePlayer->render();
 
         GFXSYS.show();
         fpsCounter.addFrame();

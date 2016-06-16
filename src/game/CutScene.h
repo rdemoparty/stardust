@@ -6,6 +6,7 @@
 #include <vector>
 #include <memory>
 #include <Texture.h>
+#include <map>
 
 namespace Acidrain {
 
@@ -26,6 +27,9 @@ namespace Acidrain {
     };
 
     struct Slide {
+        Slide() {
+        }
+
         explicit Slide(shared_ptr<Texture> texture, float seconds);
 
         void setFadeSeconds(float fadeInTime, float fadeOutTime);
@@ -54,6 +58,21 @@ namespace Acidrain {
         Caption* activeForSeconds(float seconds);
         Caption* withDelayFromSlideStart(float seconds);
         Caption* withFading(float fadeInSeconds, float fadeOutSeconds);
+    };
+
+    enum class CutScenePosition {
+        BeforeLevel,
+        AfterLevel
+    };
+
+    class CutSceneRegistry {
+    public:
+        static void registerCutScene(shared_ptr<CutScene> cutScene, int level, CutScenePosition position);
+        static shared_ptr<CutScene> getCutScene(int level, CutScenePosition position);
+
+    private:
+        static map<int, shared_ptr<CutScene>> cutScenesBeforeLevel;
+        static map<int, shared_ptr<CutScene>> cutScenesAfterLevel;
     };
 
     class CutScenePlayer {

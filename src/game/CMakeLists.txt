@@ -44,6 +44,7 @@ set(HEADERS
         ${CMAKE_CURRENT_SOURCE_DIR}/scripting/AudioScriptExporter.h
         ${CMAKE_CURRENT_SOURCE_DIR}/scripting/BasicScriptExporter.h
         ${CMAKE_CURRENT_SOURCE_DIR}/scripting/CameraScriptExporter.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/scripting/CutSceneScriptExporter.h
         ${CMAKE_CURRENT_SOURCE_DIR}/scripting/DialogRepositoryScriptExporter.h
         ${CMAKE_CURRENT_SOURCE_DIR}/scripting/EntityScriptExporter.h
         ${CMAKE_CURRENT_SOURCE_DIR}/scripting/GameSessionScriptExporter.h
@@ -93,6 +94,7 @@ set(SOURCE
         ${CMAKE_CURRENT_SOURCE_DIR}/scripting/AudioScriptExporter.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/scripting/BasicScriptExporter.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/scripting/CameraScriptExporter.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/scripting/CutSceneScriptExporter.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/scripting/DialogRepositoryScriptExporter.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/scripting/EntityScriptExporter.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/scripting/GameSessionScriptExporter.cpp

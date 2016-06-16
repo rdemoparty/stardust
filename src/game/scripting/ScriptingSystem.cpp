@@ -10,6 +10,7 @@
 #include <AudioScriptExporter.h>
 #include <SceneScriptExporter.h>
 #include <CameraScriptExporter.h>
+#include <CutSceneScriptExporter.h>
 
 namespace Acidrain {
 
@@ -29,6 +30,7 @@ namespace Acidrain {
         ScriptExporterRegistry::add(&AudioScriptExporter::getInstance());
         ScriptExporterRegistry::add(&SceneScriptExporter::getInstance());
         ScriptExporterRegistry::add(&CameraScriptExporter::getInstance());
+        ScriptExporterRegistry::add(&CutSceneScriptExporter::getInstance());
     }
 
     ScriptingSystem::ScriptingSystem() {

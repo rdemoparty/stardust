@@ -60,6 +60,17 @@ namespace Acidrain {
             return result;
         }
 
+        inline vec2 readPosition(lua_State* L) {
+            vec2 result;
+
+            result.x = readTableFloat(L, "x");
+            result.y = readTableFloat(L, "y");
+
+            lua_pop(L, 1);
+
+            return result;
+        }
+
         inline DialogOptions readDialogOptions(lua_State* L) {
             DialogOptions result = DEFAULT_DIALOG_OPTIONS;
 

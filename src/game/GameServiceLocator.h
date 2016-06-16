@@ -13,19 +13,15 @@ namespace Acidrain {
     class GameServiceLocator {
     public:
         static void gameObjectFactory(shared_ptr<GameObjectFactory> factory);
-
         static shared_ptr<GameObjectFactory> gameObjectFactory();
 
         static void scene(shared_ptr<Scene> scene);
-
         static shared_ptr<Scene> scene();
 
         static void gameSession(shared_ptr<GameSession> gameSession);
-
         static shared_ptr<GameSession> gameSession();
 
         static void camera(shared_ptr<Camera> camera);
-
         static shared_ptr<Camera> camera();
     };
 

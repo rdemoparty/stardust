@@ -68,6 +68,23 @@ namespace Acidrain {
         return this;
     }
 
+    // CutSceneRegistry
+
+    map<int, shared_ptr<CutScene>> CutSceneRegistry::cutScenesBeforeLevel;
+    map<int, shared_ptr<CutScene>> CutSceneRegistry::cutScenesAfterLevel;
+
+    void CutSceneRegistry::registerCutScene(shared_ptr<CutScene> cutScene, int level, CutScenePosition position) {
+        if (position == CutScenePosition::BeforeLevel)
+            cutScenesBeforeLevel[level] = cutScene;
+        else
+            cutScenesAfterLevel[level] = cutScene;
+    }
+
+    shared_ptr<CutScene> CutSceneRegistry::getCutScene(int level, CutScenePosition position) {
+        return position == CutScenePosition::BeforeLevel ?
+            cutScenesBeforeLevel[level] :
+            cutScenesAfterLevel[level];
+    }
 
     CutScenePlayer::CutScenePlayer(shared_ptr<CutScene> cs, shared_ptr<Font> font)
             : cutScene(cs),
@@ -194,6 +211,8 @@ namespace Acidrain {
 
 
 } // end of namespace Acidrain
+
+
 
 
 
