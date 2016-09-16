@@ -27,10 +27,12 @@ namespace Acidrain {
 
         GameSessionState getState() const;
 
-        int getRemainingLives();
-        int getScore();
-        bool isGameCompleted();
-        string getLevelUri();
+        int getRemainingLives() const;
+        int getScore() const;
+        bool isGameCompleted() const;
+        string getCurrentLevelUri() const;
+        int getCurrentLevel() const;
+
         AttributeBag& getSessionAttributes() { return sessionAttributes; }
 
         /**
@@ -41,7 +43,10 @@ namespace Acidrain {
         void notifyPlayerDeath();
         void notifyLevelFinish();
 
-
+        bool needToWatchLevelIntro() const;
+        bool needToWatchLevelOutro() const;
+        void levelIntroWatched();
+        void levelOutroWatched();
     private:
         int currentLevel;
         int lastLevel;
@@ -49,6 +54,8 @@ namespace Acidrain {
         int score;
         GameSessionState state = GameSessionState::NEW;
         AttributeBag sessionAttributes;
+        map<int, bool> watchedIntros;
+        map<int, bool> watchedOutros;
     };
 
 } // namespace Acidrain

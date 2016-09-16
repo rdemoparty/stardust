@@ -11,7 +11,7 @@ namespace Acidrain {
     namespace Lua {
 
         void loadAndInterpret(lua_State* L, const char* const scriptUri);
-        void dumpStack(lua_State* L);
+        void dumpStack(lua_State* L, const char* title);
 
         inline bool readBoolean(lua_State* L) {
             bool value = lua_toboolean(L, -1);

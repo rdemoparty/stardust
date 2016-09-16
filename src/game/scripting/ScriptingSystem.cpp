@@ -11,6 +11,7 @@
 #include <SceneScriptExporter.h>
 #include <CameraScriptExporter.h>
 #include <CutSceneScriptExporter.h>
+#include <Script.h>
 
 namespace Acidrain {
 
@@ -31,6 +32,9 @@ namespace Acidrain {
         ScriptExporterRegistry::add(&SceneScriptExporter::getInstance());
         ScriptExporterRegistry::add(&CameraScriptExporter::getInstance());
         ScriptExporterRegistry::add(&CutSceneScriptExporter::getInstance());
+
+        // TODO: find a better place to perform cutscenes loading
+        new Script("cutscenes/test.cutscene.lua");
     }
 
     ScriptingSystem::ScriptingSystem() {

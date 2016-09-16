@@ -5,38 +5,10 @@
 #include <GfxSystem.h>
 
 #include <ScriptUtils.h>
-#include <glm/ext.hpp>
-#include <tic.h>
 
 namespace Acidrain {
 
     using namespace Lua;
-
-    static void stackDump(lua_State* L, const char* title) {
-        int i = lua_gettop(L);
-        LOG(INFO) << " ----------------  " << title << " ----------------";
-        while (i) {
-            int t = lua_type(L, i);
-            switch (t) {
-                case LUA_TSTRING:
-                    printf("\t\t\t%d:`%s'", i, lua_tostring(L, i));
-                    break;
-                case LUA_TBOOLEAN:
-                    printf("\t\t\t%d: %s", i, lua_toboolean(L, i) ? "true" : "false");
-                    break;
-                case LUA_TNUMBER:
-                    printf("\t\t\t%d: %g", i, lua_tonumber(L, i));
-                    break;
-                default:
-                    printf("\t\t\t%d: %s", i, lua_typename(L, t));
-                    break;
-            }
-            i--;
-            printf("\n");
-        }
-//        LOG(INFO) << "--------------- Stack Dump Finished ---------------";
-        printf("\n");
-    }
 
     shared_ptr<CutScene> readCutSceneFromLuaStack(lua_State* L);
     vector<shared_ptr<Slide>> readCutSceneSlidesFromLuaStack(lua_State* L);

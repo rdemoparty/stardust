@@ -4,8 +4,6 @@
 
 namespace Acidrain {
 
-    // Circle
-
     Circle::Circle(float r, vec2 c)
             : radius(r), center(c), worldRadius(r), worldCenter(c) {
     }

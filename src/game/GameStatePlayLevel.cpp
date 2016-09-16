@@ -15,6 +15,8 @@
 #include <GpuProgram.h>
 #include <GpuProgramConstants.h>
 #include <glm/gtc/matrix_transform.hpp>
+#include <GameStateCutSceneBeforeLevel.h>
+#include <GameStateCutSceneAfterLevel.h>
 
 namespace Acidrain {
 
@@ -36,7 +38,6 @@ namespace Acidrain {
         gpuProgramConstantBundle->set("offset", vec2(GFXSYS.getOffsetX(), GFXSYS.getOffsetY()));
         gpuProgramConstantBundle->set("time", totalElapsedTime);
         gpuProgram->addConstants(gpuProgramConstantBundle.get());
-
     }
 
     GameStatePlayLevel& GameStatePlayLevel::instance() {
@@ -44,11 +45,11 @@ namespace Acidrain {
         return instance;
     }
 
-    void GameStatePlayLevel::onEnter(Stardust* game) {
+    void GameStatePlayLevel::onEnter(Stardust*) {
         GFXSYS.setClearColor(vec3(0.1f, 0.0f, 0.1f));
     }
 
-    void GameStatePlayLevel::onExit(Stardust* game) {
+    void GameStatePlayLevel::onExit(Stardust*) {
     }
 
     void GameStatePlayLevel::update(Stardust* game, float elapsedSeconds) {
@@ -79,7 +80,12 @@ namespace Acidrain {
                     return;
 
                 case GameSessionState::NEW:
-                    levelScript->load(gameSession->getLevelUri());
+                    if (gameSession->needToWatchLevelIntro()) {
+                        game->fsm->changeState(&GameStateCutSceneBeforeLevel::instance());
+                        return;
+                    }
+
+                    levelScript->load(gameSession->getCurrentLevelUri());
                     level->start();
 
                     level->addPlayerToScene();
@@ -100,9 +106,20 @@ namespace Acidrain {
                     }
 
                     if (level->isFinished()) {
+                        if (gameSession->needToWatchLevelOutro()) {
+                            game->fsm->changeState(&GameStateCutSceneAfterLevel::instance());
+                            return;
+                        }
+
                         gameSession->notifyLevelFinish();
+
                         if (gameSession->getState() != GameSessionState::GAME_FINISHED) {
-                            levelScript->load(gameSession->getLevelUri());
+                            if (gameSession->needToWatchLevelIntro()) {
+                                game->fsm->changeState(&GameStateCutSceneBeforeLevel::instance());
+                                return;
+                            }
+
+                            levelScript->load(gameSession->getCurrentLevelUri());
                             level->start();
                         }
                     }

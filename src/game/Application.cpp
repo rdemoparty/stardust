@@ -81,8 +81,8 @@ namespace Acidrain {
     }
 
     void Application::run() {
-        timer = make_shared<Timer>();
-        game = make_shared<Stardust>();
+        timer = unique_ptr<Timer>(new Timer);
+        game = unique_ptr<Stardust>(new Stardust);
 
         if (FLAG_test) {
             game->fsm->setGlobalState(&GameStateTest::instance());

@@ -14,30 +14,30 @@ namespace Acidrain {
                 LOG(ERROR) << "Failed to interpret script contents: " << lua_tostring(L, -1) << endl;
         }
 
-        void dumpStack(lua_State* L) {
-            int i;
-            int top = lua_gettop(L);
-
-            printf("total in stack %d\n", top);
-
-            for (i = 1; i <= top; i++) {
+        // TODO Adrian: be consistent and switch from using printf() to sstream + LOG(INFO)
+        void dumpStack(lua_State* L, const char* title) {
+            int i = lua_gettop(L);
+            LOG(INFO) << " ----------------  " << title << " ----------------";
+            while (i) {
                 int t = lua_type(L, i);
                 switch (t) {
                     case LUA_TSTRING:
-                        printf("string: '%s'\n", lua_tostring(L, i));
+                        printf("\t\t\t%d:`%s'", i, lua_tostring(L, i));
                         break;
                     case LUA_TBOOLEAN:
-                        printf("boolean %s\n", lua_toboolean(L, i) ? "true" : "false");
+                        printf("\t\t\t%d: %s", i, lua_toboolean(L, i) ? "true" : "false");
                         break;
                     case LUA_TNUMBER:
-                        printf("number: %g\n", lua_tonumber(L, i));
+                        printf("\t\t\t%d: %g", i, lua_tonumber(L, i));
                         break;
                     default:
-                        printf("%s\n", lua_typename(L, t));
+                        printf("\t\t\t%d: %s", i, lua_typename(L, t));
                         break;
                 }
-                printf("  ");
+                i--;
+                printf("\n");
             }
+//        LOG(INFO) << "--------------- Stack Dump Finished ---------------";
             printf("\n");
         }
     }

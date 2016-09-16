@@ -21,8 +21,8 @@ namespace Acidrain {
         void initializeSystems();
         void configureLogging();
 
-        shared_ptr<Timer> timer;
-        shared_ptr<Stardust> game;
+        unique_ptr<Timer> timer;
+        unique_ptr<Stardust> game;
     };
 
 } // end of namespace Acidrain

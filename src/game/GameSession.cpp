@@ -13,9 +13,9 @@ namespace Acidrain {
         return levelUri.str();
     }
 
-    GameSession::GameSession() {
-        // Search for the last level. Levels' filenames must be in order, e.g: level1.json, level2.json, level3.json
-        lastLevel = 1;
+    // Search for the last level. Level file names must be in alphanumeric order, e.g: level1.json, level2.json, level3.json
+    int detectLastLevel() {
+        int lastLevel = 1;
         for (int i = 1; i <= MAX_LEVELS; i++) {
             string&& levelName = getLevelPath(i);
             if (FILESYS.fileExists(levelName)) {
@@ -25,6 +25,11 @@ namespace Acidrain {
                 break;
             }
         }
+        return lastLevel;
+    }
+
+    GameSession::GameSession() {
+        lastLevel = detectLastLevel();
         reset();
     }
 
@@ -39,11 +44,11 @@ namespace Acidrain {
         state = GameSessionState::NEW;
     }
 
-    int GameSession::getRemainingLives() {
+    int GameSession::getRemainingLives() const {
         return livesRemaining;
     }
 
-    bool GameSession::isGameCompleted() {
+    bool GameSession::isGameCompleted() const {
         return currentLevel > lastLevel;
     }
 
@@ -61,7 +66,7 @@ namespace Acidrain {
         }
     }
 
-    int GameSession::getScore() {
+    int GameSession::getScore() const {
         return score;
     }
 
@@ -73,11 +78,40 @@ namespace Acidrain {
         return state;
     }
 
-    string GameSession::getLevelUri() {
+    string GameSession::getCurrentLevelUri() const {
         return getLevelPath(currentLevel);
     }
 
     void GameSession::notifySessionStarted() {
         state = GameSessionState::PLAYING;
     }
+
+    int GameSession::getCurrentLevel() const {
+        return currentLevel;
+    }
+
+    bool GameSession::needToWatchLevelIntro() const {
+        if (watchedIntros.find(currentLevel) == watchedIntros.end()) {
+            return true;
+        } else {
+            return !watchedIntros.at(currentLevel);
+        }
+    }
+
+    bool GameSession::needToWatchLevelOutro() const {
+        if (watchedOutros.find(currentLevel) == watchedOutros.end()) {
+            return true;
+        } else {
+            return !watchedOutros.at(currentLevel);
+        }
+    }
+
+    void GameSession::levelIntroWatched() {
+        watchedIntros[currentLevel] = true;
+    }
+
+    void GameSession::levelOutroWatched() {
+        watchedOutros[currentLevel] = true;
+    }
+
 } // namespace Acidrain
