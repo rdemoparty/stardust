@@ -1,31 +1,24 @@
 #pragma once
 
 #include <GameState.h>
-#include <string>
 
 namespace Acidrain {
 
-    using namespace std;
-
     class Stardust;
 
-    class GameStatePreviewLevel : public GameState<Stardust> {
-
+    class GameStateTest : public GameState<Stardust> {
     public:
+        static GameStateTest& instance();
 
-        static GameStatePreviewLevel& instance();
-
-        void preview(Stardust* game, std::string levelName);
+        virtual const char* name() const override { return "Test"; }
 
         virtual void onEnter(Stardust* game) override;
-
         virtual void onExit(Stardust* game) override;
-
         virtual void update(Stardust* game, float elapsedSeconds) override;
-
         virtual void render(Stardust* game, float alpha) override;
 
     private:
+        GameStateTest();
     };
 
 } // namespace Acidrain

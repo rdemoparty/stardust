@@ -1,15 +1,13 @@
 #include <GameStateCutSceneBeforeLevel.h>
 #include <Stardust.h>
 #include <GfxSystem.h>
-#include <AudioSystem.h>
 #include <InputProvider.h>
 #include <Font.h>
 #include <GameStatePlayLevel.h>
 #include <GameSession.h>
-
-#include <easylogging++.h>
-#include <glm/ext.hpp>
 #include <CutScene.h>
+#include <Level.h>
+#include <LevelScript.h>
 
 namespace Acidrain {
 
@@ -30,17 +28,14 @@ namespace Acidrain {
 
         cutScene = shared_ptr<CutScene>(CutSceneRegistry::getCutScene(game->gameSession->getCurrentLevel(), CutScenePosition::BeforeLevel));
         if (cutScene) {
-            LOG(DEBUG) << "Playing cut scene before level " << game->gameSession->getCurrentLevel();
+            LOG(INFO) << "Playing cut scene before level " << game->gameSession->getCurrentLevel();
             cutScenePlayer = shared_ptr<CutScenePlayer>(new CutScenePlayer(cutScene, cutSceneFont));
             cutScenePlayer->start();
         }
     }
 
-    void GameStateCutSceneBeforeLevel::onExit(Stardust*) {
-    }
-
     void GameStateCutSceneBeforeLevel::update(Stardust* game, float elapsedSeconds) {
-        if (INPUT.isKeyJustPressed(SDL_SCANCODE_ESCAPE) && cutScenePlayer && cutScene && cutScene->skippable) {
+        if (INPUT.isKeyJustReleased(SDL_SCANCODE_ESCAPE) && cutScenePlayer && cutScene && cutScene->skippable) {
             cutScenePlayer->skip();
         }
 
@@ -49,9 +44,17 @@ namespace Acidrain {
 
         if (!cutScenePlayer || cutScenePlayer->isFinished()) {
             game->gameSession->levelIntroWatched();
+            initializeLevelForPlaying(game);
             game->fsm->changeState(&GameStatePlayLevel::instance());
-            return;
         }
+    }
+
+    void GameStateCutSceneBeforeLevel::initializeLevelForPlaying(const Stardust* game) const {
+        game->level->levelScript->load(game->gameSession->getCurrentLevelUri());
+        game->level->start();
+
+        game->level->addPlayerToScene();
+        game->level->addPlatformsToScene();
     }
 
 

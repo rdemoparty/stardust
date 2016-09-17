@@ -10,6 +10,7 @@
 #include <glm/ext.hpp>
 #include <CutScene.h>
 #include <GameSession.h>
+#include <GameStateShowLevelStats.h>
 
 namespace Acidrain {
 
@@ -36,11 +37,8 @@ namespace Acidrain {
         }
     }
 
-    void GameStateCutSceneAfterLevel::onExit(Stardust*) {
-    }
-
     void GameStateCutSceneAfterLevel::update(Stardust* game, float elapsedSeconds) {
-        if (INPUT.isKeyJustPressed(SDL_SCANCODE_ESCAPE) && cutScenePlayer && cutScene && cutScene->skippable) {
+        if (INPUT.isKeyJustReleased(SDL_SCANCODE_ESCAPE) && cutScenePlayer && cutScene && cutScene->skippable) {
             cutScenePlayer->skip();
         }
 
@@ -49,8 +47,7 @@ namespace Acidrain {
 
         if (!cutScenePlayer || cutScenePlayer->isFinished()) {
             game->gameSession->levelOutroWatched();
-            game->fsm->changeState(&GameStatePlayLevel::instance());
-            return;
+            game->fsm->changeState(&GameStateShowLevelStats::instance());
         }
     }
 

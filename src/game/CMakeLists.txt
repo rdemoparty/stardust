@@ -1,3 +1,6 @@
+add_subdirectory(states)
+add_subdirectory(scripting)
+
 set(HEADERS
         ${HEADERS}
         ${CMAKE_CURRENT_SOURCE_DIR}/Application.h
@@ -14,17 +17,6 @@ set(HEADERS
         ${CMAKE_CURRENT_SOURCE_DIR}/GameServiceLocator.h
         ${CMAKE_CURRENT_SOURCE_DIR}/GameSession.h
         ${CMAKE_CURRENT_SOURCE_DIR}/GameState.h
-        ${CMAKE_CURRENT_SOURCE_DIR}/GameStateCredits.h
-        ${CMAKE_CURRENT_SOURCE_DIR}/GameStateCutSceneAfterLevel.h
-        ${CMAKE_CURRENT_SOURCE_DIR}/GameStateCutSceneBeforeLevel.h
-        ${CMAKE_CURRENT_SOURCE_DIR}/GameStateEditor.h
-        ${CMAKE_CURRENT_SOURCE_DIR}/GameStateIntro.h
-        ${CMAKE_CURRENT_SOURCE_DIR}/GameStateMenu.h
-        ${CMAKE_CURRENT_SOURCE_DIR}/GameStateOptions.h
-        ${CMAKE_CURRENT_SOURCE_DIR}/GameStatePlayLevel.h
-        ${CMAKE_CURRENT_SOURCE_DIR}/GameStatePreviewEntity.h
-        ${CMAKE_CURRENT_SOURCE_DIR}/GameStatePreviewLevel.h
-        ${CMAKE_CURRENT_SOURCE_DIR}/GameStateTest.h
         ${CMAKE_CURRENT_SOURCE_DIR}/Level.h
         ${CMAKE_CURRENT_SOURCE_DIR}/LevelScript.h
         ${CMAKE_CURRENT_SOURCE_DIR}/LevelScriptPreviewEntity.h
@@ -43,19 +35,6 @@ set(HEADERS
         ${CMAKE_CURRENT_SOURCE_DIR}/Version.h
         ${CMAKE_CURRENT_SOURCE_DIR}/Weapon.h
 
-        ${CMAKE_CURRENT_SOURCE_DIR}/scripting/AudioScriptExporter.h
-        ${CMAKE_CURRENT_SOURCE_DIR}/scripting/BasicScriptExporter.h
-        ${CMAKE_CURRENT_SOURCE_DIR}/scripting/CameraScriptExporter.h
-        ${CMAKE_CURRENT_SOURCE_DIR}/scripting/CutSceneScriptExporter.h
-        ${CMAKE_CURRENT_SOURCE_DIR}/scripting/DialogRepositoryScriptExporter.h
-        ${CMAKE_CURRENT_SOURCE_DIR}/scripting/EntityScriptExporter.h
-        ${CMAKE_CURRENT_SOURCE_DIR}/scripting/GameSessionScriptExporter.h
-        ${CMAKE_CURRENT_SOURCE_DIR}/scripting/InputScriptExporter.h
-        ${CMAKE_CURRENT_SOURCE_DIR}/scripting/SceneScriptExporter.h
-        ${CMAKE_CURRENT_SOURCE_DIR}/scripting/ScriptingSystem.h
-        ${CMAKE_CURRENT_SOURCE_DIR}/scripting/Script.h
-        ${CMAKE_CURRENT_SOURCE_DIR}/scripting/ScriptUtils.h
-
         PARENT_SCOPE
         )
 set(SOURCE
@@ -71,17 +50,6 @@ set(SOURCE
         ${CMAKE_CURRENT_SOURCE_DIR}/GameObjectFactory.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/GameServiceLocator.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/GameSession.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/GameStateCredits.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/GameStateCutSceneAfterLevel.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/GameStateCutSceneBeforeLevel.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/GameStateIntro.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/GameStateEditor.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/GameStateMenu.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/GameStateOptions.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/GameStatePlayLevel.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/GameStatePreviewEntity.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/GameStatePreviewLevel.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/GameStateTest.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/Level.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/LevelScript.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/LevelScriptPreviewEntity.cpp
@@ -94,19 +62,6 @@ set(SOURCE
         ${CMAKE_CURRENT_SOURCE_DIR}/Starfield.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/UserPreferences.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/Weapon.cpp
-
-        ${CMAKE_CURRENT_SOURCE_DIR}/scripting/AudioScriptExporter.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/scripting/BasicScriptExporter.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/scripting/CameraScriptExporter.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/scripting/CutSceneScriptExporter.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/scripting/DialogRepositoryScriptExporter.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/scripting/EntityScriptExporter.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/scripting/GameSessionScriptExporter.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/scripting/InputScriptExporter.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/scripting/SceneScriptExporter.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/scripting/ScriptingSystem.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/scripting/Script.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/scripting/ScriptUtils.cpp
 
         PARENT_SCOPE
         )

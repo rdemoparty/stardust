@@ -1,7 +1,7 @@
 CUT_SCENE_DEFINITION = {
     music = "main.ogg",
     speech = "sounds/rain/acquiring_modules_change_the_behaviour_of_the_ship.ogg",
-    skippable = false,
+    skippable = true,
     slides = {
         {
             image = "sprites/splash1.png",

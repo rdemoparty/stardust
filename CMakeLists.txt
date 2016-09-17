@@ -96,6 +96,7 @@ include_directories("src/3rdparty/mongoose")
 include_directories("src/framework")
 include_directories("src/game")
 include_directories("src/game/scripting")
+include_directories("src/game/states")
 add_subdirectory(src)
 
 

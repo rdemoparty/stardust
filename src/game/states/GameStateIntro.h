@@ -1,10 +1,4 @@
 #pragma once
-#ifdef _WIN32
-    #include <mingw.thread.h>
-#else
-    #include <thread>
-#endif
-
 #include <GameState.h>
 #include <memory>
 
@@ -15,23 +9,21 @@ namespace Acidrain {
     class Font;
     class Stardust;
 
-    class GameStateEditor : public GameState<Stardust> {
+    class GameStateIntro : public GameState<Stardust> {
     public:
-        static GameStateEditor& instance();
+        static GameStateIntro& instance();
+
+        virtual const char* name() const override {return "Intro";}
 
         virtual void onEnter(Stardust* game) override;
-
         virtual void onExit(Stardust* game) override;
-
         virtual void update(Stardust* game, float elapsedSeconds) override;
-
         virtual void render(Stardust* game, float alpha) override;
 
     private:
-        ~GameStateEditor();
-
-        shared_ptr<Font> font;
-        thread serverThread;
+        shared_ptr<Font> titleFont;
+        float introTime = 0;
+        float alpha = 0;
+        float oldAlpha = 0;
     };
-
-} // namespace Acidrain
+}

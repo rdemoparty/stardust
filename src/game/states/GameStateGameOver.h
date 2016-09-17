@@ -6,9 +6,11 @@ namespace Acidrain {
 
     class Stardust;
 
-    class GameStateTest : public GameState<Stardust> {
+    class GameStateGameOver : public GameState<Stardust> {
     public:
-        static GameStateTest& instance();
+        static GameStateGameOver& instance();
+
+        virtual const char* name() const override {return "GameOver";}
 
         virtual void onEnter(Stardust* game) override;
         virtual void onExit(Stardust* game) override;
@@ -16,7 +18,6 @@ namespace Acidrain {
         virtual void render(Stardust* game, float alpha) override;
 
     private:
-        GameStateTest();
+        GameStateGameOver();
     };
-
 } // namespace Acidrain

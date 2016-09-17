@@ -5,7 +5,7 @@
 #include <InputProvider.h>
 #include <MathSupport.h>
 #include <AudioSystem.h>
-#include <GameStatePlayLevel.h>
+#include <GameStateNewGame.h>
 #include <GameStateOptions.h>
 #include <GameStateCredits.h>
 #include <Version.h>
@@ -160,7 +160,7 @@ namespace Acidrain {
             case 0:
                 AUDIOSYS.playSound(SOUND_OPTION_ACCEPTED, AudioGroup::byName("UI"));
                 game->gameSession->reset();
-                game->fsm->changeState(&GameStatePlayLevel::instance());
+                game->fsm->changeState(&GameStateNewGame::instance());
                 break;
             case 4:
                 AUDIOSYS.playSound(SOUND_OPTION_ACCEPTED, AudioGroup::byName("UI"));

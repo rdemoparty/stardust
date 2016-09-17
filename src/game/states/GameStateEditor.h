@@ -1,30 +1,37 @@
 #pragma once
+#ifdef _WIN32
+#include <mingw.thread.h>
+#else
+
+#include <thread>
+
+#endif
 
 #include <GameState.h>
-#include <string>
+#include <memory>
 
 namespace Acidrain {
 
     using namespace std;
 
+    class Font;
     class Stardust;
 
-    class GameStatePreviewEntity : public GameState<Stardust> {
+    class GameStateEditor : public GameState<Stardust> {
     public:
-        static GameStatePreviewEntity& instance();
+        static GameStateEditor& instance();
 
-        void previewEntity(string entityName);
+        virtual const char* name() const override { return "Editor"; }
 
         virtual void onEnter(Stardust* game) override;
-
         virtual void onExit(Stardust* game) override;
-
         virtual void update(Stardust* game, float elapsedSeconds) override;
-
         virtual void render(Stardust* game, float alpha) override;
 
     private:
-        string entityName;
-    };
+        ~GameStateEditor();
 
+        shared_ptr<Font> font;
+        thread serverThread;
+    };
 } // namespace Acidrain

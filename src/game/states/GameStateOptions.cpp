@@ -31,15 +31,10 @@ namespace Acidrain {
         MenuEntryResolution();
 
         virtual string getTitle() override;
-
         virtual string getCurrentValue() override;
-
         virtual void select() override;
-
         virtual bool isCurrentValueApplied() override;
-
         virtual void selectNextValue() override;
-
         virtual void selectPreviousValue() override;
 
     private:
@@ -65,15 +60,10 @@ namespace Acidrain {
         MenuEntryFullscreen();
 
         virtual string getTitle() override;
-
         virtual string getCurrentValue() override;
-
         virtual void select() override;
-
         virtual bool isCurrentValueApplied() override;
-
         virtual void selectNextValue() override;
-
         virtual void selectPreviousValue() override;
 
     private:
@@ -99,15 +89,10 @@ namespace Acidrain {
         MenuEntryVSync();
 
         virtual string getTitle() override;
-
         virtual string getCurrentValue() override;
-
         virtual void select() override;
-
         virtual bool isCurrentValueApplied() override;
-
         virtual void selectNextValue() override;
-
         virtual void selectPreviousValue() override;
 
     private:

@@ -29,7 +29,7 @@ namespace Acidrain {
             font = make_shared<Font>("fonts/Neo Sans Pro Bold.ttf", 32.0f);
             // pre-render text in fbos and use those for scrolling
             fbo = make_shared<Fbo>(1024, 768);
-            prerender();
+            preRender();
 
             gpuProgram = make_shared<GpuProgram>(
                     FILESYS.getFileContent("shaders/postprocess.vs.glsl"),
@@ -118,7 +118,7 @@ namespace Acidrain {
         GFXSYS.show();
     }
 
-    void GameStateCredits::prerender() {
+    void GameStateCredits::preRender() {
         fbo->use();
 
         GFXSYS.clearScreen();

@@ -4,19 +4,18 @@
 #include <Level.h>
 #include <InputProvider.h>
 #include <FpsCounter.h>
-#include <GameStateMenu.h>
 #include <AudioSystem.h>
 #include <GameSession.h>
-#include <LevelScript.h>
 #include <GameEvent.h>
 #include <Scene.h>
 #include <Fbo.h>
 #include <FileSystem.h>
-#include <GpuProgram.h>
 #include <GpuProgramConstants.h>
 #include <glm/gtc/matrix_transform.hpp>
-#include <GameStateCutSceneBeforeLevel.h>
-#include <GameStateCutSceneAfterLevel.h>
+
+#include <GameStateMenu.h>
+#include <GameStateHandlePlayerDeath.h>
+#include <GameStateLevelFinished.h>
 
 namespace Acidrain {
 
@@ -65,70 +64,18 @@ namespace Acidrain {
             gpuProgramConstantBundle->set("renderMode", renderMode);
         }
 
-        GameSession* gameSession = game->gameSession.get();
-        Level* level = game->level.get();
-        LevelScript* levelScript = level->levelScript.get();
-
         // TODO: create individual states for both game over and game completed states
-        if (gameSession != nullptr) {
+        handleGameEvents(game);
 
-            handleGameEvents(game);
-
-            switch (gameSession->getState()) {
-                case GameSessionState::GAME_OVER:
-                case GameSessionState::GAME_FINISHED:
-                    return;
-
-                case GameSessionState::NEW:
-                    if (gameSession->needToWatchLevelIntro()) {
-                        game->fsm->changeState(&GameStateCutSceneBeforeLevel::instance());
-                        return;
-                    }
-
-                    levelScript->load(gameSession->getCurrentLevelUri());
-                    level->start();
-
-                    level->addPlayerToScene();
-                    level->addPlatformsToScene();
-
-                    AUDIOSYS.playMusic("main.ogg");
-
-                    gameSession->notifySessionStarted();
-                    break;
-
-                case GameSessionState::PLAYING:
-                    if (!level->playerExists()) {
-                        gameSession->notifyPlayerDeath();
-                        if (gameSession->getState() != GameSessionState::GAME_OVER) {
-                            level->addPlayerToScene();
-                            level->addPlatformsToScene();
-                        }
-                    }
-
-                    if (level->isFinished()) {
-                        if (gameSession->needToWatchLevelOutro()) {
-                            game->fsm->changeState(&GameStateCutSceneAfterLevel::instance());
-                            return;
-                        }
-
-                        gameSession->notifyLevelFinish();
-
-                        if (gameSession->getState() != GameSessionState::GAME_FINISHED) {
-                            if (gameSession->needToWatchLevelIntro()) {
-                                game->fsm->changeState(&GameStateCutSceneBeforeLevel::instance());
-                                return;
-                            }
-
-                            levelScript->load(gameSession->getCurrentLevelUri());
-                            level->start();
-                        }
-                    }
-
-                    game->level->update(elapsedSeconds);
-                    game->fpsCounter->update(elapsedSeconds);
-                    break;
-            }
+        if (!game->level->playerExists()) {
+            game->fsm->changeState(&GameStateHandlePlayerDeath::instance());
+        } else if (game->level->isFinished()) {
+            game->fsm->changeState(&GameStateLevelFinished::instance());
+        } else {
+            game->level->update(elapsedSeconds);
+            game->fpsCounter->update(elapsedSeconds);
         }
+
         totalElapsedTime += elapsedSeconds;
     }
 

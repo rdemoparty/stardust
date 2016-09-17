@@ -1,40 +1,37 @@
 #pragma once
 
+#include <easylogging++.h>
+
 namespace Acidrain {
 
     template<class T>
     class GameState {
     public:
 
-        virtual void onEnter(T*) = 0;
-
-        virtual void onExit(T*) = 0;
-
+        virtual const char* name() const = 0;
+        virtual void onEnter(T*) {};
+        virtual void onExit(T*) {};
         virtual void update(T*, float elapsedSeconds) = 0;
-
-        virtual void render(T*, float alpha) = 0;
+        virtual void render(T*, float alpha) {};
     };
 
     template<class T>
     class GameStateMachine {
     public:
-        GameStateMachine(T* ownr)
-                : owner(ownr), currentState(nullptr), previousState(nullptr), globalState(nullptr) {
-        }
-
-        void setCurrentState(GameState<T>* s) {
-            currentState = s;
+        GameStateMachine(T* fsmOwner)
+                : owner(fsmOwner),
+                  currentState(nullptr),
+                  previousState(nullptr),
+                  globalState(nullptr) {
         }
 
         GameState<T>* getCurrentState() {
             return currentState;
         }
 
-        void setPreviousState(GameState<T>* s) {
-            previousState = s;
-        }
-
         void setGlobalState(GameState<T>* s) {
+            LOG(INFO) << "Setting global game state [" << getStateName(globalState) << "] ---------> [" << getStateName(s) << "]";
+
             if (globalState != nullptr)
                 globalState->onExit(owner);
 
@@ -60,6 +57,8 @@ namespace Acidrain {
         }
 
         void changeState(GameState<T>* s) {
+            LOG(INFO) << "Switching game state [" << getStateName(currentState) << "] ---------> [" << getStateName(s) << "]";
+
             previousState = currentState;
             if (currentState != nullptr)
                 currentState->onExit(owner);
@@ -78,6 +77,10 @@ namespace Acidrain {
         GameState<T>* currentState;
         GameState<T>* previousState;
         GameState<T>* globalState;
+
+        const char* getStateName(GameState<T>* state) {
+            return state == nullptr ? "null" : state->name();
+        }
     };
 
 } // namespace Acidrain

@@ -1,14 +1,21 @@
 #pragma once
 
 #include <GameState.h>
+#include <string>
 
 namespace Acidrain {
 
+    using namespace std;
+
     class Stardust;
 
-    class GameStateCutSceneAfterLevel : public GameState<Stardust> {
+    class GameStatePreviewEntity : public GameState<Stardust> {
     public:
-        static GameStateCutSceneAfterLevel& instance();
+        static GameStatePreviewEntity& instance();
+
+        void previewEntity(string entityName);
+
+        virtual const char* name() const override { return "Preview Entity"; }
 
         virtual void onEnter(Stardust* game) override;
         virtual void onExit(Stardust* game) override;
@@ -16,7 +23,7 @@ namespace Acidrain {
         virtual void render(Stardust* game, float alpha) override;
 
     private:
-        GameStateCutSceneAfterLevel();
+        string entityName;
     };
 
 } // namespace Acidrain

@@ -17,6 +17,8 @@ namespace Acidrain {
     public:
         static GameStatePlayLevel &instance();
 
+        virtual const char* name() const override { return "Play Level"; }
+
         virtual void onEnter(Stardust *game) override;
         virtual void onExit(Stardust *game) override;
         virtual void update(Stardust *game, float elapsedSeconds) override;

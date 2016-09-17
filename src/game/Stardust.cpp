@@ -7,7 +7,7 @@
 #include <Font.h>
 #include <InputProvider.h>
 #include <Level.h>
-#include <GameStateIntro.h>
+#include <states/GameStateIntro.h>
 #include <GameSession.h>
 #include <ScriptExporterRegistry.h>
 #include <GameServiceLocator.h>

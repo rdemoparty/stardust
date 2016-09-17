@@ -1,4 +1,5 @@
 #pragma once
+
 #include <GameState.h>
 #include <memory>
 
@@ -9,24 +10,19 @@ namespace Acidrain {
     class Font;
     class Stardust;
 
-    class GameStateMenu : public GameState<Stardust> {
+    class GameStateCredits : public GameState<Stardust> {
     public:
-        static GameStateMenu& instance();
+        static GameStateCredits& instance();
+
+        virtual const char* name() const override {return "Credits";}
 
         virtual void onEnter(Stardust* game) override;
-
         virtual void onExit(Stardust* game) override;
-
         virtual void update(Stardust* game, float elapsedSeconds) override;
-
         virtual void render(Stardust* game, float alpha) override;
 
     private:
-        shared_ptr<Font> menuFont;
-
-        shared_ptr<Font> versionFont;
-
-        void handleMenuSelection(Stardust* game, int selectedIndex);
+        shared_ptr<Font> font;
+        void preRender();
     };
-
-} // namespace Acidrain
+}
