@@ -1,0 +1,26 @@
+#!/bin/sh
+
+if [ -n $STARDUST_SKIP_RELEASE ]; then
+	echo "Skipping release due to STARDUST_SKIP_RELEASE being set"
+	exit 0
+fi
+
+./sd.sh update-version
+./sd.sh clean
+./sd.sh build cross
+./sd.sh package
+
+CURRENT_VERSION=$(git describe)
+CURRENT_COMMIT_HASH=$(git rev-parse HEAD)
+ARCHIVE_FILENAME="stardust-$CURRENT_VERSION.zip"
+PATH_TO_VERSIONS=/home/benny/archives/www/stardust/
+# CURRENT_TIMESTAMP=$(date +%s)
+# get the commit timestamp
+CURRENT_TIMESTAMP=$(git show -s --format=%ct)
+
+mv $ARCHIVE_FILENAME $PATH_TO_VERSIONS
+cd $PATH_TO_VERSIONS
+$(php index.php new-version $CURRENT_VERSION $ARCHIVE_FILENAME $CURRENT_COMMIT_HASH $CURRENT_TIMESTAMP)
+cd -
+
+exit 0
