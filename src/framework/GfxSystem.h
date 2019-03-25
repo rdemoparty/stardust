@@ -49,8 +49,6 @@ namespace Acidrain {
 
         void drawFilledRectangle(const vec2& topLeft, const vec2& bottomRight, const vec4& color);
 
-        void drawSprite(const Sprite& sprite, const vec2& position);
-
         void drawSprite(const Sprite& sprite, const vec2& position, const vec4& color);
 
         void renderFullScreenTexturedQuad();

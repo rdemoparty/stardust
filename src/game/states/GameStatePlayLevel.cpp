@@ -20,7 +20,7 @@
 namespace Acidrain {
 
     GameStatePlayLevel::GameStatePlayLevel() {
-        fbo = make_shared<Fbo>(1024, 768);
+        fbo = make_shared<Fbo>(GFXSYS.windowWidth(), GFXSYS.windowHeight());
         fboTexture = fbo->getTexture();
 
         gpuProgram = make_shared<GpuProgram>(

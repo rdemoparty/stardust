@@ -73,6 +73,7 @@ include_directories("/usr/local/opt/freetype/include/")
 include_directories("/usr/local/opt/freetype/include/freetype2")
 # freetype header location for linux
 include_directories("/usr/include/freetype2")
+include_directories("/usr/include/freetype2/freetype")
 # mingw cross compile
 include_directories("/opt/cross-tools/x86_64-w64-mingw32/include/freetype2")
 include_directories("/opt/cross-tools/x86_64-w64-mingw32/include/freetype2/freetype")

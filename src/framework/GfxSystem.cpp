@@ -1,3 +1,7 @@
+#include <memory>
+
+#include <memory>
+
 #include <GfxSystem.h>
 #include <GLheaders.h>
 #include <Window.h>
@@ -70,15 +74,15 @@ namespace Acidrain {
         setViewport();
         initializeFullScreenQuadVbo();
 
-        spriteShader = shared_ptr<GpuProgram>(new GpuProgram(
+        spriteShader = make_shared<GpuProgram>(
                 FILESYS.getFileContent("shaders/core.sprite.vs.glsl"),
                 FILESYS.getFileContent("shaders/core.sprite.ps.glsl")
-        ));
+        );
 
-        solidShader = shared_ptr<GpuProgram>(new GpuProgram(
+        solidShader = make_shared<GpuProgram>(
                 FILESYS.getFileContent("shaders/core.sprite.vs.glsl"),
                 FILESYS.getFileContent("shaders/core.solid.ps.glsl")
-        ));
+        );
 
         shaderConstants = make_shared<GpuProgramConstantBundle>();
         shaderConstants->set("orthoMatrix", glm::ortho(0.0f, 1024.0f, 768.0f, 0.0f, 0.0f, 1.0f));
@@ -185,30 +189,6 @@ namespace Acidrain {
         solidShader->use();
         solidRectangleVbo.draw();
         solidShader->unuse();
-    }
-
-    void GfxSystem::drawSprite(const Sprite& sprite, const vec2& position) {
-        glEnable(GL_TEXTURE_2D);
-        sprite.getTexture()->use();
-
-        const SpriteInfo& spriteInfo = sprite.getSpriteInfo();
-
-        glBegin(GL_QUADS);
-        {
-            glTexCoord2f(spriteInfo.texCoords.left(), spriteInfo.texCoords.top());
-            glVertex2f(position.x, position.y);
-
-            glTexCoord2f(spriteInfo.texCoords.left(), spriteInfo.texCoords.bottom());
-            glVertex2f(position.x, spriteInfo.height + position.y);
-
-            glTexCoord2f(spriteInfo.texCoords.right(), spriteInfo.texCoords.bottom());
-            glVertex2f(position.x + spriteInfo.width, spriteInfo.height + position.y);
-
-            glTexCoord2f(spriteInfo.texCoords.right(), spriteInfo.texCoords.top());
-            glVertex2f(position.x + spriteInfo.width, position.y);
-        }
-        glEnd();
-        glDisable(GL_TEXTURE_2D);
     }
 
     void GfxSystem::setTransparencyMode(TransparencyMode mode) {
